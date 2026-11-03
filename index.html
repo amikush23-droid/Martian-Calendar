@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A1610">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Explore Martian time: a 25-hour sol, archons and chrones, a 668 and 671 sol calendar, and the leap Chrone mechanism.">
 <title>Martian Calendar</title>
 <style>
@@ -14,8 +18,12 @@
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
   background:radial-gradient(1200px 600px at 50% -10%,#4a2619 0%,#2A1610 45%,#1a0c07 100%)}
-#stars{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
-#mars{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+#stars,
+#mars{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;width:100vw;height:100vh;width:100dvw;height:100dvh;
+  z-index:-1;pointer-events:none;display:block;
+}
 a{color:var(--sand)}
 nav.top{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 16px;
   background:rgba(42,22,16,.78);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
@@ -1272,11 +1280,16 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 
 /* ===== Fullscreen Navigation Button & Aesthetic Fullscreen Mode ===== */
 .fs-nav-wrap {
+  position: fixed;
+  top: 9px;
+  left: 16px;
+  z-index: 30;
   display: inline-flex;
   align-items: center;
-  margin-right: auto;
-  position: relative;
-  z-index: 25;
+}
+body.is-fullscreen .fs-nav-wrap {
+  top: 10px;
+  left: 28px;
 }
 .fs-intro-hint {
   position: absolute;
@@ -2228,6 +2241,511 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   color: #ffe3a8;
 }
 
+
+/* =====================================================================
+   PHONE LAYER (Mobile Device Configuration & Aesthetic Responsive UI)
+   Automatically activated on mobile phones via media queries and
+   explicit device detection (body.is-mobile), while leaving PC
+   (body.is-pc on desktop screens) 100% untouched.
+   ===================================================================== */
+
+nav.top .ic{display:none}
+nav.top .l-short{display:none}
+#navVisaLink.visa-hidden{display:none !important}
+
+@media (max-width: 640px), (max-height: 500px) and (pointer: coarse){
+
+  :root{
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --dock-h: 64px;
+  }
+
+  html{overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-size:15.5px;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+
+  /* ---------- Sleek Frosted Bottom Dock ---------- */
+  nav.top,
+  body.is-fullscreen nav.top{
+    position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;
+    display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;
+    padding:6px 6px calc(6px + var(--safe-b));
+    background:linear-gradient(180deg,rgba(36,18,12,.94),rgba(20,9,6,.98));
+    border:0;border-top:1px solid rgba(224,178,90,.32);
+    box-shadow:0 -8px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  }
+  body.intro-void nav.top{
+    border-top-color:transparent !important;
+    box-shadow:none !important;
+    background:transparent !important;
+  }
+  nav.top a:first-of-type{margin-left:0}
+  nav.top a,
+  nav.top a:hover{
+    display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    min-width:0;min-height:52px;padding:5px 1px 4px;border-radius:12px;
+    color:var(--muted);background:transparent;
+    font-size:10.5px;font-weight:600;letter-spacing:.01em;line-height:1.05;text-align:center;text-decoration:none;
+    transition:background .18s ease, color .18s ease, box-shadow .18s ease;
+  }
+  nav.top a.on{
+    color:#fff;
+    background:linear-gradient(180deg,rgba(217,115,74,.38),rgba(181,83,46,.22));
+    box-shadow:inset 0 0 0 1px rgba(233,140,100,.42), 0 2px 10px rgba(181,83,46,.25);
+  }
+  nav.top .ic{display:block;width:20px;height:20px;flex:none;transition:transform .18s ease, color .18s ease}
+  nav.top a.on .ic{color:#FFC9A6;transform:translateY(-1px)}
+  nav.top .l-full{display:none !important}
+  nav.top .l-short{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  nav.top #navVisaLink{
+    color:#ffe3a8;
+    background:rgba(224,178,90,.14);
+    box-shadow:inset 0 0 0 1px rgba(224,178,90,.48);
+  }
+  nav.top #navVisaLink.visa-hidden{
+    display:none !important;
+  }
+
+  /* Fullscreen toggle floats top-right at the TOP of the phone screen */
+  .fs-nav-wrap{
+    position:fixed;top:calc(var(--safe-t) + 12px);right:14px;left:auto;
+    z-index:95;margin:0;display:flex;align-items:center;
+  }
+  .fs-nav-btn,
+  body.is-fullscreen .fs-nav-btn{
+    width:42px;height:42px;min-width:42px;min-height:42px;margin:0;
+    background:rgba(38,19,13,.90);
+    border:1.2px solid rgba(224,178,90,.58);
+    box-shadow:0 4px 16px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  }
+  .fs-intro-hint{display:none !important}
+
+  /* Toasts sit under the floating button */
+  .fs-lock-toast{
+    top:calc(var(--safe-t) + 58px);
+    white-space:normal;width:max-content;max-width:90vw;text-align:center;
+    font-size:12.5px;padding:8px 14px;
+  }
+
+  /* ---------- Page frame ---------- */
+  main,
+  body.is-fullscreen main{
+    max-width:none;width:100%;margin:0;
+    padding:calc(var(--safe-t) + 18px) 12px calc(var(--dock-h) + var(--safe-b) + 28px);
+  }
+  .page,
+  body.is-fullscreen .page{
+    scroll-margin-top:calc(var(--safe-t) + 18px);
+    margin-bottom:32px;
+  }
+
+  /* ---------- Type scale & Badges ---------- */
+  h1{font-size:clamp(26px, 7.2vw, 32px);line-height:1.12}
+  h2{font-size:clamp(22px, 6.2vw, 26px);line-height:1.15;margin-bottom:8px}
+  h3{font-size:17.5px;line-height:1.25}
+  .lead{font-size:15px;line-height:1.5}
+  .eyebrow{font-size:10.5px;letter-spacing:.12em;margin-bottom:6px}
+  .small{font-size:12px}
+  .legend{font-size:12px;line-height:1.5}
+  .badge{
+    font-size:11.5px;padding:3px 9px;
+    white-space:normal;text-align:center;line-height:1.3;
+    max-width:100%;
+  }
+
+  /* ---------- Cards (Performance-tuned & Aesthetic Glass) ---------- */
+  .card,
+  body.is-fullscreen .card{
+    padding:14px;border-radius:18px;
+    background:linear-gradient(165deg,rgba(68,38,27,.72),rgba(36,19,13,.84));
+    border:1px solid rgba(233,216,199,.18);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 8px 22px rgba(0,0,0,.32);
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  .mt{margin-top:12px}
+  .clockBox,
+  body.is-fullscreen .clockBox{
+    padding:18px 16px !important;border-radius:18px;margin-bottom:14px !important;
+  }
+  .clockTitle{font-size:20px !important;line-height:1.22;margin:0 0 12px !important}
+  .clockCardText{font-size:14.8px;line-height:1.62;text-align:left;hyphens:auto;-webkit-hyphens:auto}
+  .clockCardText p{margin:0 0 12px !important}
+  .clockCardText p:last-child{margin-bottom:0 !important}
+
+  /* ---------- Home: Dedicated showcase window for the 3D Mars globe ---------- */
+  #home,
+  body.is-fullscreen #home{
+    min-height:calc(100svh - var(--dock-h) - 36px);
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding-top:4px;padding-bottom:6px;
+  }
+  .home-head{
+    margin-bottom:0;
+    padding-right:48px; /* Clear floating fullscreen button */
+  }
+  .home-head h1,
+  body.is-fullscreen #home .home-head h1{margin-left:0;font-size:clamp(26px, 7.2vw, 32px)}
+  #home > .mt{
+    margin-top:clamp(185px, 31vh, 250px);
+  }
+  .homeBox,
+  body.is-fullscreen #home .homeBox{
+    left:0;top:0;max-width:none;padding:18px 16px 20px;border-radius:20px;
+    background:linear-gradient(165deg,rgba(62,34,24,.78),rgba(32,16,11,.88));
+    border:1px solid rgba(224,178,90,.28);
+    box-shadow:0 12px 32px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .homeTitle{font-size:22px;margin-bottom:10px}
+  .homeType{font-size:15px;line-height:1.58;text-align:left;hyphens:auto;-webkit-hyphens:auto}
+
+  /* ---------- Touch-friendly controls & smooth page scrolling over SVGs ---------- */
+  svg.dial,
+  .sun-svg,
+  .seas-wheel-svg{
+    touch-action:pan-y pinch-zoom;
+  }
+  button,
+  .btn{
+    min-height:42px;padding:9px 12px;font-size:14px;border-radius:11px;
+    touch-action:manipulation;
+  }
+  button:hover,
+  .btn:hover{transform:none}
+  button:active{transform:scale(.98)}
+  input[type=range]{height:30px;margin:4px 0}
+  select,
+  input[type=number],
+  input[type=text],
+  input[type=date]{min-height:42px}
+  /* 16px stops iOS from auto-zooming when an input is focused */
+  input,
+  select,
+  textarea{font-size:16px !important}
+  .sol:hover,
+  .mcard:hover,
+  .navcard:hover,
+  .wk-btn:hover:not(:disabled){transform:none}
+  .row{gap:8px}
+  .eq{white-space:normal;overflow-wrap:anywhere}
+  .g2{grid-template-columns:minmax(0,1fr) !important}
+
+  /* ---------- Clock & Embedded Sol Clock ---------- */
+  .clock-interactive-grid,
+  body.is-fullscreen .clock-interactive-grid{
+    grid-template-columns:minmax(0,1fr) !important;gap:12px;
+  }
+  #mainClockBox,
+  #solDetailClockBox{padding:12px !important}
+  .clock-interactive-grid > .card{padding:12px !important;gap:12px !important}
+  .clock-interactive-grid > .card > div{padding:12px !important}
+  .dialWrap{max-width:min(340px, 84vw) !important;margin:0 auto !important}
+  #mainSunBox .sun-svg,
+  #solSunBoxWrapper .sun-svg{
+    min-height:150px !important;
+  }
+  #mainSunStatus,
+  #solSunStatus{
+    justify-content:space-between !important;
+    flex-wrap:wrap;
+    font-size:11.5px !important;
+  }
+  .clock-btn-grid,
+  body.is-fullscreen .clock-btn-grid{grid-template-columns:1fr 1fr !important;gap:8px}
+  .clock-btn-grid button{font-size:13.5px;padding:8px 10px}
+  #digital,
+  #solDigital{margin-top:8px !important}
+  .digital{font-size:14.5px;line-height:1.45}
+  .digital > div{white-space:normal !important;overflow-wrap:anywhere}
+  .digital .big,
+  #digBig,
+  #solDigBig{font-size:clamp(18px, 5.2vw, 22px) !important;line-height:1.25}
+  .hint{font-size:11.5px;line-height:1.4}
+
+  /* ---------- Calendar: Year, Month & Sol Views ---------- */
+  .card.row.space{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;
+  }
+  .card.row.space > .yearBox{
+    grid-column:1 / -1;order:-1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;
+  }
+  .card.row.space > #prevY{grid-column:1}
+  .card.row.space > #nextY{grid-column:2}
+  .card.row.space > #yearSlider{grid-column:1 / -1;order:3;margin:4px 0 0}
+  .yearNum{font-size:28px;margin-right:0;line-height:1.1}
+  #yearSub{font-size:12px;line-height:1.35}
+
+  #calInst{font-size:14px !important;margin-bottom:12px !important;line-height:1.4}
+  .cal-nav{flex-direction:column;align-items:stretch;gap:8px;margin-bottom:12px;padding-bottom:12px}
+  .cal-nav > button{width:100%}
+  .cal-nav-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+  .cal-nav-group > #toClock{grid-column:1 / -1}
+  #monthCards{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  #monthCards .mcard{min-width:0;padding:10px;font-size:12px;line-height:1.35}
+  #monthCards .mcard strong{font-size:14.5px}
+  #monthPanel > .row.space{
+    flex-direction:column;align-items:flex-start !important;gap:6px;margin-bottom:8px;
+  }
+  #monthBadges{display:flex;flex-wrap:wrap;gap:4px;width:100%}
+  .mgrid{gap:4px;max-width:none}
+  .sol{font-size:13.5px;border-radius:8px;min-height:38px;padding:0}
+  .sol.leap::after{right:3px;top:3px;width:5px;height:5px}
+  #solDetail{padding:12px !important;scroll-margin-top:calc(var(--safe-t) + 18px)}
+  #monthPanel,
+  #monthCardsWrapper{padding:14px !important}
+
+  /* Sol Detail Header & Info Panel */
+  .sol-header-box{padding:12px !important}
+  .sol-header-box > .row.space{
+    flex-direction:column;align-items:flex-start !important;gap:8px;
+  }
+  .sol-header-box h3{font-size:20px !important;line-height:1.2}
+  .sol-header-box > div:last-child{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:6px 10px !important;
+    font-size:12px !important;
+  }
+  .sol-info-panel > .grid.g2{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:10px !important;
+  }
+  .sol-metrics-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .sol-metric-card{padding:10px}
+  .sol-metric-card .m-val{font-size:17.5px}
+  .sol-metric-card .m-sub{font-size:11px;line-height:1.3}
+  .sol-week-strip{gap:4px}
+  .wk-btn{min-height:48px;padding:4px 1px;font-size:10px}
+  .wk-btn strong{font-size:12.5px}
+  .sol-week-box,
+  .sol-sun-box,
+  .sol-telem-box{padding:12px}
+  .telem-row-head{flex-wrap:wrap;gap:4px}
+
+  /* ---------- Seasons ---------- */
+  .seas-hero-grid,
+  body.is-fullscreen .seas-hero-grid,
+  .seas-bottom-grid,
+  body.is-fullscreen .seas-bottom-grid{
+    grid-template-columns:minmax(0,1fr) !important;gap:12px !important;
+  }
+  .seas-card-equal,
+  .seas-wheel-card{
+    min-height:auto !important;
+    padding:14px 12px !important;
+    gap:10px;
+  }
+  .seas-card-equal h3,
+  .seas-wheel-card h3{
+    white-space:normal !important;
+    font-size:15.5px !important;
+    line-height:1.25;
+  }
+  #seasOrbitCard > div:first-child > div,
+  #seasPressureCard > div:first-child > div{
+    flex-wrap:wrap !important;
+  }
+  #orbitSpeedTag,
+  #orbitDistTag,
+  #seasPressReadout,
+  #seasPressSubBadge{
+    white-space:normal !important;
+    font-size:11px !important;
+  }
+  #seasOrbitCard > div:last-child > div,
+  #seasPressureCard > div:last-child > div{
+    white-space:normal !important;
+    flex-wrap:wrap !important;
+    gap:2px 8px;
+  }
+  .seas-gas-tab{
+    min-height:28px;
+    padding:4px 9px;
+    font-size:10.5px;
+  }
+  .seas-polar-row{
+    grid-template-columns:1fr 1fr;
+    gap:8px !important;
+  }
+  .seas-cap-box{
+    padding:6px 8px !important;
+    gap:6px !important;
+  }
+  #northCapStatus,
+  #southCapStatus{
+    white-space:normal !important;overflow:visible !important;text-overflow:clip !important;
+    font-size:10px !important;
+  }
+  #seasControlsCard,
+  #seasInfoCard{
+    padding:14px !important;
+  }
+  #seasControlsCard .seas-speed-btn{
+    min-height:32px;
+    padding:4px 8px !important;
+  }
+  #seasControlsCard .clock-btn-grid{
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+  }
+  #seasons label[for="seasSolSlider"],
+  #seasInfoSubLabel,
+  #seasShowCalBtn{white-space:normal !important}
+  #seasInfoCard > div:first-child > div:first-child{
+    flex-wrap:wrap !important;
+  }
+  #seasInfoTitle{
+    white-space:normal !important;overflow:visible !important;text-overflow:clip !important;
+    font-size:17.5px !important;margin-top:6px !important;
+  }
+  #seasInfoCard > div:last-child{
+    flex-direction:column;
+    align-items:stretch !important;
+    gap:10px !important;
+  }
+  #seasInfoRangeText{
+    white-space:normal !important;overflow:visible !important;text-overflow:clip !important;
+    display:block;line-height:1.4;
+  }
+  #seasShowCalBtn{
+    width:100%;justify-content:center;
+    padding:9px 12px !important;font-size:13px !important;min-height:40px;
+  }
+
+  /* ---------- Weekday Drift ---------- */
+  #drift > .card.mt{padding:14px !important}
+  .drift-console-grid,
+  body.is-fullscreen .drift-console-grid{grid-template-columns:minmax(0,1fr) !important;gap:12px}
+  .drift-wheel-svg{max-width:270px}
+  .drift-controls-box,
+  .drift-telemetry-box{padding:14px}
+  #driftYearHead{font-size:22px !important}
+  #driftWdBadge{font-size:12.5px !important;padding:4px 10px !important}
+  .drift-cycle-matrix{gap:6px}
+
+  /* ---------- Converter (3D Flip Glitch Fix & Responsive Grids) ---------- */
+  #convert > .card.mt{padding:14px !important}
+  .conv-grid,
+  body.is-fullscreen .conv-grid{grid-template-columns:minmax(0,1fr) !important;gap:14px}
+  .conv-panel{padding:14px;gap:12px}
+  .conv-flip-panel{
+    overflow:visible !important;
+  }
+  .conv-flip-stage{
+    perspective:1100px;
+    overflow:hidden;
+    border-radius:12px;
+  }
+  .conv-panel-head{flex-direction:column;align-items:stretch !important;gap:10px}
+  .conv-panel-head h3{font-size:18px}
+  .conv-flip-btn{width:100%;justify-content:center;min-height:42px}
+  .conv-unit-tabs{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    gap:6px;margin-bottom:10px;padding-bottom:8px;
+  }
+  .conv-unit-tabs::-webkit-scrollbar{display:none}
+  .conv-tab-btn{
+    flex:0 0 auto;
+    font-size:12.5px;padding:7px 12px;min-height:36px;
+    white-space:nowrap;
+  }
+  .conv-inputs-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:8px;
+  }
+  .conv-readout{
+    padding:12px 14px;
+  }
+  .conv-hero-val{
+    font-size:clamp(17px, 5vw, 21px);
+    line-height:1.22;
+    overflow-wrap:anywhere;
+  }
+  .conv-stat-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:6px;
+  }
+  .conv-stat-pill{
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:4px 8px;
+    padding:8px 10px;
+  }
+  .conv-stat-pill strong{
+    font-size:13.5px;
+    text-align:right;
+  }
+  .conv-presets{gap:6px}
+  .conv-preset-btn{
+    font-size:12px;padding:6px 10px;min-height:34px;
+    flex:1 1 auto;text-align:center;justify-content:center;
+  }
+  .conv-inspect-btn{
+    width:100%;justify-content:center;margin-top:4px;min-height:40px;
+  }
+
+  /* ---------- Quiz ---------- */
+  body.is-fullscreen #quiz,
+  body.quiz-locked #quiz{
+    min-height:calc(100svh - 120px);padding:4px 0 16px;overflow-x:clip;
+  }
+  body.is-fullscreen #quiz > h2,
+  body.quiz-locked #quiz > h2{margin-bottom:8px}
+  #quizCard,
+  body.is-fullscreen #quizCard,
+  body.quiz-locked #quizCard{padding:16px 14px !important;border-radius:18px}
+  .quiz-prize-banner{
+    padding:14px;gap:14px;margin:14px 0;border-radius:16px;
+  }
+  .quiz-prize-title{font-size:16px}
+  .quiz-prize-desc{font-size:13.5px}
+  #quizBody > .row.space{
+    flex-wrap:wrap;gap:8px;
+  }
+  #quizBody > .row.space > .row{
+    width:100%;justify-content:space-between;
+  }
+  #quizBody #qPause,
+  #quizBody #qSkip{
+    min-height:36px;padding:6px 12px !important;font-size:13px !important;
+  }
+  #quizCard .qtext{font-size:17.5px;line-height:1.38;margin-top:12px}
+  #quizCard .opts{gap:8px;margin-top:12px;grid-template-columns:1fr !important}
+  #quizCard button.primary{width:100%;min-height:48px;font-size:15.5px}
+  #quizCard .opt{min-height:52px;padding:11px 13px;font-size:14.5px;line-height:1.35}
+  .quiz-fs-guard{padding:16px}
+  .quiz-fs-guard-card{max-width:none;padding:22px 18px}
+  .visa-unlock-banner{padding:16px;gap:12px}
+  #claimVisaBtn{width:100%;justify-content:center;white-space:normal !important}
+
+  /* ---------- Mars Travel Visa Terminal ---------- */
+  #visa > .row.space{
+    flex-direction:column;align-items:flex-start !important;gap:8px;
+  }
+  .visa-form-card{padding:16px 14px;border-radius:16px}
+  .visa-form-row{grid-template-columns:1fr !important;gap:10px}
+  .visa-actions-bar{
+    flex-direction:column;align-items:stretch;padding:12px 14px;gap:10px;
+  }
+  .visa-actions-bar > .row{width:100%}
+  #visaDownloadBtn{width:100%;justify-content:center}
+  #marsVisaCanvas,
+  #visaFlagPreview{max-width:100%;height:auto}
+
+  /* ---------- Intro skip button sits above the safe area ---------- */
+  .skip-intro-btn{bottom:calc(var(--safe-b) + 18px);right:14px;min-height:36px;padding:6px 14px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  nav.top a{transition:none}
+}
 </style>
 </head>
 <body class="intro-active intro-void">
@@ -2236,24 +2754,26 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
 <canvas id="mars" aria-hidden="true"></canvas>
 <button id="skipIntroBtn" class="skip-intro-btn" type="button" aria-label="Skip intro animation (Press Space)" title="Skip Intro (Space)">Skip &rsaquo;</button>
 
+<!-- Fullscreen Toggle (Top-screen on PC & Mobile) -->
+<div id="fsNavWrap" class="fs-nav-wrap">
+  <button id="fullscreenBtn" class="fs-nav-btn" type="button" aria-label="Enter Fullscreen (Press F)" title="Enter Fullscreen (Press F)">
+    <svg id="fsBtnIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5" stroke="currentColor" stroke-width="2"/>
+      <text x="12" y="12" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI', Calibri, Arial, sans-serif" font-weight="800" font-size="10.5" fill="currentColor" stroke="none">F</text>
+    </svg>
+  </button>
+  <span id="fsIntroHint" class="fs-intro-hint" aria-hidden="true">Press F</span>
+</div>
+
 <nav class="top" aria-label="Main">
-  <div class="fs-nav-wrap">
-    <button id="fullscreenBtn" class="fs-nav-btn" type="button" aria-label="Enter Fullscreen (Press F)" title="Enter Fullscreen (Press F)">
-      <svg id="fsBtnIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5" stroke="currentColor" stroke-width="2"/>
-        <text x="12" y="12" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI', Calibri, Arial, sans-serif" font-weight="800" font-size="10.5" fill="currentColor" stroke="none">F</text>
-      </svg>
-    </button>
-    <span id="fsIntroHint" class="fs-intro-hint" aria-hidden="true">Press F</span>
-  </div>
-  <a data-p="home" href="#home">Home</a>
-  <a data-p="clock" href="#clock">Clock</a>
-  <a data-p="calendar" href="#calendar">Calendar</a>
-  <a data-p="seasons" href="#seasons">Seasons</a>
-  <a data-p="drift" href="#drift">Weekday drift</a>
-  <a data-p="convert" href="#convert">Converter</a>
-  <a data-p="quiz" href="#quiz">Quiz</a>
-  <a id="navVisaLink" data-p="visa" href="#visa" style="display:none;color:#ffe3a8;border:1px solid rgba(224,178,90,0.55);background:rgba(224,178,90,0.14);">Mars Visa &#10022;</a>
+  <a data-p="home" href="#home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.8l8.5 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-4v-5.5h-6V20.5H5A1.5 1.5 0 0 1 3.5 19z"/></svg><span class="l-full">Home</span><span class="l-short">Home</span></a>
+  <a data-p="clock" href="#clock"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span class="l-full">Clock</span><span class="l-short">Clock</span></a>
+  <a data-p="calendar" href="#calendar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span class="l-full">Calendar</span><span class="l-short">Calendar</span></a>
+  <a data-p="seasons" href="#seasons"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg><span class="l-full">Seasons</span><span class="l-short">Seasons</span></a>
+  <a data-p="drift" href="#drift"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3L19.5 8.5"/><path d="M19.5 4v4.5H15"/><path d="M19.5 12a7.5 7.5 0 0 1-12.8 5.3L4.5 15.5"/><path d="M4.5 20v-4.5H9"/></svg><span class="l-full">Weekday drift</span><span class="l-short">Drift</span></a>
+  <a data-p="convert" href="#convert"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg><span class="l-full">Converter</span><span class="l-short">Convert</span></a>
+  <a data-p="quiz" href="#quiz"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5"/><path d="M12 17.2h.01"/></svg><span class="l-full">Quiz</span><span class="l-short">Quiz</span></a>
+  <a id="navVisaLink" class="visa-hidden" data-p="visa" href="#visa" style="color:#ffe3a8;border:1px solid rgba(224,178,90,0.55);background:rgba(224,178,90,0.14);"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.2 5.1 5.3.5-4 3.6 1.2 5.3L12 15.5l-4.7 2.5 1.2-5.3-4-3.6 5.3-.5z"/></svg><span class="l-full">Mars Visa &#10022;</span><span class="l-short">Visa</span></a>
 </nav>
 
 <div id="fsLockToast" class="fs-lock-toast" role="status" aria-live="polite">
@@ -3519,6 +4039,33 @@ function runChecks(){
 <script>
 (function(){
 const $ = id => document.getElementById(id);
+
+// ---------- Automatic Device Configuration Detection (Mobile Phone vs PC) ----------
+const phoneMediaQuery = window.matchMedia ? window.matchMedia("(max-width: 640px), (max-height: 500px) and (pointer: coarse)") : null;
+function isMobileDevice(){
+  if (phoneMediaQuery && phoneMediaQuery.matches) return true;
+  const ua = navigator.userAgent || "";
+  if (/Android|iPhone|iPod|IEMobile|Opera Mini|Mobile/i.test(ua) && Math.min(window.innerWidth, window.innerHeight) <= 640) {
+    return true;
+  }
+  return false;
+}
+function applyDeviceConfiguration(){
+  const mobile = isMobileDevice();
+  document.body.classList.toggle("is-mobile", mobile);
+  document.body.classList.toggle("is-pc", !mobile);
+  document.documentElement.setAttribute("data-device", mobile ? "mobile" : "pc");
+  return mobile;
+}
+applyDeviceConfiguration();
+if (phoneMediaQuery && phoneMediaQuery.addEventListener) {
+  phoneMediaQuery.addEventListener("change", () => {
+    applyDeviceConfiguration();
+  });
+}
+window.addEventListener("orientationchange", () => {
+  setTimeout(applyDeviceConfiguration, 60);
+});
 const NS = "http://www.w3.org/2000/svg";
 const PAGES = ["home","clock","calendar","seasons","drift","convert","quiz","visa"];
 const TITLES = {home:"Martian Calendar", clock:"The Martian clock", calendar:"Calendar", seasons:"Seasons", drift:"Weekday drift", convert:"Converter", quiz:"QUIZ", visa:"Mars Visa"};
@@ -3868,6 +4415,8 @@ function show(name){
   }
   if (!PAGES.includes(name)) name = "home";
   currentPage = name;
+  if (name === "clock" && typeof updateClock === "function") updateClock();
+  if (name === "calendar" && CAL.sel !== null && typeof updateSolClock === "function") updateSolClock();
   document.querySelectorAll("nav.top a").forEach(a => a.classList.toggle("on", a.dataset.p === name));
   document.title = name === "home" ? "Martian Calendar" : TITLES[name] + " · Martian Calendar";
 }
@@ -4191,12 +4740,40 @@ function setFromPointer(e){
     S.secs = Math.min(SOL_BASE - 0.001, Math.max(0, (ang / 360) * SOL_BASE));
   }
 }
+let dialTouchStart = null;
 dial.addEventListener("pointerdown", e => {
+  if (isMobileDevice() && e.pointerType === "touch") {
+    dialTouchStart = { x: e.clientX, y: e.clientY, id: e.pointerId, locked: false };
+    setFromPointer(e);
+    return;
+  }
   dragging = true;
-  dial.setPointerCapture(e.pointerId);
+  try { dial.setPointerCapture(e.pointerId); } catch (err) {}
   setFromPointer(e);
 });
-dial.addEventListener("pointermove", e => { if (dragging) setFromPointer(e); });
+dial.addEventListener("pointermove", e => {
+  if (dialTouchStart && e.pointerId === dialTouchStart.id) {
+    const dx = Math.abs(e.clientX - dialTouchStart.x);
+    const dy = Math.abs(e.clientY - dialTouchStart.y);
+    if (!dialTouchStart.locked) {
+      if (dy > 10 && dy > dx * 1.25) {
+        dialTouchStart = null;
+        dragging = false;
+        return;
+      }
+      if (dx > 8 || dy > 8) {
+        dialTouchStart.locked = true;
+        dragging = true;
+        try { dial.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+    }
+    if (dragging) setFromPointer(e);
+    return;
+  }
+  if (dragging) setFromPointer(e);
+});
+dial.addEventListener("pointerup", () => { dialTouchStart = null; });
+dial.addEventListener("pointercancel", () => { dialTouchStart = null; });
 
 const scrubEl = $("scrub");
 const solScrubEl = $("solScrub");
@@ -4255,13 +4832,41 @@ function setSolClockFromPointer(e){
     SOL_CLK.secs = Math.min(SOL_BASE - 0.001, Math.max(0, (ang / 360) * SOL_BASE));
   }
 }
+let solDialTouchStart = null;
 solDial.addEventListener("pointerdown", e => {
   if (CAL.sel === null) return;
+  if (isMobileDevice() && e.pointerType === "touch") {
+    solDialTouchStart = { x: e.clientX, y: e.clientY, id: e.pointerId, locked: false };
+    setSolClockFromPointer(e);
+    return;
+  }
   SOL_CLK.dragging = true;
-  solDial.setPointerCapture(e.pointerId);
+  try { solDial.setPointerCapture(e.pointerId); } catch (err) {}
   setSolClockFromPointer(e);
 });
-solDial.addEventListener("pointermove", e => { if (SOL_CLK.dragging) setSolClockFromPointer(e); });
+solDial.addEventListener("pointermove", e => {
+  if (solDialTouchStart && e.pointerId === solDialTouchStart.id) {
+    const dx = Math.abs(e.clientX - solDialTouchStart.x);
+    const dy = Math.abs(e.clientY - solDialTouchStart.y);
+    if (!solDialTouchStart.locked) {
+      if (dy > 10 && dy > dx * 1.25) {
+        solDialTouchStart = null;
+        SOL_CLK.dragging = false;
+        return;
+      }
+      if (dx > 8 || dy > 8) {
+        solDialTouchStart.locked = true;
+        SOL_CLK.dragging = true;
+        try { solDial.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+    }
+    if (SOL_CLK.dragging) setSolClockFromPointer(e);
+    return;
+  }
+  if (SOL_CLK.dragging) setSolClockFromPointer(e);
+});
+solDial.addEventListener("pointerup", () => { solDialTouchStart = null; });
+solDial.addEventListener("pointercancel", () => { solDialTouchStart = null; });
 
 // Dynamic Solar Elevation Graph Builder
 function createSunGraph(containerId, prefix){
@@ -4403,14 +5008,40 @@ function bindSunScrub(refs, isMain){
       updateSolClock();
     }
   };
+  let sunTouchStart = null;
   refs.svg.addEventListener("pointerdown", e => {
     if (!isMain && CAL.sel === null) return;
+    if (isMobileDevice() && e.pointerType === "touch") {
+      sunTouchStart = { x: e.clientX, y: e.clientY, id: e.pointerId, locked: false };
+      scrubFromSunGraph(e);
+      return;
+    }
     sunDragging = true;
     if (isMain) dragging = true; else SOL_CLK.dragging = true;
-    refs.svg.setPointerCapture(e.pointerId);
+    try { refs.svg.setPointerCapture(e.pointerId); } catch (err) {}
     scrubFromSunGraph(e);
   });
   refs.svg.addEventListener("pointermove", e => {
+    if (sunTouchStart && e.pointerId === sunTouchStart.id) {
+      const dx = Math.abs(e.clientX - sunTouchStart.x);
+      const dy = Math.abs(e.clientY - sunTouchStart.y);
+      if (!sunTouchStart.locked) {
+        if (dy > 9 && dy > dx) {
+          sunTouchStart = null;
+          sunDragging = false;
+          if (isMain) dragging = false; else SOL_CLK.dragging = false;
+          return;
+        }
+        if (dx > 7) {
+          sunTouchStart.locked = true;
+          sunDragging = true;
+          if (isMain) dragging = true; else SOL_CLK.dragging = true;
+          try { refs.svg.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+      if (sunDragging) scrubFromSunGraph(e);
+      return;
+    }
     if (sunDragging) scrubFromSunGraph(e);
   });
   ["pointerup","pointercancel"].forEach(evt => {
@@ -6903,13 +7534,37 @@ function updateSeasonsTick(dt){
       renderSeasonsFrame();
     };
 
+    let wheelTouchStart = null;
     wheelSvg.addEventListener("pointerdown", (e) => {
       if (e.target.closest(".seas-arc-group")) return;
+      if (isMobileDevice() && e.pointerType === "touch") {
+        wheelTouchStart = { x: e.clientX, y: e.clientY, id: e.pointerId, locked: false };
+        setSolFromWheelEvent(e);
+        return;
+      }
       SEAS.draggingWheel = true;
       setSolFromWheelEvent(e);
       try { wheelSvg.setPointerCapture(e.pointerId); } catch (err) {}
     });
     wheelSvg.addEventListener("pointermove", (e) => {
+      if (wheelTouchStart && e.pointerId === wheelTouchStart.id) {
+        const dx = Math.abs(e.clientX - wheelTouchStart.x);
+        const dy = Math.abs(e.clientY - wheelTouchStart.y);
+        if (!wheelTouchStart.locked) {
+          if (dy > 10 && dy > dx * 1.25) {
+            wheelTouchStart = null;
+            SEAS.draggingWheel = false;
+            return;
+          }
+          if (dx > 8 || dy > 8) {
+            wheelTouchStart.locked = true;
+            SEAS.draggingWheel = true;
+            try { wheelSvg.setPointerCapture(e.pointerId); } catch (err) {}
+          }
+        }
+        if (SEAS.draggingWheel) setSolFromWheelEvent(e);
+        return;
+      }
       if (!SEAS.draggingWheel) return;
       setSolFromWheelEvent(e);
     });
@@ -8779,7 +9434,10 @@ function lockMarsVisa(){
   const visaSec = $("visa");
   if (visaSec) visaSec.hidden = true;
   const navLink = $("navVisaLink");
-  if (navLink) navLink.style.display = "none";
+  if (navLink) {
+    navLink.classList.add("visa-hidden");
+    navLink.style.removeProperty("display");
+  }
 }
 
 function unlockMarsVisa(score, total = 20){
@@ -8789,7 +9447,10 @@ function unlockMarsVisa(score, total = 20){
   const visaSec = $("visa");
   if (visaSec) visaSec.hidden = false;
   const navLink = $("navVisaLink");
-  if (navLink) navLink.style.display = "inline-block";
+  if (navLink) {
+    navLink.classList.remove("visa-hidden");
+    navLink.style.removeProperty("display");
+  }
   const badge = $("visaClearanceBadge");
   if (badge) badge.textContent = `Clearance: ${score}/${total} Quiz Verified (Max 10 Earth Yrs)`;
   renderMarsVisaCard();
@@ -9164,22 +9825,35 @@ function renderMarsVisaCard(){
 })();
 
 
-// ---------- Starfield ----------
+// ---------- Starfield (Exact 1:1 Aspect Ratio) ----------
 const cvs = $("stars"), ctx = cvs.getContext("2d");
 let stars = [];
-function resizeStars(){
-  const SDPR = Math.min(2, window.devicePixelRatio || 1);
-  cvs.width = Math.round(innerWidth * SDPR); cvs.height = Math.round(innerHeight * SDPR);
-  ctx.setTransform(SDPR, 0, 0, SDPR, 0, 0);
-  stars = Array.from({length: Math.round(innerWidth*innerHeight/9000)}, () => ({
-    x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: Math.random()*1.3+0.2, p: Math.random()*6.28, s: 0.5+Math.random()*1.5
-  }));
+let lastStarW = 0, lastStarH = 0;
+function resizeStars(force = false){
+  const rect = cvs.getBoundingClientRect();
+  const cssW = Math.round(rect.width || innerWidth);
+  const cssH = Math.round(rect.height || innerHeight);
+  if (!cssW || !cssH) return;
+  const dpr = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
+  const w = Math.round(cssW * dpr);
+  const h = Math.round(cssH * dpr);
+  if (cvs.width !== w || cvs.height !== h || force){
+    cvs.width = w;
+    cvs.height = h;
+    lastStarW = cssW;
+    lastStarH = cssH;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const densityDiv = isMobileDevice() ? 12000 : 9000;
+    stars = Array.from({length: Math.round((cssW * cssH) / densityDiv)}, () => ({
+      x: Math.random() * cssW, y: Math.random() * cssH, r: Math.random() * 1.3 + 0.2, p: Math.random() * 6.28, s: 0.5 + Math.random() * 1.5
+    }));
+  }
 }
-addEventListener("resize", resizeStars);
-resizeStars();
+addEventListener("resize", () => resizeStars(false));
+resizeStars(true);
 // Asteroids: rare, tiny, all travelling the same direction (top-right to bottom-left),
 // each with a glowing tail streaming behind it.
-const AST = { list: [], next: 9000, max: 3 };   // up to 3 asteroids on screen at once
+const AST = { list: [], next: 9000, max: isMobileDevice() ? 2 : 3 };
 const AST_DIR_K = 0.4;   // slope: moves 0.4 px down for every 1 px left
 // Distance from (x,y) along unit vector (dx,dy) until leaving the screen plus a margin.
 function exitDist(x, y, dx, dy, m){
@@ -9401,7 +10075,7 @@ function finishIntroImmediately(){
 })();
 
 function drawStars(now, dt = 0.016){
-  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  ctx.clearRect(0, 0, lastStarW || innerWidth, lastStarH || innerHeight);
 
   if (INTRO.active){
     const tau = INTRO.elapsed;
@@ -9540,8 +10214,8 @@ function drawStars(now, dt = 0.016){
 
 // ---------- Mars: WebGL planet, sharp at full screen density ----------
 const marsGL = $("mars");
-const gl = marsGL.getContext("webgl", {alpha: true, premultipliedAlpha: true, antialias: false});
-const MARS_DPR = Math.min(2, window.devicePixelRatio || 1);
+const gl = marsGL.getContext("webgl", {alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: "high-performance"});
+const MARS_DPR = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
 const MARS_VS = `attribute vec2 aPos; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
 const MARS_NOISE = `
 precision highp float;
@@ -9605,9 +10279,10 @@ vec3 surfaceColor(vec3 o){
   surf = mix(surf, vec3(0.95, 0.93, 0.90), cap);
   return surf;
 }
+uniform vec2 uBakeRes;
 void main(){
-  float s = gl_FragCoord.x / 2048.0;
-  float t = gl_FragCoord.y / 1024.0;
+  float s = gl_FragCoord.x / uBakeRes.x;
+  float t = gl_FragCoord.y / uBakeRes.y;
   float lon = (s - 0.5) * 6.2831853;
   float lat = t * 3.1415927 - 1.5707963;
   vec3 o = vec3(cos(lat) * sin(lon), sin(lat), cos(lat) * cos(lon));
@@ -9632,6 +10307,7 @@ void main(){
   vec2 q = (frag - uC) / uR;
   vec2 v = vec2(q.x, -q.y);
   float d2 = dot(v, v);
+  if (d2 > 6.0){ gl_FragColor = vec4(0.0); return; }
   float d = sqrt(d2);
   float inside = step(d2, 1.0);
   float outside = 1.0 - inside;
@@ -9719,7 +10395,7 @@ function initMars(){
   marsProg = linkProgram(MARS_VS, MARS_FS);
   if (!bakeProg || !marsProg){ marsGL.style.display = "none"; marsProg = null; return; }
 
-  const TW = 2048, TH = 1024;
+  const TW = isMobileDevice() ? 1024 : 2048, TH = isMobileDevice() ? 512 : 1024;
   marsTex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, marsTex);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TW, TH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -9732,6 +10408,8 @@ function initMars(){
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, marsTex, 0);
   gl.viewport(0, 0, TW, TH);
   gl.useProgram(bakeProg);
+  const uBakeResLoc = gl.getUniformLocation(bakeProg, "uBakeRes");
+  if (uBakeResLoc) gl.uniform2f(uBakeResLoc, TW, TH);
   gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   bindQuad(bakeProg);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -9748,15 +10426,26 @@ function initMars(){
   gl.clearColor(0, 0, 0, 0);
   resizeMars();
 }
-function resizeMars(){
+let lastMarsCssW = 0, lastMarsCssH = 0;
+function resizeMars(force = false){
   if (!marsProg) return;
-  const w = Math.round(innerWidth * MARS_DPR), h = Math.round(innerHeight * MARS_DPR);
-  if (marsGL.width !== w || marsGL.height !== h){
-    marsGL.width = w; marsGL.height = h;
+  // Measure exact rendered client bounding box so buffer aspect ratio is ALWAYS 100% identical to display box
+  const rect = marsGL.getBoundingClientRect();
+  const cssW = Math.round(rect.width || innerWidth);
+  const cssH = Math.round(rect.height || innerHeight);
+  if (!cssW || !cssH) return;
+  lastMarsCssW = cssW;
+  lastMarsCssH = cssH;
+  const dpr = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
+  const w = Math.round(cssW * dpr);
+  const h = Math.round(cssH * dpr);
+  if (marsGL.width !== w || marsGL.height !== h || force){
+    marsGL.width = w;
+    marsGL.height = h;
   }
-  gl.viewport(0, 0, w, h);
+  gl.viewport(0, 0, marsGL.width, marsGL.height);
 }
-addEventListener("resize", resizeMars);
+addEventListener("resize", () => resizeMars(false));
 
 const MARS = { cur: 0, time: 0 };
 // Resting start point: just right of the "A Sol" box, vertically centred on it.
@@ -9765,7 +10454,7 @@ function marsStartCanvas(W, H){
   const box = document.querySelector(".homeBox");
   if (!box) return null;
   const r = box.getBoundingClientRect();
-  const sx = W / innerWidth, sy = H / innerHeight;
+  const sx = W / (lastMarsCssW || innerWidth), sy = H / (lastMarsCssH || innerHeight);
   const R0 = Math.min(W, H) * 0.29;
   let y = ((r.top + r.bottom) / 2 + scrollY - 30) * sy;   // 30 css px higher than the box centre
   y = Math.max(y, R0 + 90 * sy);                           // never let the top of the planet hide under the nav bar
@@ -9773,6 +10462,13 @@ function marsStartCanvas(W, H){
 }
 function updateMars(dt){
   if (!marsProg) return;
+  // Ensure buffer size is ALWAYS kept synchronized with CSS element box so Mars never stretches
+  const rect = marsGL.getBoundingClientRect();
+  const curCssW = Math.round(rect.width || innerWidth);
+  const curCssH = Math.round(rect.height || innerHeight);
+  if (curCssW > 0 && curCssH > 0 && (curCssW !== lastMarsCssW || curCssH !== lastMarsCssH)){
+    resizeMars(true);
+  }
   MARS.time += dt;
   const max = document.documentElement.scrollHeight - innerHeight;
   const target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
@@ -9785,22 +10481,24 @@ function updateMars(dt){
 function evalIntroMarsSpline(tau, W, H, S){
   const minDim = Math.min(W, H);
   const TWO_PI = Math.PI * 2; // Full 360-degree revolution around Mars
+  const isPortrait = H > W;
+  const targetR = (isPortrait ? 0.245 : 0.290) * minDim;
 
   const K = [
-    // 1. Visible from the very start of the spaceflight right at the center of our heading (0.50*W, 0.48*H)
-    { t: 1.15, x: 0.50 * W, y: 0.48 * H, r: 0.012 * minDim, spin: -TWO_PI * 1.32, tilt: -0.32, sun: -TWO_PI * 1.26, moonOff: -TWO_PI * 1.32 },
+    // 1. Visible from the very start of the spaceflight right at the center of our heading
+    { t: 1.15, x: 0.50 * W, y: (isPortrait ? 0.40 : 0.48) * H, r: 0.012 * minDim, spin: -TWO_PI * 1.32, tilt: -0.32, sun: -TWO_PI * 1.26, moonOff: -TWO_PI * 1.32 },
     // 2. Grows smoothly in 3D perspective as the star warp streams radially outward from Mars's center
-    { t: 2.15, x: 0.50 * W, y: 0.48 * H, r: 0.042 * minDim, spin: -TWO_PI * 1.10, tilt: -0.25, sun: -TWO_PI * 1.05, moonOff: -TWO_PI * 1.10 },
-    { t: 3.15, x: 0.50 * W, y: 0.48 * H, r: 0.145 * minDim, spin: -TWO_PI * 0.86, tilt: -0.15, sun: -TWO_PI * 0.82, moonOff: -TWO_PI * 0.86 },
+    { t: 2.15, x: 0.50 * W, y: (isPortrait ? 0.40 : 0.48) * H, r: 0.042 * minDim, spin: -TWO_PI * 1.10, tilt: -0.25, sun: -TWO_PI * 1.05, moonOff: -TWO_PI * 1.10 },
+    { t: 3.15, x: 0.50 * W, y: (isPortrait ? 0.38 : 0.48) * H, r: 0.145 * minDim, spin: -TWO_PI * 0.86, tilt: -0.15, sun: -TWO_PI * 0.82, moonOff: -TWO_PI * 0.86 },
     // 3. Entering Mars orbit as the warp tunnel decelerates into the background starfield
-    { t: 4.20, x: 0.48 * W, y: 0.50 * H, r: 0.360 * minDim, spin: -TWO_PI * 0.64, tilt: +0.06, sun: -TWO_PI * 0.60, moonOff: -TWO_PI * 0.64 },
+    { t: 4.20, x: (isPortrait ? 0.49 : 0.48) * W, y: (isPortrait ? 0.35 : 0.50) * H, r: (isPortrait ? 0.320 : 0.360) * minDim, spin: -TWO_PI * 0.64, tilt: +0.06, sun: -TWO_PI * 0.60, moonOff: -TWO_PI * 0.64 },
     // 4. Low-orbit 360-degree tour around Mars (southern highlands -> northern polar cap)
-    { t: 5.30, x: 0.45 * W, y: 0.53 * H, r: 0.530 * minDim, spin: -TWO_PI * 0.42, tilt: +0.28, sun: -TWO_PI * 0.38, moonOff: -TWO_PI * 0.42 },
-    { t: 6.40, x: 0.53 * W, y: 0.45 * H, r: 0.560 * minDim, spin: -TWO_PI * 0.18, tilt: -0.22, sun: -TWO_PI * 0.16, moonOff: -TWO_PI * 0.18 },
+    { t: 5.30, x: (isPortrait ? 0.48 : 0.45) * W, y: (isPortrait ? 0.30 : 0.53) * H, r: (isPortrait ? 0.380 : 0.530) * minDim, spin: -TWO_PI * 0.42, tilt: +0.28, sun: -TWO_PI * 0.38, moonOff: -TWO_PI * 0.42 },
+    { t: 6.40, x: (isPortrait ? 0.52 : 0.53) * W, y: (isPortrait ? 0.26 : 0.45) * H, r: (isPortrait ? 0.390 : 0.560) * minDim, spin: -TWO_PI * 0.18, tilt: -0.22, sun: -TWO_PI * 0.16, moonOff: -TWO_PI * 0.18 },
     // 5. Pulling back from low orbit toward homepage dock
-    { t: 7.50, x: 0.63 * W, y: 0.47 * H, r: 0.400 * minDim, spin: -TWO_PI * 0.04, tilt: +0.07, sun: -TWO_PI * 0.04, moonOff: -TWO_PI * 0.04 },
+    { t: 7.50, x: (isPortrait ? 0.51 : 0.63) * W, y: (isPortrait ? 0.24 : 0.47) * H, r: (isPortrait ? 0.280 : 0.400) * minDim, spin: -TWO_PI * 0.04, tilt: +0.07, sun: -TWO_PI * 0.04, moonOff: -TWO_PI * 0.04 },
     // 6. Smoothly docked at exact homepage starting position S
-    { t: 8.80, x: S.x,      y: S.y,      r: 0.290 * minDim, spin:  0.00,          tilt:  0.00, sun:  0.00,          moonOff:  0.00 }
+    { t: 8.80, x: S.x,      y: S.y,      r: targetR, spin:  0.00,          tilt:  0.00, sun:  0.00,          moonOff:  0.00 }
   ];
 
   return {
@@ -9825,7 +10523,7 @@ function drawMars(p, t){
 
   const e = p * p * p * (p * (p * 6 - 15) + 10);
   const portrait = H > W;
-  const S_home = portrait ? { x: W * 0.5, y: H * 0.30 } : (marsStartCanvas(W, H) || { x: W * 0.72, y: H * 0.50 });
+  const S_home = portrait ? { x: W * 0.5, y: H * 0.235 } : (marsStartCanvas(W, H) || { x: W * 0.72, y: H * 0.50 });
 
   let R, cx, cy, spinOff = 0, tiltOff = 0, sunOff = 0, moonOff = 0, introAlpha = 1.0;
 
@@ -9847,9 +10545,9 @@ function drawMars(p, t){
     INTRO.marsY = cy / sy;
     INTRO.marsR = R / Math.min(sx, sy);
   } else {
-    R = Math.min(W, H) * (0.29 + 0.33 * e);
+    R = Math.min(W, H) * (portrait ? (0.245 + 0.22 * e) : (0.29 + 0.33 * e));
     if (portrait){
-      cx = W * 0.5; cy = H * (0.30 + 0.50 * e);
+      cx = W * 0.5; cy = H * (0.235 + 0.52 * e);
     } else {
       const E = { x: W * 0.30, y: H * 0.84 }; // final resting position (unchanged)
       const dx = E.x - S_home.x, dy = E.y - S_home.y, len = Math.hypot(dx, dy) || 1;
@@ -10001,7 +10699,9 @@ function frame(now){
     }
   }
 
-  updateClock();
+  if (!isMobileDevice() || currentPage === "clock" || currentPage === "home") {
+    updateClock();
+  }
   updateSeasonsTick(dt);
   updateMars(dt);
   drawStars(now, dt);
@@ -10058,7 +10758,7 @@ let startHomeTyping = () => {};
   startHomeTyping = () => {
     let tIdx = 0;
     const typeRichNext = (rIdx) => {
-      if (rIdx >= richItems.length) return;
+      if (rIdx >= richItems.length){ if (homeBox) homeBox.style.minHeight = ''; richItems.forEach(x => x.el.style.minHeight = ''); typeEls.forEach(x => x.style.minHeight = ''); return; }
       const it = richItems[rIdx];
       if (it.total === 0){ typeRichNext(rIdx + 1); return; }
       let i = 0;
@@ -10121,7 +10821,7 @@ let startHomeTyping = () => {};
     typed = true;
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length) return;
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -10179,7 +10879,7 @@ let startHomeTyping = () => {};
     typed = true;
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length) return;
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -10237,7 +10937,7 @@ let startHomeTyping = () => {};
     typed = true;
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length) return;
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -10295,7 +10995,7 @@ let startHomeTyping = () => {};
     typed = true;
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length) return;
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -10353,7 +11053,7 @@ let startHomeTyping = () => {};
     typed = true;
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length) return;
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
