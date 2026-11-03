@@ -3168,9 +3168,16 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
 
         <div class="visa-form-row">
           <label class="visa-field">
+            <span>Date of Birth (D.O.B)</span>
+            <input type="date" id="visaDob" value="2030-01-01">
+          </label>
+          <label class="visa-field">
             <span>Age (Earth Years)</span>
             <input type="number" id="visaAge" min="1" max="150" value="20" placeholder="e.g. 20">
           </label>
+        </div>
+
+        <div class="visa-form-row">
           <label class="visa-field">
             <span>Gender</span>
             <select id="visaGender">
@@ -3180,9 +3187,6 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
               <option value="Other">Other</option>
             </select>
           </label>
-        </div>
-
-        <div class="visa-form-row">
           <div class="visa-field">
             <span>Nationality (Auto Flag Icon)</span>
             <div class="visa-nationality-wrap">
@@ -3233,6 +3237,9 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="visa-form-row">
           <label class="visa-field">
             <span>Visa Type</span>
             <select id="visaEntryType">
@@ -3246,27 +3253,6 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
               <option value="Interplanetary Transit">Interplanetary Transit</option>
             </select>
           </label>
-        </div>
-
-        <div class="visa-form-row">
-          <label class="visa-field">
-            <span>Valid From (Issue Date)</span>
-            <input type="date" id="visaVisitDate" value="2125-01-01">
-          </label>
-          <label class="visa-field">
-            <span>Validity Duration (Max 10 Yrs)</span>
-            <select id="visaDuration">
-              <option value="1">1 Earth Year (~355 Sols)</option>
-              <option value="2">2 Earth Years (~711 Sols)</option>
-              <option value="3">3 Earth Years (~1,066 Sols)</option>
-              <option value="5">5 Earth Years (~1,777 Sols)</option>
-              <option value="7">7 Earth Years (~2,488 Sols)</option>
-              <option value="10" selected>10 Earth Years (Max &middot; ~3,555 Sols)</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="visa-form-row">
           <label class="visa-field">
             <span>Port / Origin</span>
             <select id="visaPort">
@@ -3281,10 +3267,29 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
               <option value="Jezero Spaceport">Jezero Spaceport</option>
             </select>
           </label>
+        </div>
+
+        <div class="visa-form-row">
           <label class="visa-field">
-            <span>Valid Until (Auto-Computed)</span>
-            <input type="text" id="visaValidUntilPreview" value="31 DEC 2134 (Max 10 Yrs)" readonly style="opacity:0.9;color:#ffe3a8;font-weight:700;cursor:default;">
+            <span>Valid From (Issue Date)</span>
+            <input type="date" id="visaVisitDate" value="2050-01-01">
           </label>
+          <label class="visa-field">
+            <span>Validity Duration (Max 10 Yrs)</span>
+            <select id="visaDuration">
+              <option value="1">1 Earth Year (~355 Sols)</option>
+              <option value="2">2 Earth Years (~711 Sols)</option>
+              <option value="3">3 Earth Years (~1,066 Sols)</option>
+              <option value="5">5 Earth Years (~1,777 Sols)</option>
+              <option value="7">7 Earth Years (~2,488 Sols)</option>
+              <option value="10" selected>10 Earth Years (Max &middot; ~3,555 Sols)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="visa-field" style="margin-bottom:12px;">
+          <span>Valid Until (Auto-Computed)</span>
+          <input type="text" id="visaValidUntilPreview" value="31 DEC 2059 (Max 10 Yrs)" readonly style="opacity:0.9;color:#ffe3a8;font-weight:700;cursor:default;">
         </div>
 
         <div class="visa-field" style="margin-bottom:0;">
@@ -8311,7 +8316,7 @@ const VISA_STATE = {
   bgImg: null,
   bgLoaded: false,
   userPhotoImg: null,
-  serial: "MRS-2125-8492-X"
+  serial: "MRS-2050-8492-X"
 };
 
 const NATIONALITY_MAP = {
@@ -8853,12 +8858,17 @@ function renderMarsVisaCard(){
   const ageVal = isNaN(rawAge) ? 20 : Math.min(150, Math.max(1, rawAge));
   const genderVal = ($("visaGender") && $("visaGender").value) ? $("visaGender").value : "Male";
 
+  const dobStr = ($("visaDob") && $("visaDob").value) ? $("visaDob").value : "2030-01-01";
+  const dobParts = dobStr.split("-").map(Number);
+  const dobDate = new Date(Date.UTC(dobParts[0] || 2030, (dobParts[1] || 1) - 1, dobParts[2] || 1));
+  const formattedDob = formatVisaDate(dobDate);
+
   const natCode = ($("visaNationality") && $("visaNationality").value) ? $("visaNationality").value : "IN";
   const natInfo = NATIONALITY_MAP[natCode] || NATIONALITY_MAP.IN;
   updateFormFlagPreview(natCode);
 
   const entryType = ($("visaEntryType") && $("visaEntryType").value) ? $("visaEntryType").value : "Permanent Resident";
-  const visitStr  = ($("visaVisitDate") && $("visaVisitDate").value) ? $("visaVisitDate").value : "2125-01-01";
+  const visitStr  = ($("visaVisitDate") && $("visaVisitDate").value) ? $("visaVisitDate").value : "2050-01-01";
   const portVal   = ($("visaPort") && $("visaPort").value) ? $("visaPort").value : "Mars";
 
   // Strictly enforce maximum 10 Earth years validity period
@@ -8866,11 +8876,11 @@ function renderMarsVisaCard(){
   const validYears = Math.min(10, Math.max(1, isNaN(rawDurYears) ? 10 : rawDurYears));
 
   const parts = visitStr.split("-").map(Number);
-  const sYear = parts[0] || 2125;
+  const sYear = parts[0] || 2050;
   const sMonth = (parts[1] || 1) - 1;
   const sDay = parts[2] || 1;
   const startDate = new Date(Date.UTC(sYear, sMonth, sDay));
-  // Inclusive N-Earth-year validity window (e.g. 01 JAN 2125 + 10 Earth yrs -> 31 DEC 2134)
+  // Inclusive N-Earth-year validity window (e.g. 01 JAN 2050 + 10 Earth yrs -> 31 DEC 2059)
   const endDate = new Date(Date.UTC(sYear + validYears, sMonth, sDay) - 86400000);
 
   const validFromStr  = formatVisaDate(startDate);
@@ -8972,6 +8982,18 @@ function renderMarsVisaCard(){
   const flagY = 449;
   drawNationalityFlag(vctx, natCode, flagX, flagY, 24, 15);
 
+  // Date of Birth (D.O.B) Label and Value (Row 4 in Left Column)
+  vctx.save();
+  vctx.font = `700 8.5px "Segoe UI", Calibri, Arial, sans-serif`;
+  vctx.fillStyle = "#cfa275";
+  vctx.shadowColor = "rgba(0, 0, 0, 0.75)";
+  vctx.shadowBlur = 2;
+  vctx.shadowOffsetY = 1;
+  drawTrackedText(vctx, "DATE OF BIRTH (D.O.B)", 227, 477, 0.8);
+  vctx.restore();
+
+  drawTrackedText(vctx, formattedDob, 227, 492, 0.4);
+
   // 5. Render Right Column Values: VISA TYPE, VALID FROM, VALID UNTIL, PORT / ORIGIN
   vctx.font = `600 15.5px "Segoe UI", Calibri, Arial, sans-serif`;
   vctx.fillStyle = "#e6cbb1";
@@ -9011,7 +9033,7 @@ function renderMarsVisaCard(){
   bg.src = VISA_BG_DATA_URI;
 
   const inputIds = [
-    "visaFirstName", "visaLastName", "visaAge", "visaGender",
+    "visaFirstName", "visaLastName", "visaDob", "visaAge", "visaGender",
     "visaNationality", "visaEntryType", "visaDuration",
     "visaVisitDate", "visaPort"
   ];
@@ -9021,6 +9043,62 @@ function renderMarsVisaCard(){
     el.addEventListener("input", renderMarsVisaCard);
     el.addEventListener("change", renderMarsVisaCard);
   });
+
+  // Intelligent D.O.B, Age, and Visit Date Synchronization
+  const dobEl = $("visaDob");
+  const ageEl = $("visaAge");
+  const visitEl = $("visaVisitDate");
+
+  const syncAgeFromDob = () => {
+    if (!dobEl || !visitEl || !ageEl) return;
+    const dVal = dobEl.value;
+    const vVal = visitEl.value || "2050-01-01";
+    if (!dVal) return;
+    const dp = dVal.split("-").map(Number);
+    const vp = vVal.split("-").map(Number);
+    if (dp.length === 3 && vp.length === 3){
+      let diff = vp[0] - dp[0];
+      if (vp[1] < dp[1] || (vp[1] === dp[1] && vp[2] < dp[2])){
+        diff -= 1;
+      }
+      if (diff >= 0){
+        ageEl.value = Math.max(1, diff);
+      }
+    }
+    renderMarsVisaCard();
+  };
+
+  const syncDobFromAge = () => {
+    if (!dobEl || !visitEl || !ageEl) return;
+    const age = parseInt(ageEl.value, 10);
+    const vVal = visitEl.value || "2050-01-01";
+    if (isNaN(age) || age < 1) return;
+    const vp = vVal.split("-").map(Number);
+    const vYear = vp[0] || 2050;
+    const curDob = dobEl.value || "";
+    let m = "01", d = "01";
+    if (curDob){
+      const parts = curDob.split("-");
+      if (parts.length === 3){ m = parts[1]; d = parts[2]; }
+    }
+    const dobYear = vYear - age;
+    if (dobYear > 1900){
+      dobEl.value = `${dobYear}-${m}-${d}`;
+    }
+    renderMarsVisaCard();
+  };
+
+  if (dobEl){
+    dobEl.addEventListener("input", syncAgeFromDob);
+    dobEl.addEventListener("change", syncAgeFromDob);
+  }
+  if (ageEl){
+    ageEl.addEventListener("input", syncDobFromAge);
+    ageEl.addEventListener("change", syncDobFromAge);
+  }
+  if (visitEl){
+    visitEl.addEventListener("change", syncAgeFromDob);
+  }
 
   document.querySelectorAll(".visa-right-cb").forEach(cb => {
     cb.addEventListener("change", renderMarsVisaCard);
