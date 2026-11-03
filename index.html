@@ -57,6 +57,9 @@ button,.btn{font:inherit;color:var(--ink);background:var(--card2);border:1px sol
   cursor:pointer;text-decoration:none;display:inline-block;transition:transform .15s,background .2s,box-shadow .25s}
 button:hover,.btn:hover{background:#5a3527;transform:translateY(-1px)}
 button:active{transform:scale(.97)}
+button.primary,.btn.primary{background:linear-gradient(180deg,var(--rust2),var(--rust));border-color:var(--rust);box-shadow:0 8px 20px rgba(181,83,46,.35)}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default;transform:none}
 input[type=range]{accent-color:var(--rust);width:100%;margin:8px 0 4px}
 input[type=range]:disabled{opacity:.45;cursor:not-allowed}
 select,input[type=number]{font:inherit;color:var(--ink);background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
@@ -114,6 +117,11 @@ svg.dial:active{cursor:grabbing}
 .main-dial-group.shrunk .dial-digi-text {
   transform: scale(1.12);
 }
+.leap-dial-group {
+  opacity: 0;
+  transform-origin: 0px 0px;
+  pointer-events: none;
+  transition: none;
 }
 .leap-track-layer {
   opacity: 0;
@@ -149,6 +157,109 @@ svg.dial:active{cursor:grabbing}
   opacity: 1;
   transform: scale(1);
   transition: transform .62s cubic-bezier(.16, 1, .3, 1), opacity .44s ease-out;
+}
+.leap-dial-group.active .leap-crown-layer {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  transition: transform .68s cubic-bezier(.16, 1, .3, 1) .02s, opacity .48s ease-out .02s;
+}
+.leap-dial-group.active .leap-sweep-layer {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform .56s cubic-bezier(.16, 1, .3, 1) .04s, opacity .42s ease-out .03s;
+}
+.leap-dial-group.active .leap-wave-ring {
+  animation: leapWaveActivate .68s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+.leap-dial-group.inactivating {
+  opacity: 1;
+}
+.leap-dial-group.inactivating .leap-track-layer {
+  opacity: 0;
+  transform: scale(1.045);
+  transition: transform .62s cubic-bezier(.22, 1, .36, 1), opacity .54s cubic-bezier(.22, 1, .36, 1);
+}
+.leap-dial-group.inactivating .leap-crown-layer {
+  opacity: 0;
+  transform: scale(1.06) rotate(9deg);
+  transition: transform .64s cubic-bezier(.22, 1, .36, 1), opacity .52s cubic-bezier(.22, 1, .36, 1);
+}
+.leap-dial-group.inactivating .leap-sweep-layer {
+  opacity: 0;
+  transform: scale(1.08);
+  transition: transform .68s cubic-bezier(.16, 1, .3, 1), opacity .58s cubic-bezier(.22, 1, .36, 1);
+}
+.leap-dial-group.inactivating .leap-wave-ring {
+  stroke: #e0b25a;
+  animation: leapWaveInactivate .66s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+@keyframes leapWaveActivate {
+  0% { opacity: 0.85; transform: scale(0.77); stroke-width: 4.2px; }
+  100% { opacity: 0; transform: scale(1.045); stroke-width: 0.8px; }
+}
+@keyframes leapWaveInactivate {
+  0% { opacity: 0.9; transform: scale(1.01); stroke-width: 3.6px; }
+  100% { opacity: 0; transform: scale(1.09); stroke-width: 0.6px; }
+}
+#leapBadge .badge, #solLeapBadge .badge {
+  animation: badgeSmoothIn .38s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes badgeSmoothIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ringLegend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.ringPill{background:rgba(47,27,19,.75);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35;text-align:center}
+.ringPill strong{display:block;font-size:13px;margin-bottom:2px}
+.divBox{background:rgba(47,27,19,.65);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:13.5px;line-height:1.6}
+.divBox strong{color:var(--sand)}
+.yearNum{font-family:Cambria,Georgia,serif;font-size:34px;color:var(--sand);margin-right:10px}
+.yearBox{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+.legend{font-size:13px;color:var(--muted);margin-top:10px}
+.mcard{text-align:left;padding:12px;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.mcard strong{font-family:Cambria,Georgia,serif;font-size:16px}
+.mcard.lm {
+  background: linear-gradient(180deg, #f0c776, #c58d36) !important;
+  color: #2a1610 !important;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(224,178,90,.35), 0 10px 24px rgba(224,178,90,.12);
+}
+.mcard.lm .muted { color: rgba(42,22,16,.75) !important; }
+.mcard:hover{transform:translateY(-3px)}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px auto 0;max-width:640px}
+.wd{font-size:12px;color:var(--muted);text-align:center;padding:2px 0}
+.sol{aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:0;position:relative;background:var(--cell);
+  border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--ink);transition:transform .15s,background .2s}
+.sol.blank{background:transparent;border:none;cursor:default;transform:none!important}
+.sol:hover{transform:scale(1.08);background:#43261b}
+.sol.leap::after{content:"";position:absolute;right:5px;top:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.sol.extra{border-color:var(--gold);animation:glow 2.4s ease-in-out infinite}
+.sol.both{border-color:var(--ember);background:linear-gradient(145deg,rgba(255,120,56,.28),rgba(224,178,90,.22));box-shadow:0 0 12px rgba(255,120,56,.45)}
+.sol.both::after{background:var(--ember);box-shadow:0 0 8px var(--ember),0 0 0 2px var(--gold)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(224,178,90,.0)}50%{box-shadow:0 0 14px 2px rgba(224,178,90,.45)}}
+.sol.sel{background:var(--rust);border-color:var(--rust);transform:scale(1.06)}
+.sol.pop{animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.cal-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(233,216,199,.14)}
+.cal-nav-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sol-clock-box{background:rgba(28,14,9,.45);border:1px solid rgba(224,178,90,.28);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:100%}
+.sol-info-panel{display:flex;flex-direction:column;justify-content:space-between;gap:14px;height:100%}
+.sol-header-box{background:rgba(28,14,9,.38);border:1px solid rgba(233,216,199,.14);border-radius:14px;padding:14px 16px}
+.sol-call-box{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(47,27,19,.65);border-left:3px solid var(--rust2);font-size:13.5px;line-height:1.45;color:var(--ink)}
+.sol-call-box.gold{border-left-color:var(--gold);background:rgba(224,178,90,.11)}
+.sol-call-box.ember{border-left-color:var(--ember);background:rgba(255,120,56,.14)}
+.sol-metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sol-metric-card{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
+.sol-metric-card .m-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:3px}
+.sol-metric-card .m-val{font-family:Cambria,Georgia,serif;font-size:21px;font-weight:bold;color:var(--sand);line-height:1.15}
+.sol-metric-card .m-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.sol-telem-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:12px 14px;display:grid;gap:12px}
+.telem-row-head{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;margin-bottom:5px}
+.telem-bar{height:7px;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.telem-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--rust),var(--gold));transition:width .4s ease}
+.telem-sub{font-size:12px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.sol-week-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
+.sol-week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
 .sol-sun-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
 .sun-svg{width:100%;height:auto;display:block;margin-top:6px;border-radius:9px;background:linear-gradient(180deg,rgba(217,115,74,.14) 0%,rgba(224,178,90,.07) 46%,rgba(14,6,4,.65) 46%,rgba(10,4,3,.82) 100%);border:1px solid rgba(233,216,199,.1);cursor:ew-resize;touch-action:none;user-select:none}
 .wk-btn{padding:6px 2px;border-radius:9px;background:var(--cell);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
@@ -184,177 +295,83 @@ svg.dial:active{cursor:grabbing}
 .bars{display:flex;align-items:flex-end;gap:10px;height:200px;margin-top:12px;padding-top:12px}
 .bar{flex:1;background:linear-gradient(180deg,var(--rust2),var(--rust));border-radius:10px 10px 4px 4px;position:relative;
   transition:height .9s cubic-bezier(.2,.7,.2,1);min-height:4px}
+.bar span{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted)}
+.bar b{position:absolute;top:-22px;left:0;right:0;text-align:center;font-size:13px;color:var(--sand)}
+/* Upgraded Weekday Drift Section */
+.drift-console-grid {
+  display: grid;
+  grid-template-columns: minmax(340px, 390px) 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+@media (max-width: 860px) {
+  .drift-console-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.drift-wheel-box {
+  background: rgba(28, 14, 9, 0.45);
+  border: 1px solid rgba(224, 178, 90, 0.28);
+  border-radius: 16px;
+  padding: 14px;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.22s;
-  white-space: nowrap;
-}
-.fs-lock-toast.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 0);
-}
-
-/* Fullscreen Enforcement Curtain when Quiz is Active */
-.quiz-fs-guard {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: radial-gradient(circle at 50% 45%, rgba(42, 22, 16, 0.94), rgba(14, 6, 4, 0.98));
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: none;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  opacity: 0;
-  pointer-events: none;
+  box-sizing: border-box;
 }
-.quiz-fs-guard.active {
-  display: flex;
-  opacity: 1;
+.drift-wheel-svg {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+.drift-node {
+  cursor: pointer;
   pointer-events: all;
 }
-                  <div class="conv-presets" style="margin-bottom: 12px;">
-                    <button type="button" class="conv-preset-btn" data-archons="1">1 Archon (59m 10s)</button>
-                    <button type="button" class="conv-preset-btn" data-archons="6">6 Archons (Sunrise)</button>
-                    <button type="button" class="conv-preset-btn" data-archons="12">12 Archons (Noon)</button>
-                    <button type="button" class="conv-preset-btn" data-archons="24">24 Archons</button>
-                    <button type="button" class="conv-preset-btn" data-archons="25">25 Archons (1 Sol)</button>
-                  </div>
-                  <div id="archonOut" class="conv-readout detail"></div>
-                </div>
-
-                <!-- Tier 3: Chrone -> Minute -->
-                <div id="tierChroneMars" class="conv-tier-pane" hidden>
-                  <div class="conv-inputs-grid" style="grid-template-columns: 1fr; margin-bottom: 12px;">
-                    <label class="conv-field">
-                      <span>Martian Chrones (1 Chrone = 355 s)</span>
-                      <input id="chroneIn" type="number" min="0" step="any" value="1">
-                    </label>
-                  </div>
-                  <div class="conv-presets" style="margin-bottom: 12px;">
-                    <button type="button" class="conv-preset-btn" data-chrones="1">1 Chrone (5m 55s)</button>
-                    <button type="button" class="conv-preset-btn" data-chrones="5">5 Chrones</button>
-                    <button type="button" class="conv-preset-btn" data-chrones="10">10 Chrones (1 Archon)</button>
-                    <button type="button" class="conv-preset-btn" data-chrones="60">60 Chrones</button>
-                    <button type="button" class="conv-preset-btn" data-chrones="250">250 Chrones (1 Sol)</button>
-                  </div>
-                  <div id="chroneOut" class="conv-readout detail"></div>
-                </div>
-
-                <!-- Tier 5: Second -> Second (1:1 SI) -->
-                <div id="tierSecMars" class="conv-tier-pane" hidden>
-                  <div class="conv-inputs-grid" style="grid-template-columns: 1fr; margin-bottom: 12px;">
-                    <label class="conv-field">
-                      <span>SI Seconds (Defined by Cesium-133 vibration)</span>
-                      <input id="secIn" type="number" min="0" step="any" value="355">
-                    </label>
-  const solSecColor = SOL_CLK.inLeapChrone ? "#FF7838" : "#e0b25a";
-  solDialRefs.digiText.setAttribute("fill", solSecColor);
-  solDialRefs.digiText.setAttribute("filter", SOL_CLK.inLeapChrone ? `url(#${solDialRefs.prefix}EmberGlow)` : "none");
-
-  const scrub = $("solScrub");
-  if (scrub.max === "" || Number(scrub.max) !== L - 1){ scrub.max = L - 1; }
-  scrub.disabled = false;
-
-  if (SOL_CLK.inLeapChrone){
-
-    const leapSecFloor = Math.min(CHRONE - 1, Math.floor(SOL_CLK.leapSecs));
-    const displayLeapSec = leapSecFloor + 1;
-    const leapSecTxt = String(displayLeapSec).padStart(3, "0");
-    const totalWholeSecs = SOL_BASE + leapSecFloor;
-
-    setText(solDigBig, `Leap Chrone · ${leapSecTxt} s`);
-    setText(solDigSub, `Main clock paused at 25:10:355 · Measuring Leap Chrone (${displayLeapSec}/355 s)`);
-    setText(solDigSec, `${fmt(totalWholeSecs)} of ${fmt(L)} s into Sol ${n}`);
-    setText($("solScrubLabel"), `Leap Chrone : ${leapSecTxt} / 355 s`);
-    setText($("solDialHint"), "Leap Chrone in progress on this Chrone sol — drag anywhere on the dial or scrubber to position the 355 extra seconds.");
-
-    if (!SOL_CLK.scrubbing) scrub.value = Math.min(totalWholeSecs, L - 1);
-  } else {
-
-    const dialArchon = p.a === 0 ? 25 : p.a;
-    const dialChrone = p.c === 0 ? 10 : p.c;
-    const dialSecond = p.s === 0 ? 355 : p.s;
-    const secTxt = String(dialSecond).padStart(3, "0");
-
-    setText(solDigBig, `Archon ${dialArchon} · Chrone ${dialChrone} · ${secTxt} s`);
-    setText(solDigSub, `Archon ${dialArchon}/25 · Chrone ${dialChrone}/10 · Second ${dialSecond}/355`);
-    setText(solDigSec, `${fmt(mainWholeSecs)} of ${fmt(L)} s into this sol`);
-    setText($("solScrubLabel"), `Archon ${dialArchon} : Chrone ${dialChrone} : ${secTxt} s`);
-    setText($("solDialHint"), "Drag anywhere on the dial to scrub through this sol.");
-
-    if (!SOL_CLK.scrubbing) scrub.value = Math.min(mainWholeSecs, L - 1);
-    const marsMonths = n / 28;
-    const marsWeeks = n / 7;
-    $("eOutRev").innerHTML = `
-      <div class="conv-hero-row">
-        <div>
-          <div class="small muted">Equivalent Martian Duration</div>
-          <div class="conv-hero-val">${fmt(Number(days.toFixed(2)))} Earth days = ${fmt(Number(n.toFixed(2)))} sols</div>
-        </div>
-      </div>
-      <div class="conv-stat-grid">
-        <div class="conv-stat-pill">
-          <small>Full Sols</small>
-          <strong>${fmt(wholeSols)} sols</strong>
-        </div>
-        <div class="conv-stat-pill">
-          <small>Mars Months &amp; Weeks</small>
-          <strong>${marsMonths.toFixed(2)} mo (28s) · ${marsWeeks.toFixed(1)} wks</strong>
-        </div>
-        <div class="conv-stat-pill">
-          <small>Total SI Seconds</small>
-          <strong>${fmt(totalSISeconds)} s</strong>
-        </div>
-      </div>`;
-  }
+.drift-node-body {
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
 }
-
-function renderClockConvert(){
-  const aEl = $("clkA"), cEl = $("clkC"), sEl = $("clkS"), out = $("clkOut");
-  if (!aEl || !cEl || !sEl || !out) return;
-  let a = Math.min(24, Math.max(0, Math.floor(Number(aEl.value) || 0)));
-  let c = Math.min(9, Math.max(0, Math.floor(Number(cEl.value) || 0)));
-  let s = Math.min(355, Math.max(0, Math.floor(Number(sEl.value) || 0)));
-
-  const elapsedSecs = a * ARCHON + c * CHRONE + s;
-  const pct = Math.min(100, (elapsedSecs / SOL_BASE) * 100);
-        if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    observer.observe(target);
-  } else {
-    startTyping();
-  }
-})();
-
-// ---------- Start ----------
-renderCalendar(); buildSeasWheelSvg(); updateSeasonInfoCard(); renderSeasonsFrame(); renderDrift(); renderConvertAll(); newQuiz();
-initMars();
-updateMars(0);
-const startPage = (location.hash || "#home").slice(1);
-show(PAGES.includes(startPage) ? startPage : "home");
-if (PAGES.includes(startPage) && startPage !== "home"){
-  finishIntroImmediately();
-  document.getElementById(startPage).scrollIntoView();
-} else if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-  finishIntroImmediately();
-} else {
-  window.scrollTo(0, 0);
+.drift-node:hover .drift-node-body,
+.drift-node.is-hover .drift-node-body {
+  transform: scale(1.22);
 }
-updateActive();
-last = performance.now();
-requestAnimationFrame(frame);
-})();
-</script>
-</body>
-</html>
+.drift-node-bg {
+  transition: fill .2s ease, stroke .2s ease, stroke-width .2s ease, filter .2s ease;
+}
+.drift-node:hover .drift-node-bg,
+.drift-node.is-hover .drift-node-bg {
+  stroke: #ffe3a8 !important;
+  stroke-width: 2.4px !important;
+  fill: #542b1a !important;
+  filter: drop-shadow(0 0 8px rgba(224, 178, 90, 0.65));
+}
+.drift-node.is-active:hover .drift-node-bg,
+.drift-node.is-active.is-hover .drift-node-bg {
+  stroke: #ffffff !important;
+  stroke-width: 2.8px !important;
+  fill: #FF7838 !important;
+  filter: drop-shadow(0 0 10px rgba(255, 120, 56, 0.85));
+}
+.drift-node-text {
+  transition: fill .2s ease, font-size .2s ease;
+  user-select: none;
+}
+.drift-node:hover .drift-node-text,
+.drift-node.is-hover .drift-node-text {
+  fill: #ffffff !important;
+  font-size: 13px !important;
+}
+.drift-node-glow {
+  transition: opacity .25s ease, stroke .25s ease;
+}
+.drift-node:hover .drift-node-glow,
+.drift-node.is-hover .drift-node-glow {
+  opacity: 0.85 !important;
+}
+.drift-ctrl-pa
