@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#2A1610">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2242,6 +2243,196 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
 }
 
 
+
+
+/* ===== Terraforming Approaches Embedded Video Players ===== */
+/* Ensure no transform, animation fill-mode, or backdrop-filter on ancestors traps or breaks native iframe fullscreen */
+#terraform,
+#terraform.page.active {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#terraform .card {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: linear-gradient(165deg, rgba(58, 32, 22, 0.90), rgba(28, 14, 9, 0.94));
+}
+.tf-video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+@media (max-width: 860px) {
+  .tf-video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.tf-video-card {
+  background: rgba(28, 14, 9, 0.65);
+  border: 1px solid rgba(224, 178, 90, 0.30);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 12px 28px rgba(0, 0, 0, 0.32);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  transform: none !important;
+}
+.tf-video-card:hover {
+  border-color: rgba(224, 178, 90, 0.68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 18px rgba(224, 178, 90, 0.16);
+  transform: none !important;
+}
+.tf-video-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.tf-video-title {
+  margin: 0;
+  font-family: Cambria, Georgia, serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--sand);
+  line-height: 1.25;
+}
+.tf-video-frame-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+  border: 1px solid rgba(233, 216, 199, 0.18);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+}
+.tf-video-frame-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.tf-video-frame-wrap iframe:fullscreen,
+.tf-video-frame-wrap iframe:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  border: 0 !important;
+}
+/* Crisp 1280x720 HD Thumbnail Cover (prevents blurry 0x0 hidden-tab thumbnail initialization) */
+.tf-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.tf-video-poster img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: none !important;
+  opacity: 1 !important;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tf-video-poster:hover img {
+  transform: scale(1.02);
+}
+.tf-yt-play-btn {
+  position: relative;
+  z-index: 6;
+  width: 68px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  transition: transform 0.18s ease;
+}
+.tf-video-poster:hover .tf-yt-play-btn {
+  transform: scale(1.08);
+}
+.tf-yt-play-btn svg .yt-bg {
+  fill: rgba(33, 33, 33, 0.82);
+  transition: fill 0.18s ease;
+}
+.tf-video-poster:hover .tf-yt-play-btn svg .yt-bg {
+  fill: #ff0000;
+}
+.tf-video-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.tf-video-ext-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #ffe3a8;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(224, 178, 90, 0.12);
+  border: 1px solid rgba(224, 178, 90, 0.38);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.tf-video-ext-link:hover {
+  background: rgba(224, 178, 90, 0.24);
+  border-color: var(--gold);
+  color: #ffffff;
+}
+
+/* ===== Terraforming Approaches Concluding Commentary ===== */
+#tfCommentaryCard {
+  background: rgba(28, 14, 9, 0.65);
+  border: 1px solid rgba(224, 178, 90, 0.30);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 12px 28px rgba(0, 0, 0, 0.32);
+}
+.tf-paper-link {
+  color: #ffe3a8;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(224, 178, 90, 0.55);
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.tf-paper-link:hover {
+  color: #ffffff;
+  text-decoration-color: var(--gold);
+}
+
 /* =====================================================================
    PHONE LAYER (Mobile Device Configuration & Aesthetic Responsive UI)
    Automatically activated on mobile phones via media queries and
@@ -2263,6 +2454,15 @@ nav.top .l-short{display:none}
 
   html{overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body{font-size:15.5px;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+
+
+  /* ---------- Terraforming Approaches Videos ---------- */
+  .tf-video-grid{grid-template-columns:minmax(0,1fr) !important;gap:14px}
+  .tf-video-card{padding:13px;border-radius:15px;gap:10px}
+  .tf-video-card:hover{transform:none}
+  .tf-video-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .tf-video-title{font-size:16.5px}
+  .tf-video-foot{font-size:11.5px}
 
   /* ---------- Sleek Frosted Bottom Dock ---------- */
   nav.top,
@@ -2772,6 +2972,7 @@ nav.top .l-short{display:none}
   <a data-p="seasons" href="#seasons"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg><span class="l-full">Seasons</span><span class="l-short">Seasons</span></a>
   <a data-p="drift" href="#drift"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3L19.5 8.5"/><path d="M19.5 4v4.5H15"/><path d="M19.5 12a7.5 7.5 0 0 1-12.8 5.3L4.5 15.5"/><path d="M4.5 20v-4.5H9"/></svg><span class="l-full">Weekday drift</span><span class="l-short">Drift</span></a>
   <a data-p="convert" href="#convert"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg><span class="l-full">Converter</span><span class="l-short">Convert</span></a>
+  <a data-p="terraform" href="#terraform"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3c-2.8 3-4.5 6-4.5 9s1.7 6 4.5 9"/></svg><span class="l-full">Terraforming</span><span class="l-short">Terra</span></a>
   <a data-p="quiz" href="#quiz"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5"/><path d="M12 17.2h.01"/></svg><span class="l-full">Quiz</span><span class="l-short">Quiz</span></a>
   <a id="navVisaLink" class="visa-hidden" data-p="visa" href="#visa" style="color:#ffe3a8;border:1px solid rgba(224,178,90,0.55);background:rgba(224,178,90,0.14);"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.2 5.1 5.3.5-4 3.6 1.2 5.3L12 15.5l-4.7 2.5 1.2-5.3-4-3.6 5.3-.5z"/></svg><span class="l-full">Mars Visa &#10022;</span><span class="l-short">Visa</span></a>
 </nav>
@@ -3631,6 +3832,111 @@ nav.top .l-short{display:none}
     </div>
   </section>
 
+  <!-- TERRAFORMING APPROACHES -->
+  <section class="page" id="terraform">
+    <h2>Terraforming Approaches</h2>
+    <div id="tfCard" class="card clockBox clockCardText">
+      <h3 class="clockTitle" data-tf-rich style="margin:0 0 16px;">What's Terraforming... What It Means for Mars</h3>
+      <p data-tf-rich style="margin:0 0 16px;">Terraforming is the theoretical process of deliberately modifying a planet's atmosphere, temperature, and ecology to make its environment hospitable to Earth life and open human habitation.</p>
+      <p data-tf-rich style="margin:0 0 16px;">For Mars, this means transforming a frozen, low-pressure desert (<span class="hl">6.36 mbar</span> and <span class="hl">&minus;59&deg;C</span>) into a living world: shielding it from solar wind erosion, warming its climate to release vast subsurface water ice reserves, and thickening its atmosphere past the <span class="hl">Armstrong limit (61.8 mbar)</span> so liquid water can flow stably across its surface.</p>
+      <p data-tf-rich style="margin:0;color:#ffe3a8;font-weight:600;">Watch the following two videos which take two different approaches on how to terraform Mars...</p>
+    </div>
+
+    <div class="card mt" style="padding:18px;">
+      <div class="tf-video-grid">
+        <!-- Video 1 (Left): Koranos -->
+        <div class="tf-video-card">
+          <div class="tf-video-head">
+            <h3 class="tf-video-title">Could We Really Terraform Mars?</h3>
+            <span class="badge gold" style="margin:0;flex-shrink:0;">Koranos</span>
+          </div>
+          <div class="tf-video-frame-wrap" id="tfWrapKoranos">
+            <button type="button" class="tf-video-poster" onclick="playTfVideo('tfWrapKoranos', 'tfIframeKoranos', 'Bxs5BX9_iaU')" aria-label="Play video: Could We Really Terraform Mars?">
+              <img
+                src="https://i.ytimg.com/vi/Bxs5BX9_iaU/maxresdefault.jpg"
+                onerror="if(this.src.indexOf('maxresdefault.jpg')!==-1){this.src='https://i.ytimg.com/vi/Bxs5BX9_iaU/sddefault.jpg';}else if(this.src.indexOf('sddefault.jpg')!==-1){this.src='https://i.ytimg.com/vi/Bxs5BX9_iaU/hqdefault.jpg';}"
+                alt="Could We Really Terraform Mars? – Koranos HD Thumbnail">
+              <span class="tf-yt-play-btn" aria-hidden="true">
+                <svg height="100%" version="1.1" viewBox="0 0 68 48" width="100%">
+                  <path class="yt-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path>
+                  <path d="M 45,24 27,14 27,34" fill="#fff"></path>
+                </svg>
+              </span>
+            </button>
+            <iframe
+              id="tfIframeKoranos"
+              class="embedly-embed"
+              width="1280"
+              height="720"
+              scrolling="no"
+              frameborder="0"
+              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FBxs5BX9_iaU%3Ffeature%3Doembed%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBxs5BX9_iaU&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FBxs5BX9_iaU%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
+              title="Could We Really Terraform Mars? (Koranos)"
+              allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen="true"
+              webkitallowfullscreen="true"
+              mozallowfullscreen="true"
+              referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+          </div>
+          <div class="tf-video-foot">
+            <span>Koranos &middot; 10:35</span>
+            <a class="tf-video-ext-link" href="https://youtu.be/Bxs5BX9_iaU?si=g-ts2RsaCqsKGjY0" target="_blank" rel="noopener noreferrer">Watch on YouTube &nearr;</a>
+          </div>
+        </div>
+
+        <!-- Video 2 (Right): Kurzgesagt – In a Nutshell -->
+        <div class="tf-video-card">
+          <div class="tf-video-head">
+            <h3 class="tf-video-title">How to Terraform Mars &ndash; WITH LASERS</h3>
+            <span class="badge gold" style="margin:0;flex-shrink:0;">Kurzgesagt</span>
+          </div>
+          <div class="tf-video-frame-wrap" id="tfWrapKurzgesagt">
+            <button type="button" class="tf-video-poster" onclick="playTfVideo('tfWrapKurzgesagt', 'tfIframeKurzgesagt', 'HpcTJW4ur54')" aria-label="Play video: How to Terraform Mars - WITH LASERS">
+              <img
+                src="https://i.ytimg.com/vi/HpcTJW4ur54/maxresdefault.jpg"
+                onerror="if(this.src.indexOf('maxresdefault.jpg')!==-1){this.src='https://i.ytimg.com/vi/HpcTJW4ur54/sddefault.jpg';}else if(this.src.indexOf('sddefault.jpg')!==-1){this.src='https://i.ytimg.com/vi/HpcTJW4ur54/hqdefault.jpg';}"
+                alt="How to Terraform Mars – WITH LASERS – Kurzgesagt HD Thumbnail">
+              <span class="tf-yt-play-btn" aria-hidden="true">
+                <svg height="100%" version="1.1" viewBox="0 0 68 48" width="100%">
+                  <path class="yt-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path>
+                  <path d="M 45,24 27,14 27,34" fill="#fff"></path>
+                </svg>
+              </span>
+            </button>
+            <iframe
+              id="tfIframeKurzgesagt"
+              class="embedly-embed"
+              width="1280"
+              height="720"
+              scrolling="no"
+              frameborder="0"
+              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FHpcTJW4ur54%3Ffeature%3Doembed%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHpcTJW4ur54&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHpcTJW4ur54%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
+              title="How to Terraform Mars - WITH LASERS (Kurzgesagt – In a Nutshell)"
+              allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen="true"
+              webkitallowfullscreen="true"
+              mozallowfullscreen="true"
+              referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+          </div>
+          <div class="tf-video-foot">
+            <span>Kurzgesagt &ndash; In a Nutshell &middot; 11:17</span>
+            <a class="tf-video-ext-link" href="https://youtu.be/HpcTJW4ur54?si=fhKv8ebq2GoCvmBg" target="_blank" rel="noopener noreferrer">Watch on YouTube &nearr;</a>
+          </div>
+        </div>
+      </div>
+        </div>
+
+    <!-- Commentary: Pragmatic Colonization & Technological Evolution -->
+    <div id="tfCommentaryCard" class="card clockBox clockCardText mt" style="margin-top:20px;padding:22px;">
+      <h3 class="clockTitle" data-tf-rich style="margin:0 0 14px;color:#ffe3a8;">Or Maybe We Won't Have to Be So Drastic...</h3>
+      <p data-tf-rich style="margin:0 0 14px;line-height:1.65;">Rather than waiting for a fully transformed biosphere, humanity can establish self-sustaining orbital outposts, lava-tube habitats, and surface colonies today—initiating terraformation as a patient, long-term parallel endeavor while studying Mars up close and advancing our engineering toolkit.</p>
+      <p data-tf-rich style="margin:0 0 14px;line-height:1.65;">Technological breakthroughs continually reshape what is achievable. For instance, a groundbreaking study published in August 2024 (<a class="tf-paper-link" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11305381/" target="_blank" rel="noopener noreferrer">Feasibility of keeping Mars warm with nanoparticles &nearr;</a>) demonstrated that releasing conductive aluminum and iron nanorods could warm Mars globally by over <span class="hl">30 Kelvin within 10 years</span>—proving over 5,000 times more mass-efficient than traditional greenhouse gas seeding.</p>
+      <p data-tf-rich style="margin:0;color:#ffe3a8;font-weight:600;letter-spacing:0.3px;">A lot is possible. Till then, stay curious... stay thoughtful.</p>
+    </div>
+  </section>
+
   <!-- QUIZ -->
   <section class="page" id="quiz">
     <h2>QUIZ</h2>
@@ -4067,8 +4373,8 @@ window.addEventListener("orientationchange", () => {
   setTimeout(applyDeviceConfiguration, 60);
 });
 const NS = "http://www.w3.org/2000/svg";
-const PAGES = ["home","clock","calendar","seasons","drift","convert","quiz","visa"];
-const TITLES = {home:"Martian Calendar", clock:"The Martian clock", calendar:"Calendar", seasons:"Seasons", drift:"Weekday drift", convert:"Converter", quiz:"QUIZ", visa:"Mars Visa"};
+const PAGES = ["home","clock","calendar","seasons","drift","convert","terraform","quiz","visa"];
+const TITLES = {home:"Martian Calendar", clock:"The Martian clock", calendar:"Calendar", seasons:"Seasons", drift:"Weekday drift", convert:"Converter", terraform:"Terraforming Approaches", quiz:"QUIZ", visa:"Mars Visa"};
 
 // Clock state machine:
 // S.inLeapChrone is true while the 4th outermost Leap Chrone ring is active (88,750..89,105 s).
@@ -4098,7 +4404,13 @@ let fsToastTimer = null;
 function isQuizLocked(){ return !!(quiz && quiz.active); }
 
 function getNativeFullscreenElement(){
-  return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+  const el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+  // Ignore fullscreen when a video iframe inside the page is the fullscreened element,
+  // so video fullscreen never triggers the site-wide body.is-fullscreen layout resize.
+  if (el && el !== document.documentElement && el !== document.body) {
+    return null;
+  }
+  return el;
 }
 
 function isFullscreenActive(){
@@ -4306,6 +4618,11 @@ function setQuizLock(locked, stayOnQuiz = false){
   }
 
   const onNativeFsChange = () => {
+    const rawFsEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+    if (rawFsEl && rawFsEl !== document.documentElement && rawFsEl !== document.body) {
+      // A video player iframe entered fullscreen; do not alter site fullscreen state
+      return;
+    }
     const nativeEl = getNativeFullscreenElement();
     if (nativeEl){
       fsVirtualActive = true;
@@ -11026,6 +11343,66 @@ let startHomeTyping = () => {};
   }
 })();
 
+
+// ---------- Terraforming Approaches note typewriter (deferred until scrolled into view) ----------
+(function(){
+  const els = Array.from(document.querySelectorAll("[data-tf-rich]"));
+  if (!els.length) return;
+  const items = els.map(el => {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = []; let n;
+    while ((n = walker.nextNode())) nodes.push({ node: n, full: n.nodeValue });
+    return { el, nodes, total: nodes.reduce((a, x) => a + x.full.length, 0) };
+  });
+
+  items.forEach(it => { if (it.el.offsetHeight) it.el.style.minHeight = it.el.offsetHeight + "px"; });
+  const reveal = (it, k) => {
+    let left = k;
+    for (const x of it.nodes){
+      x.node.nodeValue = x.full.slice(0, Math.max(0, Math.min(x.full.length, left)));
+      left -= x.full.length;
+    }
+  };
+  items.forEach(it => reveal(it, 0));
+
+  let typed = false;
+  const startTyping = () => {
+    if (typed) return;
+    typed = true;
+    let idx = 0;
+    const typeNext = () => {
+      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      const it = items[idx];
+      if (it.total === 0){ idx++; typeNext(); return; }
+      let i = 0;
+      const step = () => {
+        i += 8;
+        reveal(it, Math.min(it.total, i));
+        if (i < it.total) setTimeout(step, 8);
+        else { idx++; setTimeout(typeNext, 35); }
+      };
+      step();
+    };
+    setTimeout(typeNext, 60);
+  };
+
+  const target = document.getElementById("tfCard") || document.getElementById("terraform");
+  if ("IntersectionObserver" in window && target){
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          startTyping();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    observer.observe(target);
+  } else {
+    startTyping();
+  }
+})();
+
+
 // ---------- Converter note typewriter (deferred until scrolled into view) ----------
 (function(){
   const els = Array.from(document.querySelectorAll("[data-conv-rich]"));
@@ -11102,6 +11479,25 @@ updateActive();
 last = performance.now();
 requestAnimationFrame(frame);
 })();
+
+function playTfVideo(wrapId, iframeId, videoId) {
+  var wrap = document.getElementById(wrapId);
+  var iframe = document.getElementById(iframeId);
+  if (wrap) {
+    var poster = wrap.querySelector(".tf-video-poster");
+    if (poster) poster.style.display = "none";
+  }
+  if (iframe) {
+    iframe.allowFullscreen = true;
+    iframe.src = "https://cdn.embedly.com/widgets/media.html?a=1&src=" +
+      encodeURIComponent("https://www.youtube.com/embed/" + videoId + "?feature=oembed&autoplay=1&rel=0&playsinline=1&fs=1") +
+      "&display_name=YouTube&url=" +
+      encodeURIComponent("https://www.youtube.com/watch?v=" + videoId) +
+      "&image=" +
+      encodeURIComponent("https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg") +
+      "&key=a19fcc184b9711e1b4764040d3dc5c07&type=text%2Fhtml&schema=youtube";
+  }
+}
 </script>
 </body>
 </html>
