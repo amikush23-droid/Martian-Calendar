@@ -210,16 +210,18 @@ svg.dial:active{cursor:grabbing}
   0% { opacity: 0.9; transform: scale(1.01); stroke-width: 3.6px; }
   100% { opacity: 0; transform: scale(1.09); stroke-width: 0.6px; }
 }
-/* Thin Golden Outline Horological Gear-Cog Transition Layer (driven by rAF SVG transforms) */
+/* Smooth Anti-Aliased Horological Gear-Cog Layer (Zero Twinkling / Shimmering) */
 .leap-gear-cob-layer {
   opacity: 0;
   pointer-events: none;
   will-change: opacity;
+  shape-rendering: auto;
 }
 .leap-gear-cob-layer path,
 .leap-gear-cob-layer circle,
 .leap-gear-cob-layer line {
-  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 #leapBadge .badge, #solLeapBadge .badge {
   animation: badgeSmoothIn .38s cubic-bezier(.16, 1, .3, 1) both;
@@ -3079,76 +3081,24 @@ input[type=range]::-moz-range-thumb {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Interactive Top-Bar Mainspring Winder Control */
-.sp-wind-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-left: 10px;
-  padding: 5px 11px 5px 8px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(59, 34, 25, 0.88), rgba(32, 16, 10, 0.94));
-  border: 1px solid rgba(224, 178, 90, 0.48);
-  color: var(--sand);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 227, 168, 0.22);
-  cursor: pointer;
-  user-select: none;
-  transition: opacity 0.85s ease, transform 0.18s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.sp-wind-btn:hover {
-  border-color: #ffe3a8;
-  background: linear-gradient(180deg, rgba(78, 45, 31, 0.94), rgba(44, 22, 14, 0.96));
-  box-shadow: 0 0 16px rgba(224, 178, 90, 0.35), inset 0 1px 0 rgba(255, 227, 168, 0.35);
-  transform: translateY(-1px);
-}
-.sp-wind-btn:active {
-  transform: scale(0.95);
-}
-.sp-wind-btn.sp-overdrive {
-  border-color: #FF7838;
-  box-shadow: 0 0 18px rgba(255, 120, 56, 0.48), inset 0 1px 0 rgba(255, 227, 168, 0.4);
-}
-.sp-wind-icon {
-  width: 18px;
-  height: 18px;
-  display: block;
-  flex-shrink: 0;
-  transform-origin: 50% 50%;
-}
-.sp-wind-meter {
-  width: 34px;
-  height: 5px;
-  border-radius: 999px;
-  background: rgba(15, 6, 3, 0.85);
-  border: 1px solid rgba(224, 178, 90, 0.35);
-  overflow: hidden;
-  display: inline-block;
-}
-.sp-wind-fill {
-  display: block;
-  height: 100%;
-  width: 68%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #B5532E, #e0b25a, #ffe3a8);
-  transition: width 0.2s ease, background 0.25s ease;
-}
-.sp-wind-pct {
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: #ffe3a8;
-  min-width: 32px;
-  text-align: right;
-}
-
 /* Hide Steampunk UI cleanly during Void Intro */
-body.intro-void .sp-wind-btn,
 body.intro-void #steampunkCornerFrame {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/* High-FPS GPU Compositing & Precision Vector Rendering for All Horological Gear Layers */
+.sp-gpu-rot {
+  will-change: transform;
+  transform-box: view-box;
+  backface-visibility: hidden;
+}
+#steampunkCornerFrame svg,
+.sp-sec-gear-badge,
+#seasHorologicalGears,
+#driftHorologicalGears {
+  shape-rendering: geometricPrecision;
 }
 
 /* Peripheral Viewport Horological Escapement Overlay */
@@ -3159,14 +3109,15 @@ body.intro-void #steampunkCornerFrame {
   pointer-events: none;
   overflow: hidden;
   opacity: 1;
+  contain: layout style paint;
   transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sp-corner-svg {
   position: absolute;
   overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
-  transition: opacity 0.35s ease, filter 0.35s ease;
+  will-change: opacity, transform;
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sp-corner-tl { top: 48px; left: 0; width: 155px; height: 155px; opacity: 0.42; }
 .sp-corner-tr { top: 48px; right: 0; width: 165px; height: 165px; opacity: 0.42; }
@@ -3174,37 +3125,50 @@ body.intro-void #steampunkCornerFrame {
 .sp-corner-br { bottom: 0; right: 0; width: 185px; height: 185px; opacity: 0.46; }
 
 .sp-corner-svg.sp-active-gleam {
-  opacity: 0.82 !important;
-  filter: drop-shadow(0 0 12px rgba(224, 178, 90, 0.55));
+  opacity: 0.88 !important;
+  transform: scale(1.03);
 }
 
 .sp-gear-hit {
   pointer-events: auto;
   cursor: pointer;
+  transition: opacity 0.22s ease, filter 0.22s ease;
 }
-.sp-gear-hit:hover path,
-.sp-gear-hit:hover circle {
+.sp-gear-hit .sp-hit-area {
+  stroke: none !important;
+  fill: transparent !important;
+  pointer-events: all !important;
+}
+.sp-gear-hit:hover {
+  opacity: 1 !important;
+  filter: brightness(1.45) drop-shadow(0 0 6px rgba(255, 227, 168, 0.72));
+}
+.sp-gear-hit:hover path {
   stroke: #ffe3a8 !important;
+  opacity: 1 !important;
+}
+.sp-gear-hit:hover circle:not(.sp-hit-area) {
+  stroke: #ffe3a8;
 }
 
-/* Right-Edge Horological Scroll Vernier Rack */
+/* Right-Edge Horological Scroll Vernier Rack & Dual-Gear Carriage */
 .sp-scroll-rack {
   position: fixed;
   right: 6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 22px;
+  width: 28px;
   height: 220px;
   z-index: 14;
   pointer-events: none;
-  opacity: 0.46;
+  opacity: 0.54;
   transition: opacity 0.3s ease;
 }
 body.intro-void .sp-scroll-rack {
   opacity: 0 !important;
 }
 
-/* Section Header Twin-Gear Escapement Badges & Engraved Filigree Rules */
+/* Section Header 3-Gear Meshing Train Badges & Engraved Filigree Rules */
 .sp-sec-head-wrap {
   display: inline-flex;
   align-items: center;
@@ -3214,17 +3178,16 @@ body.intro-void .sp-scroll-rack {
   position: relative;
 }
 .sp-sec-gear-badge {
-  width: 38px;
-  height: 30px;
+  width: 54px;
+  height: 34px;
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
-  transition: transform 0.25s ease, filter 0.25s ease;
+  will-change: transform;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sp-sec-head-wrap:hover .sp-sec-gear-badge {
-  filter: drop-shadow(0 0 8px rgba(224, 178, 90, 0.65));
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 .sp-sec-divider {
   display: flex;
@@ -3232,13 +3195,13 @@ body.intro-void .sp-scroll-rack {
   gap: 8px;
   margin: 4px 0 14px;
   max-width: 340px;
-  opacity: 0.72;
+  opacity: 0.76;
   pointer-events: none;
 }
 .sp-sec-divider-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, rgba(224, 178, 90, 0.65), rgba(217, 115, 74, 0.28) 70%, transparent);
+  background: linear-gradient(90deg, rgba(224, 178, 90, 0.68), rgba(217, 115, 74, 0.3) 70%, transparent);
 }
 .sp-sec-divider-diamond {
   width: 6px;
@@ -3248,19 +3211,36 @@ body.intro-void .sp-scroll-rack {
   box-shadow: 0 0 6px rgba(224, 178, 90, 0.65);
 }
 
+/* Interactive Card Corner Escapement Bays */
+/* Centered Process-Indicating Horological Gears inside Definition Text Boxes */
+.sp-box-center-gears {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 200px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.42s ease;
+}
+.sp-box-center-gears.typing {
+  opacity: 0.34;
+}
+.sp-box-center-gears path,
+.sp-box-center-gears circle {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 @media (max-width: 900px) {
   .sp-corner-tl, .sp-corner-tr { width: 110px; height: 110px; opacity: 0.26; }
   .sp-corner-bl, .sp-corner-br { width: 120px; height: 120px; opacity: 0.28; }
   .sp-scroll-rack { display: none; }
 }
 @media (max-width: 640px), (max-height: 500px) and (pointer: coarse) {
-  .sp-wind-btn {
-    margin-left: 0;
-    margin-right: 8px;
-    padding: 5px 9px;
-    font-size: 11px;
-  }
-  .sp-wind-lbl, .sp-wind-meter { display: none; }
   .sp-corner-bl, .sp-corner-br { bottom: 64px; width: 95px; height: 95px; opacity: 0.22; }
 }
 
@@ -3281,12 +3261,7 @@ body.intro-void .sp-scroll-rack {
     </svg>
   </button>
   <span id="fsIntroHint" class="fs-intro-hint" aria-hidden="true">Press F</span>
-  <button id="steampunkWindBtn" class="sp-wind-btn" type="button" aria-label="Wind Horological Mainspring" title="Click to wind the Martian horological gear train (boosts mechanical torque)">
-    <svg id="spWindIconSvg" class="sp-wind-icon" viewBox="-20 -20 40 40" aria-hidden="true"></svg>
-    <span class="sp-wind-lbl">Mainspring</span>
-    <span class="sp-wind-meter" aria-hidden="true"><span id="spWindFill" class="sp-wind-fill"></span></span>
-    <span id="spWindPct" class="sp-wind-pct">1.0&times;</span>
-  </button>
+
 </div>
 
 <!-- Subtle Interactive Horological Steampunk Corner Escapements & Scroll Rack -->
@@ -3295,7 +3270,7 @@ body.intro-void .sp-scroll-rack {
   <svg id="spCornerTR" class="sp-corner-svg sp-corner-tr" viewBox="0 0 160 160"></svg>
   <svg id="spCornerBL" class="sp-corner-svg sp-corner-bl" viewBox="0 0 180 180"></svg>
   <svg id="spCornerBR" class="sp-corner-svg sp-corner-br" viewBox="0 0 180 180"></svg>
-  <svg id="spScrollRack" class="sp-scroll-rack" viewBox="0 0 24 220"></svg>
+  <svg id="spScrollRack" class="sp-scroll-rack" viewBox="0 0 28 220"></svg>
 </div>
 
 <nav class="top" aria-label="Main">
@@ -5314,24 +5289,25 @@ function createMartianDial(svgEl, prefix){
     const rotG = el("g", {transform: `rotate(${(opts.phase || 0).toFixed(2)})`}, anchorG);
 
     const goldStroke = opts.bright ? "#ffe3a8" : "#e0b25a";
-    const sw = opts.strokeWidth || 1.05;
+    const sw = (opts.strokeWidth || 1.05) * 0.88; // Delicately refined outline without subpixel shimmering
 
-    // 1. Outer precision involute gear teeth (thin golden outline, no fill)
+    // 1. Outer precision involute gear teeth (solid, non-twinkling golden outline)
     el("path", {
       d: buildInvoluteGearPath(opts.teeth, opts.rTip, opts.rRoot, 0.30, 0.24),
       fill: "none",
       stroke: goldStroke,
-      "stroke-width": String(sw),
+      "stroke-width": sw.toFixed(2),
       "stroke-linejoin": "round",
+      "stroke-linecap": "round",
       opacity: String(opts.opacity || 0.92)
     }, rotG);
 
-    // 2. Delicate pitch circle
+    // 2. Continuous non-dashed pitch circle (smooth rotational symmetry eliminates stroboscopic twinkling)
     const rPitch = (opts.rTip + opts.rRoot) * 0.5;
     el("circle", {
       cx: 0, cy: 0, r: rPitch.toFixed(2),
-      fill: "none", stroke: "#ffe3a8", "stroke-width": "0.45",
-      "stroke-dasharray": "1.8 2.4", opacity: "0.55"
+      fill: "none", stroke: "#ffe3a8", "stroke-width": "0.48",
+      opacity: "0.26"
     }, rotG);
 
     // 3. Skeletonized inner rim & cutout windows (thin golden outlines)
@@ -5342,14 +5318,15 @@ function createMartianDial(svgEl, prefix){
         d: buildSkeletonSpokesPath(opts.spokes, rHub, rRim),
         fill: "none",
         stroke: goldStroke,
-        "stroke-width": String(sw * 0.82),
+        "stroke-width": (sw * 0.82).toFixed(2),
         "stroke-linejoin": "round",
+        "stroke-linecap": "round",
         opacity: String((opts.opacity || 0.92) * 0.9)
       }, rotG);
     } else {
       el("circle", {
         cx: 0, cy: 0, r: rRim.toFixed(2),
-        fill: "none", stroke: goldStroke, "stroke-width": String(sw * 0.8)
+        fill: "none", stroke: goldStroke, "stroke-width": (sw * 0.8).toFixed(2)
       }, rotG);
     }
 
@@ -5359,20 +5336,21 @@ function createMartianDial(svgEl, prefix){
         d: buildInvoluteGearPath(opts.innerTeeth, opts.innerRTip, opts.innerRRoot, 0.32, 0.24),
         fill: "none",
         stroke: "#ffe3a8",
-        "stroke-width": String(sw * 0.85),
+        "stroke-width": (sw * 0.85).toFixed(2),
         "stroke-linejoin": "round",
+        "stroke-linecap": "round",
         opacity: "0.85"
       }, rotG);
     }
 
-    // 5. Center jewel bearing outline
+    // 5. Solid jewel bearing hub & ruby center cap (smooth non-flickering solid cap)
     el("circle", {
       cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
-      fill: "none", stroke: "#ffe3a8", "stroke-width": String(sw * 0.85), opacity: "0.9"
+      fill: "rgba(42,22,16,0.72)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2), opacity: "0.9"
     }, rotG);
     el("circle", {
-      cx: 0, cy: 0, r: "1.3",
-      fill: "none", stroke: goldStroke, "stroke-width": "0.7"
+      cx: 0, cy: 0, r: 1.4,
+      fill: "#FF7838", stroke: "none", opacity: 0.88
     }, rotG);
 
     gearSpinNodes.push({
@@ -5391,71 +5369,71 @@ function createMartianDial(svgEl, prefix){
   }
 
   // A) Deep Background Skeleton Watchmaker Train: 7 Unequal Interconnected Gears
-  // Each gear pops out from behind the previous gear in the chain one by one on activation,
-  // and tucks back behind its parent gear in reverse order on deactivation!
+  // Exact module m = 2.0 horological pitch geometry (d = rPitch_1 + rPitch_2) and analytically solved
+  // tooth-valley phase angles so every adjacent gear pair locks teeth with zero overlap.
   const interconnectedTrain = [
     {
-      // 1. Top-Right: Grand Horological Barrel Wheel (pops out from behind dial center 0,0)
+      // 1. Top-Right: Grand Horological Barrel Wheel (46T, rPitch = 46.0)
       cx: 62.0, cy: -56.0, fromX: 0.0, fromY: 0.0,
       deployStart: 0.00, deployEnd: 0.24,
       teeth: 46, rTip: 49.5, rRoot: 42.5, spokes: 7,
       innerTeeth: 16, innerRTip: 17.5, innerRRoot: 14.8,
-      strokeWidth: 0.95, opacity: 0.64,
+      strokeWidth: 0.95, opacity: 0.66,
       speedRatio: 0.35, phase: 0.0
     },
     {
-      // 2. Top-Center: Center Driving Wheel (pops out from behind Gear 1)
+      // 2. Top-Center: Center Driving Wheel (24T, rPitch = 24.0, dist = 70.0)
       cx: -7.3, cy: -65.7, fromX: 62.0, fromY: -56.0,
       deployStart: 0.11, deployEnd: 0.35,
       teeth: 24, rTip: 26.5, rRoot: 21.5, spokes: 5,
       innerTeeth: 10, innerRTip: 12.0, innerRRoot: 9.8,
-      strokeWidth: 0.88, opacity: 0.60,
-      speedRatio: -0.671, phase: 7.5
+      strokeWidth: 0.88, opacity: 0.62,
+      speedRatio: -0.6708, phase: 0.20
     },
     {
-      // 3. Top-Left: Third Intermediate Wheel (pops out from behind Gear 2)
+      // 3. Top-Left: Third Intermediate Wheel (36T, rPitch = 36.0, dist = 60.0)
       cx: -53.3, cy: -27.2, fromX: -7.3, fromY: -65.7,
       deployStart: 0.22, deployEnd: 0.46,
       teeth: 36, rTip: 39.2, rRoot: 32.8, spokes: 6,
       innerTeeth: 14, innerRTip: 15.5, innerRRoot: 13.0,
-      strokeWidth: 0.90, opacity: 0.62,
-      speedRatio: 0.447, phase: 5.0
+      strokeWidth: 0.90, opacity: 0.64,
+      speedRatio: 0.4472, phase: 1.82
     },
     {
-      // 4. Mid-Left: Fast Motion Pinion (pops out from behind Gear 3)
+      // 4. Mid-Left: Fast Motion Pinion (16T, rPitch = 16.0, dist = 52.0)
       cx: -62.3, cy: 24.1, fromX: -53.3, fromY: -27.2,
       deployStart: 0.33, deployEnd: 0.57,
       teeth: 16, rTip: 18.2, rRoot: 13.8, spokes: 4,
       innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.6,
-      strokeWidth: 0.82, opacity: 0.58,
-      speedRatio: -1.006, phase: 11.25
+      strokeWidth: 0.82, opacity: 0.60,
+      speedRatio: -1.0063, phase: 2.91
     },
     {
-      // 5. Bottom-Left: Fourth / Seconds Driving Wheel (pops out from behind Gear 4)
+      // 5. Bottom-Left: Fourth / Seconds Driving Wheel (32T, rPitch = 32.0, dist = 48.0)
       cx: -34.8, cy: 63.4, fromX: -62.3, fromY: 24.1,
       deployStart: 0.44, deployEnd: 0.68,
       teeth: 32, rTip: 35.0, rRoot: 29.0, spokes: 5,
       innerTeeth: 12, innerRTip: 13.8, innerRRoot: 11.4,
-      strokeWidth: 0.88, opacity: 0.60,
-      speedRatio: 0.503, phase: 5.6
+      strokeWidth: 0.88, opacity: 0.62,
+      speedRatio: 0.5031, phase: 0.84
     },
     {
-      // 6. Bottom-Center: High-Speed Escapement Pinion (pops out from behind Gear 5)
+      // 6. Bottom-Center: High-Speed Escapement Pinion (14T, rPitch = 14.0, dist = 46.0)
       cx: 11.1, cy: 59.4, fromX: -34.8, fromY: 63.4,
       deployStart: 0.55, deployEnd: 0.79,
       teeth: 14, rTip: 15.8, rRoot: 12.2, spokes: 3,
       innerTeeth: 6, innerRTip: 7.8, innerRRoot: 6.2,
-      strokeWidth: 0.78, opacity: 0.56,
-      speedRatio: -1.150, phase: 12.8
+      strokeWidth: 0.78, opacity: 0.58,
+      speedRatio: -1.1500, phase: 21.18
     },
     {
-      // 7. Bottom-Right: Winding Transfer Wheel (pops out from behind Gear 6)
+      // 7. Bottom-Right: Secondary Transfer Wheel (28T, rPitch = 28.0, dist = 42.0)
       cx: 49.1, cy: 41.6, fromX: 11.1, fromY: 59.4,
       deployStart: 0.66, deployEnd: 0.90,
       teeth: 28, rTip: 30.8, rRoot: 25.2, spokes: 5,
       innerTeeth: 10, innerRTip: 11.8, innerRRoot: 9.8,
-      strokeWidth: 0.85, opacity: 0.58,
-      speedRatio: 0.575, phase: 6.4
+      strokeWidth: 0.85, opacity: 0.60,
+      speedRatio: 0.5750, phase: 4.47
     }
   ];
 
@@ -5472,11 +5450,11 @@ function createMartianDial(svgEl, prefix){
   const sunRingG = el("g", {transform: "rotate(0)"}, sunRingAnchor);
   el("path", {
     d: buildInvoluteGearPath(60, 125.2, 121.8, 0.30, 0.25),
-    fill: "none", stroke: "#e0b25a", "stroke-width": "0.95", opacity: "0.82"
+    fill: "none", stroke: "#e0b25a", "stroke-width": "0.74", opacity: "0.82"
   }, sunRingG);
   el("circle", {
     cx: 0, cy: 0, r: "120.2",
-    fill: "none", stroke: "#ffe3a8", "stroke-width": "0.65", opacity: "0.65"
+    fill: "none", stroke: "#ffe3a8", "stroke-width": "0.50", opacity: "0.65"
   }, sunRingG);
   gearSpinNodes.push({
     anchorNode: sunRingAnchor, node: sunRingG,
@@ -5490,11 +5468,11 @@ function createMartianDial(svgEl, prefix){
   const annulusRingG = el("g", {transform: "rotate(0)"}, annulusRingAnchor);
   el("path", {
     d: buildInvoluteGearPath(76, 153.2, 156.8, 0.30, 0.25),
-    fill: "none", stroke: "#ffe3a8", "stroke-width": "1.0", opacity: "0.86"
+    fill: "none", stroke: "#ffe3a8", "stroke-width": "0.82", opacity: "0.86"
   }, annulusRingG);
   el("circle", {
     cx: 0, cy: 0, r: "158.2",
-    fill: "none", stroke: "#e0b25a", "stroke-width": "0.75", "stroke-dasharray": "6 3", opacity: "0.72"
+    fill: "none", stroke: "#e0b25a", "stroke-width": "0.58", opacity: "0.42"
   }, annulusRingG);
   gearSpinNodes.push({
     anchorNode: annulusRingAnchor, node: annulusRingG,
@@ -6509,29 +6487,44 @@ function applyGearTrainState(refs, baseAngleDeg, deployMasterP){
     const localU = Math.max(0, Math.min(1, (p - item.deployStart) / span));
 
     if (localU <= 0.001){
-      item.anchorNode.setAttribute("opacity", "0");
+      if (item.lastOp !== "0"){
+        item.lastOp = "0";
+        item.anchorNode.setAttribute("opacity", "0");
+      }
       continue;
     }
 
     const easedPos = easeGearPopOut(localU);
     // Rapid fade-in as the gear emerges from behind its parent gear, and crisp fade-out as it tucks back behind
-    const alpha = Math.min(1, localU / 0.12);
-    item.anchorNode.setAttribute("opacity", alpha.toFixed(3));
+    const alphaStr = Math.min(1, localU / 0.12).toFixed(3);
+    if (item.lastOp !== alphaStr){
+      item.lastOp = alphaStr;
+      item.anchorNode.setAttribute("opacity", alphaStr);
+    }
 
+    let anchorTf;
     if (item.isRing){
       const sc = item.ringStartScale + (1 - item.ringStartScale) * easedPos;
-      item.anchorNode.setAttribute("transform", `scale(${sc.toFixed(3)})`);
+      anchorTf = `scale(${sc.toFixed(3)})`;
     } else {
       const curX = item.originX + (item.targetX - item.originX) * easedPos;
       const curY = item.originY + (item.targetY - item.originY) * easedPos;
       const sc = 0.28 + 0.72 * easedPos;
-      item.anchorNode.setAttribute("transform", `translate(${curX.toFixed(2)}, ${curY.toFixed(2)}) scale(${sc.toFixed(3)})`);
+      anchorTf = `translate(${curX.toFixed(2)}, ${curY.toFixed(2)}) scale(${sc.toFixed(3)})`;
+    }
+    if (item.lastAnchorTf !== anchorTf){
+      item.lastAnchorTf = anchorTf;
+      item.anchorNode.setAttribute("transform", anchorTf);
     }
 
     // Add extra burst of spin while popping out / tucking in so each gear visibly rolls out from behind its parent
     const popSpinBonus = (1 - localU) * -65 * Math.sign(item.speedRatio || 1);
     const ang = item.basePhase + baseAngleDeg * item.speedRatio + popSpinBonus;
-    item.node.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
+    const rotTf = `rotate(${ang.toFixed(2)})`;
+    if (item.lastRotTf !== rotTf){
+      item.lastRotTf = rotTf;
+      item.node.setAttribute("transform", rotTf);
+    }
   }
 }
 
@@ -6682,9 +6675,13 @@ function updateClock(){
   const p = clockParts(mainWholeSecs);
   const mainProg = S.inLeapChrone ? 1 : (S.secs / SOL_BASE);
 
-  const angleA = S.inLeapChrone ? 0 : (mainWholeSecs / SOL_BASE) * 360;
-  const angleC = S.inLeapChrone ? 0 : ((mainWholeSecs % ARCHON) / ARCHON) * 360;
-  const angleS = S.inLeapChrone ? 0 : ((mainWholeSecs % CHRONE) / CHRONE) * 360;
+  const secFracMain = S.inLeapChrone ? 0 : Math.max(0, S.secs - mainWholeSecs);
+  // Crisp mechanical escapement impulse: 85% of the 1-second step completes in the first 0.16s, then settles smoothly
+  const escMain = S.inLeapChrone ? 0 : (secFracMain < 0.16 ? Math.sin((secFracMain / 0.16) * (Math.PI * 0.5)) * 0.85 : (0.85 + ((secFracMain - 0.16) / 0.84) * 0.15));
+  const smoothSecsMain = S.inLeapChrone ? 0 : (S.mult > 3 ? S.secs : (mainWholeSecs + escMain));
+  const angleA = S.inLeapChrone ? 0 : (smoothSecsMain / SOL_BASE) * 360;
+  const angleC = S.inLeapChrone ? 0 : ((smoothSecsMain % ARCHON) / ARCHON) * 360;
+  const angleS = S.inLeapChrone ? 0 : ((smoothSecsMain % CHRONE) / CHRONE) * 360;
 
   mainDialRefs.hArch.setAttribute("transform", `rotate(${angleA.toFixed(2)})`);
   mainDialRefs.hChr.setAttribute("transform", `rotate(${angleC.toFixed(2)})`);
@@ -6775,9 +6772,12 @@ function updateSolClock(){
   const p = clockParts(mainWholeSecs);
   const mainProg = SOL_CLK.inLeapChrone ? 1 : (SOL_CLK.secs / SOL_BASE);
 
-  const angleA = SOL_CLK.inLeapChrone ? 0 : (mainWholeSecs / SOL_BASE) * 360;
-  const angleC = SOL_CLK.inLeapChrone ? 0 : ((mainWholeSecs % ARCHON) / ARCHON) * 360;
-  const angleS = SOL_CLK.inLeapChrone ? 0 : ((mainWholeSecs % CHRONE) / CHRONE) * 360;
+  const secFracSol = SOL_CLK.inLeapChrone ? 0 : Math.max(0, SOL_CLK.secs - mainWholeSecs);
+  const escSol = SOL_CLK.inLeapChrone ? 0 : (secFracSol < 0.16 ? Math.sin((secFracSol / 0.16) * (Math.PI * 0.5)) * 0.85 : (0.85 + ((secFracSol - 0.16) / 0.84) * 0.15));
+  const smoothSecsSol = SOL_CLK.inLeapChrone ? 0 : (SOL_CLK.mult > 3 ? SOL_CLK.secs : (mainWholeSecs + escSol));
+  const angleA = SOL_CLK.inLeapChrone ? 0 : (smoothSecsSol / SOL_BASE) * 360;
+  const angleC = SOL_CLK.inLeapChrone ? 0 : ((smoothSecsSol % ARCHON) / ARCHON) * 360;
+  const angleS = SOL_CLK.inLeapChrone ? 0 : ((smoothSecsSol % CHRONE) / CHRONE) * 360;
 
   solDialRefs.hArch.setAttribute("transform", `rotate(${angleA.toFixed(2)})`);
   solDialRefs.hChr.setAttribute("transform", `rotate(${angleC.toFixed(2)})`);
@@ -11198,7 +11198,7 @@ function resizeStars(force = false){
   const cssW = Math.round(rect.width || innerWidth);
   const cssH = Math.round(rect.height || innerHeight);
   if (!cssW || !cssH) return;
-  const dpr = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
+  const dpr = Math.min(isMobileDevice() ? 1.5 : 2.5, window.devicePixelRatio || 1);
   const w = Math.round(cssW * dpr);
   const h = Math.round(cssH * dpr);
   if (cvs.width !== w || cvs.height !== h || force){
@@ -11208,8 +11208,9 @@ function resizeStars(force = false){
     lastStarH = cssH;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const densityDiv = isMobileDevice() ? 12000 : 9000;
-    stars = Array.from({length: Math.round((cssW * cssH) / densityDiv)}, () => ({
-      x: Math.random() * cssW, y: Math.random() * cssH, r: Math.random() * 1.3 + 0.2, p: Math.random() * 6.28, s: 0.5 + Math.random() * 1.5
+    const starCols = ["#f6ece2", "#fff5e8", "#ffe4c4", "#e3eeff", "#ffd6b8"];
+    stars = Array.from({length: Math.round((cssW * cssH) / densityDiv)}, (_, idx) => ({
+      x: Math.random() * cssW, y: Math.random() * cssH, r: Math.random() * 1.32 + 0.22, p: Math.random() * 6.28, s: 0.55 + Math.random() * 1.55, c: starCols[idx % 5]
     }));
   }
 }
@@ -11565,11 +11566,14 @@ function drawStars(now, dt = 0.016){
     return;
   }
 
-  for (const s of stars){
-    const a = 0.25 + 0.55*(0.5 + 0.5*Math.sin(now/1000*s.s + s.p));
+  ctx.fillStyle = "#f6ece2";
+  for (let i = 0; i < stars.length; i++){
+    const s = stars[i];
+    const a = 0.26 + 0.58 * (0.5 + 0.5 * Math.sin(now * 0.001 * s.s + s.p));
     ctx.globalAlpha = a;
-    ctx.fillStyle = "#f6ece2";
-    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283);
+    if (s.c) ctx.fillStyle = s.c;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, 6.283);
     ctx.fill();
   }
   ctx.globalAlpha = 1;
@@ -11579,7 +11583,7 @@ function drawStars(now, dt = 0.016){
 // ---------- Mars: WebGL planet, sharp at full screen density ----------
 const marsGL = $("mars");
 const gl = marsGL.getContext("webgl", {alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: "high-performance"});
-const MARS_DPR = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
+const MARS_DPR = Math.min(isMobileDevice() ? 1.5 : 2.5, window.devicePixelRatio || 1);
 const MARS_VS = `attribute vec2 aPos; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
 const MARS_NOISE = `
 precision highp float;
@@ -11800,7 +11804,7 @@ function resizeMars(force = false){
   if (!cssW || !cssH) return;
   lastMarsCssW = cssW;
   lastMarsCssH = cssH;
-  const dpr = Math.min(isMobileDevice() ? 1.25 : 2, window.devicePixelRatio || 1);
+  const dpr = Math.min(isMobileDevice() ? 1.5 : 2.5, window.devicePixelRatio || 1);
   const w = Math.round(cssW * dpr);
   const h = Math.round(cssH * dpr);
   if (marsGL.width !== w || marsGL.height !== h || force){
@@ -12069,6 +12073,7 @@ function frame(now){
   updateSeasonsTick(dt);
   updateMars(dt);
   drawStars(now, dt);
+  if (window.stepSteampunkFrame) window.stepSteampunkFrame(now, dt);
   requestAnimationFrame(frame);
 }
 document.addEventListener("visibilitychange", () => { last = performance.now(); });
@@ -12120,9 +12125,16 @@ let startHomeTyping = () => {};
   richItems.forEach(it => reveal(it, 0));
 
   startHomeTyping = () => {
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart(".homeBox");
     let tIdx = 0;
     const typeRichNext = (rIdx) => {
-      if (rIdx >= richItems.length){ if (homeBox) homeBox.style.minHeight = ''; richItems.forEach(x => x.el.style.minHeight = ''); typeEls.forEach(x => x.style.minHeight = ''); return; }
+      if (rIdx >= richItems.length){
+        if (homeBox) homeBox.style.minHeight = '';
+        richItems.forEach(x => x.el.style.minHeight = '');
+        typeEls.forEach(x => x.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd(".homeBox");
+        return;
+      }
       const it = richItems[rIdx];
       if (it.total === 0){ typeRichNext(rIdx + 1); return; }
       let i = 0;
@@ -12183,9 +12195,14 @@ let startHomeTyping = () => {};
   const startTyping = () => {
     if (typed) return;
     typed = true;
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#clockCard");
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      if (idx >= items.length){
+        items.forEach(x => x.el.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#clockCard");
+        return;
+      }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -12241,9 +12258,14 @@ let startHomeTyping = () => {};
   const startTyping = () => {
     if (typed) return;
     typed = true;
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#calCard");
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      if (idx >= items.length){
+        items.forEach(x => x.el.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#calCard");
+        return;
+      }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -12299,9 +12321,14 @@ let startHomeTyping = () => {};
   const startTyping = () => {
     if (typed) return;
     typed = true;
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#seasCard");
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      if (idx >= items.length){
+        items.forEach(x => x.el.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#seasCard");
+        return;
+      }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -12357,9 +12384,14 @@ let startHomeTyping = () => {};
   const startTyping = () => {
     if (typed) return;
     typed = true;
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#driftCard");
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      if (idx >= items.length){
+        items.forEach(x => x.el.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#driftCard");
+        return;
+      }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -12391,62 +12423,73 @@ let startHomeTyping = () => {};
 })();
 
 
-// ---------- Terraforming Approaches note typewriter (deferred until scrolled into view) ----------
+// ---------- Terraforming Approaches: Intro (#tfCard) & Commentary (#tfCommentaryCard) Independent Typewriters ----------
 (function(){
-  const els = Array.from(document.querySelectorAll("[data-tf-rich]"));
-  if (!els.length) return;
-  const items = els.map(el => {
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-    const nodes = []; let n;
-    while ((n = walker.nextNode())) nodes.push({ node: n, full: n.nodeValue });
-    return { el, nodes, total: nodes.reduce((a, x) => a + x.full.length, 0) };
-  });
+  function setupCardTypewriter(cardId, richAttr){
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const els = Array.from(card.querySelectorAll(`[${richAttr}]`));
+    if (!els.length) return;
+    const items = els.map(el => {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const nodes = []; let n;
+      while ((n = walker.nextNode())) nodes.push({ node: n, full: n.nodeValue });
+      return { el, nodes, total: nodes.reduce((a, x) => a + x.full.length, 0) };
+    });
 
-  items.forEach(it => { if (it.el.offsetHeight) it.el.style.minHeight = it.el.offsetHeight + "px"; });
-  const reveal = (it, k) => {
-    let left = k;
-    for (const x of it.nodes){
-      x.node.nodeValue = x.full.slice(0, Math.max(0, Math.min(x.full.length, left)));
-      left -= x.full.length;
-    }
-  };
-  items.forEach(it => reveal(it, 0));
-
-  let typed = false;
-  const startTyping = () => {
-    if (typed) return;
-    typed = true;
-    let idx = 0;
-    const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
-      const it = items[idx];
-      if (it.total === 0){ idx++; typeNext(); return; }
-      let i = 0;
-      const step = () => {
-        i += 8;
-        reveal(it, Math.min(it.total, i));
-        if (i < it.total) setTimeout(step, 8);
-        else { idx++; setTimeout(typeNext, 35); }
-      };
-      step();
+    items.forEach(it => { if (it.el.offsetHeight) it.el.style.minHeight = it.el.offsetHeight + "px"; });
+    const reveal = (it, k) => {
+      let left = k;
+      for (const x of it.nodes){
+        x.node.nodeValue = x.full.slice(0, Math.max(0, Math.min(x.full.length, left)));
+        left -= x.full.length;
+      }
     };
-    setTimeout(typeNext, 60);
-  };
+    items.forEach(it => reveal(it, 0));
 
-  const target = document.getElementById("tfCard") || document.getElementById("terraform");
-  if ("IntersectionObserver" in window && target){
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+    let typed = false;
+    const startTyping = () => {
+      if (typed) return;
+      typed = true;
+      if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#" + cardId);
+      let idx = 0;
+      const typeNext = () => {
+        if (idx >= items.length){
+          items.forEach(x => x.el.style.minHeight = '');
+          if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#" + cardId);
+          return;
         }
-      });
-    }, { threshold: 0.15 });
-    observer.observe(target);
-  } else {
-    startTyping();
+        const it = items[idx];
+        if (it.total === 0){ idx++; typeNext(); return; }
+        let i = 0;
+        const step = () => {
+          i += 8;
+          reveal(it, Math.min(it.total, i));
+          if (i < it.total) setTimeout(step, 8);
+          else { idx++; setTimeout(typeNext, 35); }
+        };
+        step();
+      };
+      setTimeout(typeNext, 60);
+    };
+
+    if ("IntersectionObserver" in window){
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting){
+            startTyping();
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.15 });
+      observer.observe(card);
+    } else {
+      startTyping();
+    }
   }
+
+  setupCardTypewriter("tfCard", "data-tf-rich");
+  setupCardTypewriter("tfCommentaryCard", "data-tf-rich");
 })();
 
 
@@ -12475,9 +12518,14 @@ let startHomeTyping = () => {};
   const startTyping = () => {
     if (typed) return;
     typed = true;
+    if (window.triggerBoxTypingStart) window.triggerBoxTypingStart("#convCard");
     let idx = 0;
     const typeNext = () => {
-      if (idx >= items.length){ items.forEach(x => x.el.style.minHeight = ''); return; }
+      if (idx >= items.length){
+        items.forEach(x => x.el.style.minHeight = '');
+        if (window.triggerBoxTypingEnd) window.triggerBoxTypingEnd("#convCard");
+        return;
+      }
       const it = items[idx];
       if (it.total === 0){ idx++; typeNext(); return; }
       let i = 0;
@@ -12542,7 +12590,7 @@ let startHomeTyping = () => {};
   function spSpokesPath(spokes, rInner, rOuter){
     let d = "";
     const step = (2 * Math.PI) / spokes;
-    const gap = step * 0.15;
+    const gap = step * 0.145;
     for (let s = 0; s < spokes; s++){
       const a0 = s * step + gap;
       const a1 = (s + 1) * step - gap;
@@ -12558,37 +12606,49 @@ let startHomeTyping = () => {};
 
   function createWatchmakerGear(parent, cfg){
     const gWrap = spEl("g", {
-      transform: `translate(${cfg.cx.toFixed(1)}, ${cfg.cy.toFixed(1)})`,
+      transform: `translate(${cfg.cx.toFixed(2)}, ${cfg.cy.toFixed(2)})`,
       class: cfg.interactive ? "sp-gear-hit" : ""
     }, parent);
     if (cfg.title){
       const t = spEl("title", {}, gWrap);
       t.textContent = cfg.title;
     }
-    const rotG = spEl("g", {transform: `rotate(${(cfg.phase || 0).toFixed(1)})`}, gWrap);
+    const initAng = (cfg.phase || 0).toFixed(2);
+    const rotG = spEl("g", {
+      class: "sp-gpu-rot",
+      transform: `rotate(${initAng})`
+    }, gWrap);
     const stroke = cfg.color || "#e0b25a";
     const sw = cfg.sw || 1.0;
 
     if (cfg.interactive){
-      spEl("circle", {cx: 0, cy: 0, r: cfg.rTip.toFixed(1), fill: "rgba(224,178,90,0.01)", stroke: "none"}, rotG);
+      spEl("circle", {
+        cx: 0, cy: 0, r: (cfg.rTip + 2).toFixed(1),
+        class: "sp-hit-area",
+        fill: "transparent",
+        stroke: "none"
+      }, gWrap);
     }
 
+    // Outer involute gear teeth
     spEl("path", {
       d: spInvolutePath(cfg.teeth, cfg.rTip, cfg.rRoot),
       fill: "none",
       stroke: stroke,
       "stroke-width": sw,
       "stroke-linejoin": "round",
-      opacity: cfg.opacity || 0.88
+      opacity: cfg.opacity || 0.90
     }, rotG);
 
-    const rPitch = 0.5 * (cfg.rTip + cfg.rRoot);
+    // Precision pitch circle
+    const rPitch = cfg.rPitch || (0.5 * (cfg.rTip + cfg.rRoot));
     spEl("circle", {
-      cx: 0, cy: 0, r: rPitch.toFixed(1),
+      cx: 0, cy: 0, r: rPitch.toFixed(2),
       fill: "none", stroke: "#ffe3a8", "stroke-width": 0.45,
-      "stroke-dasharray": "2 2.5", opacity: 0.5
+      "stroke-dasharray": "2 2.4", opacity: 0.54
     }, rotG);
 
+    // Skeletonized inner rim & watchmaker spoke cutouts
     const rRim = cfg.rRoot - (cfg.rTip - cfg.rRoot) * 0.72;
     const rHub = Math.max(2.6, rRim * 0.28);
     if (cfg.spokes && rRim > rHub + 2.2){
@@ -12598,10 +12658,11 @@ let startHomeTyping = () => {};
         stroke: stroke,
         "stroke-width": (sw * 0.82).toFixed(2),
         "stroke-linejoin": "round",
-        opacity: (cfg.opacity || 0.88) * 0.88
+        opacity: ((cfg.opacity || 0.90) * 0.88).toFixed(2)
       }, rotG);
     }
 
+    // Coaxial inner compound pinion gear
     if (cfg.innerTeeth && cfg.innerRTip){
       spEl("path", {
         d: spInvolutePath(cfg.innerTeeth, cfg.innerRTip, cfg.innerRRoot),
@@ -12609,20 +12670,36 @@ let startHomeTyping = () => {};
         stroke: "#ffe3a8",
         "stroke-width": (sw * 0.82).toFixed(2),
         "stroke-linejoin": "round",
-        opacity: 0.82
+        opacity: 0.84
       }, rotG);
     }
 
+    // Jewel bearing hub & ruby center cap
     spEl("circle", {
-      cx: 0, cy: 0, r: (rHub * 0.55).toFixed(1),
-      fill: "rgba(42,22,16,0.7)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2)
+      cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
+      fill: "rgba(42,22,16,0.75)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2)
     }, rotG);
     spEl("circle", {
       cx: 0, cy: 0, r: 1.4,
-      fill: "#FF7838", stroke: "none", opacity: 0.85
+      fill: "#FF7838", stroke: "none", opacity: 0.88
     }, rotG);
 
-    return { wrap: gWrap, rotNode: rotG, ratio: cfg.ratio || 1, phase: cfg.phase || 0 };
+    return {
+      wrap: gWrap,
+      rotNode: rotG,
+      ratio: cfg.ratio || 1,
+      phase: cfg.phase || 0,
+      lastAngStr: initAng
+    };
+  }
+
+  // Fast, zero-allocation rotation updater (skips DOM write if angle hasn't changed)
+  function setGearRot(gearObj, angleDeg){
+    const s = angleDeg.toFixed(2);
+    if (gearObj.lastAngStr !== s){
+      gearObj.lastAngStr = s;
+      gearObj.rotNode.setAttribute("transform", `rotate(${s})`);
+    }
   }
 
   // Subtle Horological Escapement / Ratchet Click Synthesizer (Web Audio API)
@@ -12630,7 +12707,7 @@ let startHomeTyping = () => {};
   function playHorologicalClick(pitchMult = 1.0, gainLevel = 0.045){
     try {
       const nowMs = performance.now();
-      if (nowMs - lastClickMs < 28) return;
+      if (nowMs - lastClickMs < 26) return;
       lastClickMs = nowMs;
       if (!audioCtx) initAudio();
       if (!audioCtx) return;
@@ -12642,11 +12719,11 @@ let startHomeTyping = () => {};
       const g = audioCtx.createGain();
 
       osc.type = "triangle";
-      osc.frequency.setValueAtTime(1650 * pitchMult, t0);
+      osc.frequency.setValueAtTime(1680 * pitchMult, t0);
       osc.frequency.exponentialRampToValueAtTime(420 * pitchMult, t0 + 0.022);
 
       bpf.type = "bandpass";
-      bpf.frequency.setValueAtTime(2100 * pitchMult, t0);
+      bpf.frequency.setValueAtTime(2150 * pitchMult, t0);
       bpf.Q.setValueAtTime(3.2, t0);
 
       g.gain.setValueAtTime(0.0001, t0);
@@ -12661,42 +12738,31 @@ let startHomeTyping = () => {};
     } catch (e) {}
   }
 
-  function playCrownWindBurst(){
-    for (let i = 0; i < 5; i++){
-      setTimeout(() => {
-        playHorologicalClick(0.92 + i * 0.09, 0.06);
-      }, i * 48);
-    }
-  }
-
-  // State for site-wide gear trains
+  // State for site-wide kinematic gear trains
   const SP = {
     masterAngle: 0,
     scrollAngle: 0,
     lastScrollY: window.scrollY || 0,
     scrollVel: 0,
-    windBoost: 0,     // 0..2.5 extra angular velocity from winding mainspring
-    tension: 0.68,    // 0.35..1.50 mainspring tension display
+    actionPulse: 0,   // transient mechanical impulse when flipping converters, changing sols, or clicking gears
     cornerNodes: [],
     sectionGears: [],
+    cardBays: [],
     seasNodes: [],
     driftNodes: [],
     rackPinion: null,
-    rackGroup: null
+    rackIdler: null,
+    rackGroup: null,
+    lastRackYStr: ""
   };
 
-  // 1. Populate Mainspring Winder Icon in Top Bar
-  const windIconSvg = document.getElementById("spWindIconSvg");
-  let windIconRotNode = null;
-  if (windIconSvg){
-    const g = createWatchmakerGear(windIconSvg, {
-      cx: 0, cy: 0, teeth: 14, rTip: 17.5, rRoot: 13.2, spokes: 4,
-      color: "#ffe3a8", sw: 1.4, ratio: 1, phase: 0
-    });
-    windIconRotNode = g.rotNode;
+  function pulseGearTrain(impulse = 28, pitch = 1.12){
+    SP.actionPulse = Math.min(140, SP.actionPulse + impulse);
+    playHorologicalClick(pitch, 0.042);
   }
+  window.pulseSteampunkGears = pulseGearTrain;
 
-  // 2. Populate 4 Viewport Corner Escapement Gear Assemblies
+  // 1. Populate 4 Viewport Corner Escapement Gear Assemblies (Original 3-Gear Trains Preserved)
   const cornerConfigs = [
     {
       id: "spCornerTL",
@@ -12741,35 +12807,44 @@ let startHomeTyping = () => {};
       if (gCfg.interactive){
         node.wrap.addEventListener("click", (e) => {
           e.stopPropagation();
-          windMainspring(0.65, svg);
+          pulseGearTrain(42, 1.18);
+          svg.classList.add("sp-active-gleam");
+          setTimeout(() => svg.classList.remove("sp-active-gleam"), 620);
         });
       }
     });
   });
 
-  // 3. Build Right-Edge Horological Scroll Vernier & Rack Pinion
+  // 2. Build Right-Edge Horological Scroll Vernier Rack & Dual-Gear Compound Carriage
   const rackSvg = document.getElementById("spScrollRack");
   if (rackSvg){
-    spEl("line", {x1: 18, y1: 10, x2: 18, y2: 210, stroke: "rgba(224,178,90,0.45)", "stroke-width": 1.2}, rackSvg);
-    for (let y = 14; y <= 206; y += 6){
-      const major = ((y - 14) % 24 === 0);
+    spEl("line", {x1: 22, y1: 10, x2: 22, y2: 210, stroke: "rgba(224,178,90,0.48)", "stroke-width": 1.25}, rackSvg);
+    for (let y = 14; y <= 206; y += 5){
+      const major = ((y - 14) % 20 === 0);
       spEl("line", {
-        x1: major ? 11 : 14, y1: y, x2: 18, y2: y,
+        x1: major ? 15 : 17.5, y1: y, x2: 22, y2: y,
         stroke: major ? "#ffe3a8" : "#e0b25a",
-        "stroke-width": major ? 1.3 : 0.8,
-        opacity: major ? 0.85 : 0.55
+        "stroke-width": major ? 1.35 : 0.85,
+        opacity: major ? 0.88 : 0.58
       }, rackSvg);
     }
-    const rackTravelG = spEl("g", {transform: "translate(9, 14)"}, rackSvg);
+    const rackTravelG = spEl("g", {class: "sp-gpu-rot", transform: "translate(12, 14)"}, rackSvg);
+    // Primary 14T rack pinion meshing directly with the vertical vernier teeth
     const pinion = createWatchmakerGear(rackTravelG, {
-      cx: 0, cy: 0, teeth: 14, rTip: 8.5, rRoot: 6.2, spokes: 4,
-      color: "#ffe3a8", sw: 0.9, ratio: 1.5, phase: 0
+      cx: 0, cy: 0, teeth: 14, rPitch: 7.0, rTip: 8.1, rRoot: 5.8, spokes: 4,
+      color: "#ffe3a8", sw: 0.92, ratio: 1.0, phase: 0
+    });
+    // Secondary 10T counter-rotating idler gear meshing with the 14T pinion (dist = 7.0 + 5.0 = 12.0)
+    const idler = createWatchmakerGear(rackTravelG, {
+      cx: -6.2, cy: -10.28, teeth: 10, rPitch: 5.0, rTip: 6.0, rRoot: 3.9, spokes: 3,
+      color: "#d9734a", sw: 0.82, ratio: -1.4, phase: 11.5
     });
     SP.rackGroup = rackTravelG;
     SP.rackPinion = pinion;
+    SP.rackIdler = idler;
   }
 
-  // 4. Enhance Section Headings with Interactive Twin-Gear Horological Escapements & Brass Filigree Dividers
+  // 3. Enhance Section Headings with 3-Gear Meshing Escapement Trains (20T -> 12T -> 16T)
   const secSelectors = [
     "#home .home-head h1",
     "#clock > h2",
@@ -12788,22 +12863,27 @@ let startHomeTyping = () => {};
 
     const badgeSvg = spEl("svg", {
       class: "sp-sec-gear-badge",
-      viewBox: "0 0 46 34",
+      viewBox: "0 0 60 36",
       "aria-hidden": "true"
     });
+    // 3 unequal meshing gears with exact pitch tangent distances (m = 1.15):
     const g1 = createWatchmakerGear(badgeSvg, {
-      cx: 15, cy: 17, teeth: 18, rTip: 13.2, rRoot: 10.4, spokes: 5,
-      color: "#e0b25a", sw: 1.05, ratio: 0.8, phase: idx * 14
+      cx: 14.50, cy: 18.50, teeth: 20, rPitch: 11.50, rTip: 12.59, rRoot: 10.29, spokes: 5,
+      color: "#e0b25a", sw: 1.05, ratio: 0.85, phase: 0
     });
     const g2 = createWatchmakerGear(badgeSvg, {
-      cx: 34.2, cy: 12.5, teeth: 12, rTip: 9.2, rRoot: 7.0, spokes: 3,
-      color: "#ffe3a8", sw: 0.95, ratio: -1.2, phase: idx * 9 + 15
+      cx: 32.00, cy: 12.81, teeth: 12, rPitch: 6.90, rTip: 7.99, rRoot: 5.69, spokes: 3,
+      color: "#ffe3a8", sw: 0.95, ratio: -1.4167, phase: 27.01
+    });
+    const g3 = createWatchmakerGear(badgeSvg, {
+      cx: 46.93, cy: 18.84, teeth: 16, rPitch: 9.20, rTip: 10.29, rRoot: 7.99, spokes: 4,
+      color: "#d9734a", sw: 0.98, ratio: 1.0625, phase: 14.51
     });
 
     hEl.classList.add("sp-sec-head-wrap");
     hEl.insertBefore(badgeSvg, hEl.firstChild);
 
-    // Add engraved brass filigree divider right below the heading/eyebrow block
+    // Engraved brass filigree divider below heading/eyebrow
     const divider = document.createElement("div");
     divider.className = "sp-sec-divider";
     divider.setAttribute("aria-hidden", "true");
@@ -12815,121 +12895,355 @@ let startHomeTyping = () => {};
       hEl.parentNode.insertBefore(divider, hEl.nextSibling);
     }
 
-    const secEntry = { g1, g2, localBoost: 0, sectionEl: hEl.closest(".page") };
+    const secEntry = { g1, g2, g3, localBoost: idx * 6 };
     SP.sectionGears.push(secEntry);
 
     hEl.addEventListener("mouseenter", () => {
-      secEntry.localBoost = Math.max(secEntry.localBoost, 48);
-      playHorologicalClick(1.15, 0.038);
+      secEntry.localBoost = Math.max(secEntry.localBoost, 55);
+      playHorologicalClick(1.15, 0.036);
     });
     hEl.addEventListener("click", () => {
-      secEntry.localBoost = Math.max(secEntry.localBoost, 110);
-      windMainspring(0.45);
+      secEntry.localBoost = Math.max(secEntry.localBoost, 130);
+      pulseGearTrain(35, 1.24);
     });
   });
 
-  // 5. Hook into Seasonal Dial (#seasWheelSvg) & Weekday Drift Wheel (#wheelSvg)
+  // 4. Populate Bigger Gears at the Centre of the Definition Text Boxes
+  // Centered directly behind the text with faint, delicate outlines. When a box is being typed in,
+  // the 3 bigger interlocking gears pop out from behind each other and rotate together in opposing locked directions,
+  // visually indicating that text processing is occurring. Once typing finishes, they tuck back behind one another
+  // in reverse cascade order (G3 -> G2 -> G1) exactly matching the Leap Chrone deactivation animation.
+  const definitionBoxSelectors = [
+    ".homeBox",
+    "#clockCard",
+    "#calCard",
+    "#seasCard",
+    "#driftCard",
+    "#convCard",
+    "#tfCard",
+    "#tfCommentaryCard"
+  ];
+
+  function easeTypewriterGearPop(t){
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    const c1 = 1.45, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  }
+
+  definitionBoxSelectors.forEach((sel, idx) => {
+    const cardEl = document.querySelector(sel);
+    if (!cardEl || cardEl.querySelector(".sp-box-center-gears")) return;
+    const baySvg = spEl("svg", {
+      class: "sp-box-center-gears",
+      viewBox: "-90 -75 180 150",
+      "aria-hidden": "true"
+    });
+
+    // 3 Bigger Gears positioned right at the center (0, 0) of the text box:
+    // G1: 42T Grand Center Wheel at (0, 0), rPitch=46.2, rTip=48.5, rRoot=43.8 (pops out from center)
+    // G2: 22T Upper-Right Gear at (56.95, 41.38), rPitch=24.2, rTip=26.5, rRoot=21.8 (pops out from behind G1)
+    // G3: 18T Lower-Left Gear at (-52.01, -40.63), rPitch=19.8, rTip=22.0, rRoot=17.5 (pops out from behind G1)
+    const gearConfigs = [
+      {
+        teeth: 42, rPitch: 46.20, rTip: 48.50, rRoot: 43.80, spokes: 7,
+        innerTeeth: 16, innerRTip: 19.0, innerRRoot: 15.5,
+        color: "#e0b25a", sw: 0.85,
+        cx: 0.00, cy: 0.00, fromX: 0.00, fromY: 0.00,
+        deployStart: 0.00, deployEnd: 0.32,
+        ratio: 0.4200, phase: 0.00
+      },
+      {
+        teeth: 22, rPitch: 24.20, rTip: 26.50, rRoot: 21.80, spokes: 5,
+        innerTeeth: 10, innerRTip: 12.0, innerRRoot: 9.8,
+        color: "#ffe3a8", sw: 0.80,
+        cx: 56.95, cy: 41.38, fromX: 0.00, fromY: 0.00,
+        deployStart: 0.22, deployEnd: 0.58,
+        ratio: -0.8018, phase: 8.18
+      },
+      {
+        teeth: 18, rPitch: 19.80, rTip: 22.00, rRoot: 17.50, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.8, innerRRoot: 7.8,
+        color: "#d9734a", sw: 0.80,
+        cx: -52.01, cy: -40.63, fromX: 0.00, fromY: 0.00,
+        deployStart: 0.44, deployEnd: 0.82,
+        ratio: -0.9800, phase: 19.34
+      }
+    ];
+
+    const nodes = gearConfigs.map(cfg => {
+      const anchorG = spEl("g", {
+        transform: `translate(${cfg.cx.toFixed(2)}, ${cfg.cy.toFixed(2)}) scale(0.28)`,
+        opacity: "0"
+      }, baySvg);
+      const rotG = spEl("g", {
+        class: "sp-gpu-rot",
+        transform: `rotate(${cfg.phase.toFixed(2)})`
+      }, anchorG);
+
+      // Faint, visible involute teeth outline
+      spEl("path", {
+        d: spInvolutePath(cfg.teeth, cfg.rTip, cfg.rRoot, 0.30, 0.24),
+        fill: "none",
+        stroke: cfg.color,
+        "stroke-width": cfg.sw,
+        "stroke-linejoin": "round",
+        opacity: "0.85"
+      }, rotG);
+
+      // Continuous reference pitch circle
+      spEl("circle", {
+        cx: 0, cy: 0, r: cfg.rPitch.toFixed(2),
+        fill: "none", stroke: "#ffe3a8", "stroke-width": "0.45",
+        opacity: "0.25"
+      }, rotG);
+
+      // Skeleton spokes cutouts
+      const rRim = cfg.rRoot - (cfg.rTip - cfg.rRoot) * 0.72;
+      const rHub = Math.max(3.2, rRim * 0.28);
+      if (cfg.spokes && rRim > rHub + 2.2){
+        spEl("path", {
+          d: spSpokesPath(cfg.spokes, rHub, rRim),
+          fill: "none",
+          stroke: cfg.color,
+          "stroke-width": (cfg.sw * 0.82).toFixed(2),
+          "stroke-linejoin": "round",
+          opacity: "0.80"
+        }, rotG);
+      }
+
+      // Compound coaxial pinion
+      if (cfg.innerTeeth && cfg.innerRTip){
+        spEl("path", {
+          d: spInvolutePath(cfg.innerTeeth, cfg.innerRTip, cfg.innerRRoot, 0.32, 0.24),
+          fill: "none",
+          stroke: "#ffe3a8",
+          "stroke-width": (cfg.sw * 0.82).toFixed(2),
+          "stroke-linejoin": "round",
+          opacity: "0.78"
+        }, rotG);
+      }
+
+      // Center hub
+      spEl("circle", {
+        cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
+        fill: "rgba(42,22,16,0.65)", stroke: "#ffe3a8", "stroke-width": (cfg.sw * 0.82).toFixed(2), opacity: "0.85"
+      }, rotG);
+      spEl("circle", {
+        cx: 0, cy: 0, r: 1.6,
+        fill: cfg.color === "#d9734a" ? "#ffe3a8" : "#FF7838",
+        stroke: "none", opacity: "0.85"
+      }, rotG);
+
+      return {
+        anchorNode: anchorG,
+        rotNode: rotG,
+        targetX: cfg.cx,
+        targetY: cfg.cy,
+        originX: cfg.fromX,
+        originY: cfg.fromY,
+        deployStart: cfg.deployStart,
+        deployEnd: cfg.deployEnd,
+        basePhase: cfg.phase,
+        ratio: cfg.ratio,
+        lastOp: "0",
+        lastTf: "",
+        lastRot: ""
+      };
+    });
+
+    cardEl.insertBefore(baySvg, cardEl.firstChild);
+
+    const bayEntry = {
+      sel,
+      cardEl,
+      baySvg,
+      nodes,
+      deployP: 0.0,
+      targetP: 0.0,
+      spinAngle: 0.0,
+      spinSpeed: 0.0,
+      targetSpeed: 0.0
+    };
+    SP.cardBays.push(bayEntry);
+  });
+
+  // Global controller methods for triggering definition box typing gear animations
+  window.triggerBoxTypingStart = function(cardSelector){
+    const entry = SP.cardBays.find(b => b.sel === cardSelector || b.cardEl === document.querySelector(cardSelector));
+    if (!entry) return;
+    entry.targetP = 1.0;
+    entry.targetSpeed = 125.0; // Dynamic locked rotation while text is actively typing
+    entry.baySvg.classList.add("typing");
+    playHorologicalClick(1.18, 0.032);
+  };
+
+  window.triggerBoxTypingEnd = function(cardSelector){
+    const entry = SP.cardBays.find(b => b.sel === cardSelector || b.cardEl === document.querySelector(cardSelector));
+    if (!entry) return;
+    entry.targetSpeed = 0.0;
+    // Cascading Leap Chrone deactivation: gears tuck back behind one another in exact reverse order!
+    entry.targetP = 0.0;
+    entry.baySvg.classList.remove("typing");
+    playHorologicalClick(0.95, 0.028);
+  };
+
+  // 5. Hook into Seasonal Astrolabe (#seasWheelSvg) — Visible Annulus Planetary Gear Train (r = 78 .. 132)
+  // Previously hidden under the r=78 center hub; now a 64T Sun Ring Gear (rPitch=81.6) meshes with 4 unequal
+  // planetary gear pairs (18T+12T, 14T+16T, 20T+12T, 16T+14T) right inside the open astrolabe window!
   window.populateSeasWheelGears = function(parentG){
+    parentG.setAttribute("opacity", "0.52");
     SP.seasNodes = [
+      // Central 64T Sun Ring Gear protruding around the r=78 hub rim
       createWatchmakerGear(parentG, {
-        cx: -38, cy: -34, teeth: 28, rTip: 36, rRoot: 30.5, spokes: 5,
-        innerTeeth: 12, innerRTip: 14, innerRRoot: 11.5,
-        color: "#e0b25a", sw: 0.9, ratio: 0.9, phase: 0
+        cx: 0.00, cy: 0.00, teeth: 64, rPitch: 81.60, rTip: 84.02, rRoot: 78.92, spokes: 8,
+        color: "#e0b25a", sw: 0.95, ratio: 0.4500, phase: 0.00
+      }),
+      // NE Quadrant: 18T Planet + 12T Pinion
+      createWatchmakerGear(parentG, {
+        cx: 73.93, cy: -73.93, teeth: 18, rPitch: 22.95, rTip: 25.37, rRoot: 20.27, spokes: 4,
+        innerTeeth: 8, innerRTip: 10.2, innerRRoot: 8.0,
+        color: "#ffe3a8", sw: 0.92, ratio: -1.6000, phase: 5.00
       }),
       createWatchmakerGear(parentG, {
-        cx: 24, cy: -42, teeth: 22, rTip: 29.5, rRoot: 24.5, spokes: 4,
-        color: "#ffe3a8", sw: 0.85, ratio: -1.14, phase: 8
+        cx: 106.37, cy: -53.66, teeth: 12, rPitch: 15.30, rTip: 17.72, rRoot: 12.62, spokes: 3,
+        color: "#d9734a", sw: 0.88, ratio: 2.4000, phase: 6.50
+      }),
+      // SE Quadrant: 14T Planet + 16T Transfer Gear
+      createWatchmakerGear(parentG, {
+        cx: 70.32, cy: 70.32, teeth: 14, rPitch: 17.85, rTip: 20.27, rRoot: 15.17, spokes: 4,
+        color: "#ffe3a8", sw: 0.90, ratio: -2.0571, phase: 6.43
       }),
       createWatchmakerGear(parentG, {
-        cx: 12, cy: 38, teeth: 32, rTip: 42, rRoot: 36, spokes: 6,
-        color: "#d9734a", sw: 0.9, ratio: 0.78, phase: 14
+        cx: 52.36, cy: 104.09, teeth: 16, rPitch: 20.40, rTip: 22.82, rRoot: 17.72, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.4, innerRRoot: 7.4,
+        color: "#d9734a", sw: 0.88, ratio: 1.8000, phase: 9.13
+      }),
+      // SW Quadrant: 20T Planet + 12T Pinion
+      createWatchmakerGear(parentG, {
+        cx: -75.73, cy: 75.73, teeth: 20, rPitch: 25.50, rTip: 27.92, rRoot: 22.82, spokes: 5,
+        innerTeeth: 10, innerRTip: 11.4, innerRRoot: 9.0,
+        color: "#ffe3a8", sw: 0.92, ratio: -1.4400, phase: 0.00
+      }),
+      createWatchmakerGear(parentG, {
+        cx: -110.33, cy: 54.11, teeth: 12, rPitch: 15.30, rTip: 17.72, rRoot: 12.62, spokes: 3,
+        color: "#d9734a", sw: 0.88, ratio: 2.4000, phase: 23.67
+      }),
+      // NW Quadrant: 16T Planet + 14T Pinion
+      createWatchmakerGear(parentG, {
+        cx: -72.12, cy: -72.12, teeth: 16, rPitch: 20.40, rTip: 22.82, rRoot: 17.72, spokes: 4,
+        color: "#ffe3a8", sw: 0.90, ratio: -1.8000, phase: 11.25
+      }),
+      createWatchmakerGear(parentG, {
+        cx: -51.85, cy: -104.56, teeth: 14, rPitch: 17.85, rTip: 20.27, rRoot: 15.17, spokes: 4,
+        innerTeeth: 7, innerRTip: 8.6, innerRRoot: 6.8,
+        color: "#d9734a", sw: 0.88, ratio: 2.0571, phase: 8.29
       })
     ];
   };
   window.updateSeasWheelGears = function(wheelDeg, dialRotDeg){
-    const base = (wheelDeg + 90) * 1.6 + (dialRotDeg || 0) * 0.5 + SP.masterAngle * 0.25;
-    SP.seasNodes.forEach(n => {
-      const ang = n.phase + base * n.ratio;
-      n.rotNode.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
-    });
+    const base = (wheelDeg + 90) * 1.45 + (dialRotDeg || 0) * 0.55 + SP.masterAngle * 0.28;
+    for (let i = 0; i < SP.seasNodes.length; i++){
+      const n = SP.seasNodes[i];
+      setGearRot(n, n.phase + base * n.ratio);
+    }
   };
-  // Re-populate if buildSeasWheelSvg already ran
   const existingSeasG = document.getElementById("seasHorologicalGears");
-  if (existingSeasG && !SP.seasNodes.length){
+  if (existingSeasG){
+    existingSeasG.innerHTML = "";
     window.populateSeasWheelGears(existingSeasG);
   }
 
+  // 6. Hook into Weekday Drift Heptagram Wheel (#wheelSvg) — Epicyclic 11-Gear Train in Visible Annulus (r = 55 .. 125)
+  // Central 48T Sun Gear (rPitch = 56.4) meshes with 5 radially symmetric 18T Planet Gears (r = 77.55)
+  // and 5 outer 14T Idler Pinions (r = 100.3) so every year step visibly drives a full horological differential!
   window.populateDriftWheelGears = function(parentG){
+    parentG.setAttribute("opacity", "0.48");
     SP.driftNodes = [
+      // Central 48T Sun Gear (teeth emerge right outside the r=55 center core)
       createWatchmakerGear(parentG, {
-        cx: 0, cy: 0, teeth: 42, rTip: 92, rRoot: 84, spokes: 7,
-        color: "#e0b25a", sw: 0.85, ratio: 0.45, phase: 0
+        cx: 0.00, cy: 0.00, teeth: 48, rPitch: 56.40, rTip: 58.63, rRoot: 53.93, spokes: 7,
+        color: "#e0b25a", sw: 0.95, ratio: 0.4500, phase: 0.00
+      }),
+      // Arm 0 (-90°): 18T Planet + 14T Idler
+      createWatchmakerGear(parentG, {
+        cx: 0.00, cy: -77.55, teeth: 18, rPitch: 21.15, rTip: 23.38, rRoot: 18.68, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.5,
+        color: "#ffe3a8", sw: 0.88, ratio: -1.2000, phase: 0.00
       }),
       createWatchmakerGear(parentG, {
-        cx: -46, cy: -32, teeth: 18, rTip: 24, rRoot: 19.5, spokes: 4,
-        color: "#ffe3a8", sw: 0.8, ratio: -1.05, phase: 6
+        cx: 22.10, cy: -107.97, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
+        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 2.57
+      }),
+      // Arm 1 (-18°): 18T Planet + 14T Idler
+      createWatchmakerGear(parentG, {
+        cx: 73.75, cy: -23.96, teeth: 18, rPitch: 21.15, rTip: 23.38, rRoot: 18.68, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.5,
+        color: "#ffe3a8", sw: 0.88, ratio: -1.2000, phase: 20.00
       }),
       createWatchmakerGear(parentG, {
-        cx: 46, cy: 32, teeth: 18, rTip: 24, rRoot: 19.5, spokes: 4,
-        color: "#d9734a", sw: 0.8, ratio: -1.05, phase: 12
+        cx: 109.51, cy: -12.34, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
+        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 7.71
+      }),
+      // Arm 2 (+54°): 18T Planet + 14T Idler
+      createWatchmakerGear(parentG, {
+        cx: 45.58, cy: 62.74, teeth: 18, rPitch: 21.15, rTip: 23.38, rRoot: 18.68, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.5,
+        color: "#ffe3a8", sw: 0.88, ratio: -1.2000, phase: 20.00
+      }),
+      createWatchmakerGear(parentG, {
+        cx: 45.58, cy: 100.34, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
+        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 12.86
+      }),
+      // Arm 3 (+126°): 18T Planet + 14T Idler
+      createWatchmakerGear(parentG, {
+        cx: -45.58, cy: 62.74, teeth: 18, rPitch: 21.15, rTip: 23.38, rRoot: 18.68, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.5,
+        color: "#ffe3a8", sw: 0.88, ratio: -1.2000, phase: 0.00
+      }),
+      createWatchmakerGear(parentG, {
+        cx: -81.34, cy: 74.36, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
+        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 18.00
+      }),
+      // Arm 4 (+198°): 18T Planet + 14T Idler
+      createWatchmakerGear(parentG, {
+        cx: -73.75, cy: -23.96, teeth: 18, rPitch: 21.15, rTip: 23.38, rRoot: 18.68, spokes: 4,
+        innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.5,
+        color: "#ffe3a8", sw: 0.88, ratio: -1.2000, phase: 0.00
+      }),
+      createWatchmakerGear(parentG, {
+        cx: -95.85, cy: -54.38, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
+        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 23.14
       })
     ];
   };
   window.updateDriftWheelGears = function(yearVal){
-    const base = (yearVal - 1) * 28 + SP.masterAngle * 0.3;
-    SP.driftNodes.forEach(n => {
-      const ang = n.phase + base * n.ratio;
-      n.rotNode.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
-    });
+    const base = (yearVal - 1) * 24 + SP.masterAngle * 0.32;
+    for (let i = 0; i < SP.driftNodes.length; i++){
+      const n = SP.driftNodes[i];
+      setGearRot(n, n.phase + base * n.ratio);
+    }
   };
   const existingDriftG = document.getElementById("driftHorologicalGears");
-  if (existingDriftG && !SP.driftNodes.length){
+  if (existingDriftG){
+    existingDriftG.innerHTML = "";
     window.populateDriftWheelGears(existingDriftG);
   }
 
-  // 6. Interactive Mainspring Winding Logic
-  const windBtn = document.getElementById("steampunkWindBtn");
-  const windFill = document.getElementById("spWindFill");
-  const windPct = document.getElementById("spWindPct");
-
-  function windMainspring(amount = 0.55, gleamSvg = null){
-    SP.windBoost = Math.min(3.2, SP.windBoost + amount);
-    SP.tension = Math.min(1.5, SP.tension + amount * 0.38);
-    playCrownWindBurst();
-
-    if (gleamSvg){
-      gleamSvg.classList.add("sp-active-gleam");
-      setTimeout(() => gleamSvg.classList.remove("sp-active-gleam"), 650);
-    } else {
-      document.querySelectorAll(".sp-corner-svg").forEach(s => {
-        s.classList.add("sp-active-gleam");
-        setTimeout(() => s.classList.remove("sp-active-gleam"), 550);
-      });
-    }
-
-    // Pulse cards in the currently active page
-    const activeSec = document.getElementById(currentPage || "home");
-    if (activeSec){
-      activeSec.querySelectorAll(".card").forEach(c => {
-        c.classList.add("sp-torque-pulse");
-        setTimeout(() => c.classList.remove("sp-torque-pulse"), 520);
-      });
-    }
-  }
-
-  if (windBtn){
-    windBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      windMainspring(0.65);
-    });
-  }
-
-  // Subtle tactile clicks on nav links and range sliders
+  // 7. Interactive Mechanical Coupling Across Controls (Nav, Sliders, Converter Flips, Calendar Buttons)
   document.querySelectorAll("nav.top a").forEach(a => {
     a.addEventListener("click", () => {
-      SP.windBoost = Math.max(SP.windBoost, 0.45);
-      playHorologicalClick(1.08, 0.042);
+      pulseGearTrain(32, 1.08);
     });
+  });
+
+  ["flipDateSolBtn", "flipUnitsBtn", "prevY", "nextY", "prevM", "nextM", "prevSol", "nextSol", "driftPrev", "driftNext"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn){
+      btn.addEventListener("click", () => {
+        pulseGearTrain(48, 1.16);
+      });
+    }
   });
 
   let lastSliderTickVal = new WeakMap();
@@ -12938,99 +13252,150 @@ let startHomeTyping = () => {};
       const v = Number(rng.value);
       const max = Number(rng.max) || 100;
       const prev = lastSliderTickVal.get(rng);
-      if (prev === undefined || Math.abs(v - prev) >= Math.max(1, max * 0.018)){
+      if (prev === undefined || Math.abs(v - prev) >= Math.max(1, max * 0.016)){
         lastSliderTickVal.set(rng, v);
-        SP.windBoost = Math.min(2.0, SP.windBoost + 0.08);
+        SP.actionPulse = Math.min(95, SP.actionPulse + 9);
         playHorologicalClick(0.95 + (v / max) * 0.35, 0.032);
       }
     });
   });
 
-  // Scroll listener drives the peripheral gear train & scroll vernier rack
+  // Scroll listener drives the peripheral gear train & scroll vernier rack with zero layout thrash
   window.addEventListener("scroll", () => {
     const sy = window.scrollY || 0;
     const dy = sy - SP.lastScrollY;
     SP.lastScrollY = sy;
-    SP.scrollVel = Math.max(-45, Math.min(45, SP.scrollVel + dy * 0.22));
+    SP.scrollVel = Math.max(-52, Math.min(52, SP.scrollVel + dy * 0.24));
   }, { passive: true });
 
-  // Master Animation Loop for Steampunk Gear Trains
-  let spLastT = performance.now();
-  function stepSteampunk(now){
-    const dt = Math.min(0.06, Math.max(0.001, (now - spLastT) / 1000));
-    spLastT = now;
+  // Unified Master Horological Step (called directly inside the main `frame(now)` rAF loop for locked 60-120fps)
+  window.stepSteampunkFrame = function(now, dt){
+    const safeDt = Math.min(0.05, Math.max(0.001, dt || 0.016));
 
-    // Baseline horological drive coupled to clock state + scroll velocity + mainspring boost
+    // Baseline horological drive coupled to clock state + scroll velocity + transient interaction impulse
     const leapMult = (typeof S !== "undefined" && S.inLeapChrone) ? 2.4 : 1.0;
-    const baseSpeed = 14.0 * leapMult * (0.7 + SP.tension * 0.5);
-    const boostSpeed = SP.windBoost * 135.0;
+    const baseSpeed = 16.5 * leapMult;
 
-    SP.masterAngle = (SP.masterAngle + (baseSpeed + boostSpeed) * dt) % 36000;
-    SP.scrollAngle = (SP.scrollAngle + SP.scrollVel * 0.85) % 36000;
-    SP.scrollVel *= Math.pow(0.04, dt);
-
-    if (SP.windBoost > 0.005){
-      SP.windBoost *= Math.pow(0.18, dt);
+    SP.masterAngle = (SP.masterAngle + (baseSpeed + SP.actionPulse * 3.2) * safeDt) % 36000;
+    SP.scrollAngle = (SP.scrollAngle + SP.scrollVel * 0.90) % 36000;
+    SP.scrollVel *= Math.pow(0.035, safeDt);
+    if (SP.actionPulse > 0.05){
+      SP.actionPulse *= Math.pow(0.08, safeDt);
     } else {
-      SP.windBoost = 0;
+      SP.actionPulse = 0;
     }
-    // Tension relaxes gently toward 1.0x nominal wound state
-    SP.tension += (1.0 - SP.tension) * Math.min(1, dt * 0.65);
 
     const totalDrive = SP.masterAngle + SP.scrollAngle;
 
-    // Update 4 corner gear trains
+    // 1. Update 4 Viewport Corner Gear Trains (16 gears total)
     for (let i = 0; i < SP.cornerNodes.length; i++){
       const n = SP.cornerNodes[i];
-      const ang = n.phase + totalDrive * n.ratio;
-      n.rotNode.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
+      setGearRot(n, n.phase + totalDrive * n.ratio);
     }
 
-    // Update top-bar Mainspring Winder icon & readout
-    if (windIconRotNode){
-      windIconRotNode.setAttribute("transform", `rotate(${(totalDrive * 1.15).toFixed(1)})`);
-    }
-    if (windFill && windPct){
-      const mult = Math.max(1.0, 1.0 + SP.windBoost * 0.85);
-      const pctW = Math.min(100, Math.round((mult / 2.6) * 100));
-      windFill.style.width = `${Math.max(46, pctW)}%`;
-      windPct.innerHTML = `${mult.toFixed(1)}&times;`;
-      if (windBtn) windBtn.classList.toggle("sp-overdrive", SP.windBoost > 0.45);
-    }
-
-    // Update Right-Edge Scroll Vernier Rack Pinion
+    // 2. Update Right-Edge Scroll Vernier Rack & Dual-Gear Carriage
     if (SP.rackGroup && SP.rackPinion){
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const frac = Math.min(1, Math.max(0, (window.scrollY || 0) / maxScroll));
-      const rackY = 14 + frac * 192;
-      SP.rackGroup.setAttribute("transform", `translate(9, ${rackY.toFixed(1)})`);
-      SP.rackPinion.rotNode.setAttribute("transform", `rotate(${(frac * 720 + SP.masterAngle * 0.5).toFixed(1)})`);
+      const rackY = (14 + frac * 192).toFixed(1);
+      if (SP.lastRackYStr !== rackY){
+        SP.lastRackYStr = rackY;
+        SP.rackGroup.setAttribute("transform", `translate(12, ${rackY})`);
+      }
+      // Exact rack-and-pinion rolling kinematics: θ (deg) = (Δy / rPitch) * (180 / π)
+      const rackRollDeg = ((frac * 192) / 7.0) * (180 / Math.PI) + SP.masterAngle * 0.45;
+      setGearRot(SP.rackPinion, rackRollDeg);
+      if (SP.rackIdler){
+        setGearRot(SP.rackIdler, SP.rackIdler.phase + rackRollDeg * SP.rackIdler.ratio);
+      }
     }
 
-    // Update Section Header Twin-Gear Badges
+    // 3. Update Section Header 3-Gear Meshing Trains
     for (let i = 0; i < SP.sectionGears.length; i++){
       const sg = SP.sectionGears[i];
       if (sg.localBoost > 0.1){
-        sg.localBoost *= Math.pow(0.12, dt);
+        sg.localBoost *= Math.pow(0.12, safeDt);
       } else {
         sg.localBoost = 0;
       }
-      const d = totalDrive * 0.75 + sg.localBoost * 4.2;
-      sg.g1.rotNode.setAttribute("transform", `rotate(${(sg.g1.phase + d * sg.g1.ratio).toFixed(1)})`);
-      sg.g2.rotNode.setAttribute("transform", `rotate(${(sg.g2.phase + d * sg.g2.ratio).toFixed(1)})`);
+      const d = totalDrive * 0.78 + sg.localBoost * 4.5;
+      setGearRot(sg.g1, sg.g1.phase + d * sg.g1.ratio);
+      setGearRot(sg.g2, sg.g2.phase + d * sg.g2.ratio);
+      setGearRot(sg.g3, sg.g3.phase + d * sg.g3.ratio);
     }
 
-    // Keep Seasonal and Drift sub-gears gently turning when visible
+    // 4. Update Interactive Definition Card Corner Gear Bays (Pop-Out, Rotation & Reverse Tuck-Behind)
+    for (let i = 0; i < SP.cardBays.length; i++){
+      const cb = SP.cardBays[i];
+
+      // Smooth deployment progress (0 = hidden behind parent, 1 = fully deployed)
+      if (Math.abs(cb.deployP - cb.targetP) > 0.001){
+        const depSpeed = cb.targetP > cb.deployP ? 3.2 : 2.4; // Responsive emergence, measured cascade tuck-behind
+        cb.deployP += (cb.targetP - cb.deployP) * Math.min(1, safeDt * depSpeed);
+        if (cb.deployP < 0.005 && cb.targetP === 0){
+          cb.deployP = 0;
+          cb.baySvg.classList.remove("typing");
+        }
+      }
+
+      // Smooth rotation velocity transition
+      cb.spinSpeed += (cb.targetSpeed - cb.spinSpeed) * Math.min(1, safeDt * 8.0);
+      if (cb.spinSpeed > 0.5){
+        cb.spinAngle = (cb.spinAngle + cb.spinSpeed * safeDt) % 36000;
+      }
+
+      if (cb.deployP <= 0) continue;
+
+      // Cascade pop-out / tuck-behind per gear (matching Leap Chrone mechanism)
+      const masterP = Math.min(1, cb.deployP / 0.82);
+      for (let j = 0; j < cb.nodes.length; j++){
+        const item = cb.nodes[j];
+        const span = Math.max(0.06, item.deployEnd - item.deployStart);
+        const localU = Math.max(0, Math.min(1, (masterP - item.deployStart) / span));
+
+        if (localU <= 0.001){
+          if (item.lastOp !== "0"){
+            item.lastOp = "0";
+            item.anchorNode.setAttribute("opacity", "0");
+          }
+          continue;
+        }
+
+        const eased = easeTypewriterGearPop(localU);
+        const alphaStr = (Math.min(1, localU / 0.15) * 0.90).toFixed(3);
+        if (item.lastOp !== alphaStr){
+          item.lastOp = alphaStr;
+          item.anchorNode.setAttribute("opacity", alphaStr);
+        }
+
+        const curX = item.originX + (item.targetX - item.originX) * eased;
+        const curY = item.originY + (item.targetY - item.originY) * eased;
+        const sc = 0.28 + 0.72 * eased;
+        const tf = `translate(${curX.toFixed(2)}, ${curY.toFixed(2)}) scale(${sc.toFixed(3)})`;
+        if (item.lastTf !== tf){
+          item.lastTf = tf;
+          item.anchorNode.setAttribute("transform", tf);
+        }
+
+        // Additional spin burst while emerging / tucking behind
+        const popSpin = (1 - localU) * -55 * Math.sign(item.ratio);
+        const ang = item.basePhase + (cb.spinAngle + totalDrive * 0.4) * item.ratio + popSpin;
+        const rotStr = `rotate(${ang.toFixed(2)})`;
+        if (item.lastRot !== rotStr){
+          item.lastRot = rotStr;
+          item.rotNode.setAttribute("transform", rotStr);
+        }
+      }
+    }
+
+    // 5. Keep Seasonal Astrolabe and Weekday Drift Epicyclic Gear Trains turning smoothly when active
     if (currentPage === "seasons" && window.updateSeasWheelGears && typeof SEAS !== "undefined"){
       window.updateSeasWheelGears(SEAS.markerAngle || -90, SEAS.dialRotDeg || 0);
     }
     if (currentPage === "drift" && window.updateDriftWheelGears && typeof DRIFT !== "undefined"){
       window.updateDriftWheelGears(DRIFT.y || 1);
     }
-
-    requestAnimationFrame(stepSteampunk);
-  }
-  requestAnimationFrame(stepSteampunk);
+  };
 })();
 
 // ---------- Start ----------
