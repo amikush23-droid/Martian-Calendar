@@ -6177,7 +6177,8 @@ function easeGearPopOut(t){
 // Apply both rotational motion and per-gear sequential pop-out / tuck-in deployment state (deployMasterP in [0..1])
 function applyGearTrainState(refs, baseAngleDeg, deployMasterP){
   if (!refs || !refs.gearSpinNodes) return;
-  const p = (deployMasterP !== undefined) ? deployMasterP : 1.0;
+  // Cascade windows span 0..0.98; dividing by 0.8 finishes the whole train earlier, so no gear trails behind the sound
+  const p = Math.min(1, ((deployMasterP !== undefined) ? deployMasterP : 1.0) / 0.8);
   const nodes = refs.gearSpinNodes;
 
   for (let i = 0; i < nodes.length; i++){
@@ -6192,7 +6193,7 @@ function applyGearTrainState(refs, baseAngleDeg, deployMasterP){
 
     const easedPos = easeGearPopOut(localU);
     // Rapid fade-in as the gear emerges from behind its parent gear, and crisp fade-out as it tucks back behind
-    const alpha = Math.min(1, localU / 0.28);
+    const alpha = Math.min(1, localU / 0.12);
     item.anchorNode.setAttribute("opacity", alpha.toFixed(3));
 
     if (item.isRing){
@@ -6237,7 +6238,8 @@ function triggerGearCogTransition(refs, isActivating){
   }
 
   // Synchronized with the ~1.18s active mechanical ratchet burst of the Gears 1 sound effect
-  const durMs = isActivating ? 1180 : 1040;
+  // Faster to match the SFX attack: gears leave/return in ~0.72 s / ~0.60 s
+  const durMs = isActivating ? 720 : 600;
   const startMs = performance.now();
   const startOffset = refs.gearAngleAccum || 0;
   const dir = isActivating ? 1 : -1;
@@ -6251,8 +6253,8 @@ function triggerGearCogTransition(refs, isActivating){
     // On activation: p goes 0 -> 1 (gears pop out one by one down the chain)
     // On deactivation: p goes 1 -> 0 (gears tuck back behind one another in exact reverse order!)
     const deployP = isActivating
-      ? (1 - Math.pow(1 - u, 1.35))
-      : Math.pow(1 - u, 1.35);
+      ? (1 - Math.pow(1 - u, 2.2))
+      : Math.pow(1 - u, 2.2);
 
     refs.gearLayerG.style.opacity = deployP > 0.002 ? "0.94" : "0";
     refs.gearLayerG.style.transform = "scale(1)";
