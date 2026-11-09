@@ -185,22 +185,22 @@ svg.dial:active{cursor:grabbing}
 }
 .leap-dial-group.inactivating .leap-track-layer {
   opacity: 0;
-  transform: scale(1.045);
-  transition: transform .62s cubic-bezier(.22, 1, .36, 1), opacity .54s cubic-bezier(.22, 1, .36, 1);
+  transform: scale(0.88);
+  transition: transform 1.05s cubic-bezier(0.25, 1, 0.35, 1) 0.12s, opacity 0.98s cubic-bezier(0.25, 1, 0.35, 1) 0.14s;
 }
 .leap-dial-group.inactivating .leap-crown-layer {
   opacity: 0;
-  transform: scale(1.06) rotate(9deg);
-  transition: transform .64s cubic-bezier(.22, 1, .36, 1), opacity .52s cubic-bezier(.22, 1, .36, 1);
+  transform: scale(0.86) rotate(-8deg);
+  transition: transform 1.08s cubic-bezier(0.25, 1, 0.35, 1) 0.10s, opacity 1.02s cubic-bezier(0.25, 1, 0.35, 1) 0.12s;
 }
 .leap-dial-group.inactivating .leap-sweep-layer {
   opacity: 0;
-  transform: scale(1.08);
-  transition: transform .68s cubic-bezier(.16, 1, .3, 1), opacity .58s cubic-bezier(.22, 1, .36, 1);
+  transform: scale(0.85);
+  transition: transform 1.04s cubic-bezier(0.25, 1, 0.35, 1) 0.10s, opacity 0.96s cubic-bezier(0.25, 1, 0.35, 1) 0.12s;
 }
 .leap-dial-group.inactivating .leap-wave-ring {
   stroke: #e0b25a;
-  animation: leapWaveInactivate .66s cubic-bezier(.16, 1, .3, 1) forwards;
+  animation: leapWaveInactivate 0.95s cubic-bezier(0.25, 1, 0.35, 1) forwards;
 }
 @keyframes leapWaveActivate {
   0% { opacity: 0.85; transform: scale(0.77); stroke-width: 4.2px; }
@@ -4986,7 +4986,6 @@ function createMartianDial(svgEl, prefix){
 
   const gearSpinNodes = [];
   const gearLayerG = el("g", {class: "leap-gear-cob-layer", "pointer-events": "none"}, svgEl);
-  // Insert gearLayerG right before leapDialG (or behind mainDialG hands) so it integrates seamlessly into the dial gap
 
   function addSkeletonGear(parent, cx, cy, opts){
     const anchorG = el("g", {transform: `translate(${cx.toFixed(2)}, ${cy.toFixed(2)})`}, parent);
@@ -5044,7 +5043,7 @@ function createMartianDial(svgEl, prefix){
       }, rotG);
     }
 
-    // 5. Center jewel bearing outline (pure outline, no heavy dark blotch)
+    // 5. Center jewel bearing outline
     el("circle", {
       cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
       fill: "none", stroke: "#ffe3a8", "stroke-width": String(sw * 0.85), opacity: "0.9"
@@ -5055,29 +5054,100 @@ function createMartianDial(svgEl, prefix){
     }, rotG);
 
     gearSpinNodes.push({
+      anchorNode: anchorG,
       node: rotG,
+      targetX: cx,
+      targetY: cy,
+      originX: (opts.fromX !== undefined) ? opts.fromX : 0,
+      originY: (opts.fromY !== undefined) ? opts.fromY : 0,
+      deployStart: (opts.deployStart !== undefined) ? opts.deployStart : 0.0,
+      deployEnd: (opts.deployEnd !== undefined) ? opts.deployEnd : 0.32,
       basePhase: opts.phase || 0,
-      speedRatio: opts.speedRatio || 1.0
+      speedRatio: opts.speedRatio || 1.0,
+      isRing: false
     });
   }
 
-  // A) Deep Background Skeleton Mainspring Wheels (4 large ultra-fine golden filigree wheels at r = 86, diagonal axes)
-  // Visible through the translucent dial rings as the mechanism shifts
-  for (let dIdx = 0; dIdx < 4; dIdx++){
-    const ang = ((dIdx * 90 + 45) * Math.PI) / 180;
-    const bx = 86 * Math.cos(ang), by = 86 * Math.sin(ang);
-    addSkeletonGear(gearLayerG, bx, by, {
-      teeth: 28, rTip: 36, rRoot: 32.8, spokes: 6,
-      innerTeeth: 12, innerRTip: 14.5, innerRRoot: 12.2,
-      strokeWidth: 0.78, opacity: 0.48,
-      phase: dIdx * 12.8,
-      speedRatio: (dIdx % 2 === 0 ? 0.55 : -0.55)
-    });
+  // A) Deep Background Skeleton Watchmaker Train: 7 Unequal Interconnected Gears
+  // Each gear pops out from behind the previous gear in the chain one by one on activation,
+  // and tucks back behind its parent gear in reverse order on deactivation!
+  const interconnectedTrain = [
+    {
+      // 1. Top-Right: Grand Horological Barrel Wheel (pops out from behind dial center 0,0)
+      cx: 62.0, cy: -56.0, fromX: 0.0, fromY: 0.0,
+      deployStart: 0.00, deployEnd: 0.24,
+      teeth: 46, rTip: 49.5, rRoot: 42.5, spokes: 7,
+      innerTeeth: 16, innerRTip: 17.5, innerRRoot: 14.8,
+      strokeWidth: 0.95, opacity: 0.64,
+      speedRatio: 0.35, phase: 0.0
+    },
+    {
+      // 2. Top-Center: Center Driving Wheel (pops out from behind Gear 1)
+      cx: -7.3, cy: -65.7, fromX: 62.0, fromY: -56.0,
+      deployStart: 0.11, deployEnd: 0.35,
+      teeth: 24, rTip: 26.5, rRoot: 21.5, spokes: 5,
+      innerTeeth: 10, innerRTip: 12.0, innerRRoot: 9.8,
+      strokeWidth: 0.88, opacity: 0.60,
+      speedRatio: -0.671, phase: 7.5
+    },
+    {
+      // 3. Top-Left: Third Intermediate Wheel (pops out from behind Gear 2)
+      cx: -53.3, cy: -27.2, fromX: -7.3, fromY: -65.7,
+      deployStart: 0.22, deployEnd: 0.46,
+      teeth: 36, rTip: 39.2, rRoot: 32.8, spokes: 6,
+      innerTeeth: 14, innerRTip: 15.5, innerRRoot: 13.0,
+      strokeWidth: 0.90, opacity: 0.62,
+      speedRatio: 0.447, phase: 5.0
+    },
+    {
+      // 4. Mid-Left: Fast Motion Pinion (pops out from behind Gear 3)
+      cx: -62.3, cy: 24.1, fromX: -53.3, fromY: -27.2,
+      deployStart: 0.33, deployEnd: 0.57,
+      teeth: 16, rTip: 18.2, rRoot: 13.8, spokes: 4,
+      innerTeeth: 8, innerRTip: 9.5, innerRRoot: 7.6,
+      strokeWidth: 0.82, opacity: 0.58,
+      speedRatio: -1.006, phase: 11.25
+    },
+    {
+      // 5. Bottom-Left: Fourth / Seconds Driving Wheel (pops out from behind Gear 4)
+      cx: -34.8, cy: 63.4, fromX: -62.3, fromY: 24.1,
+      deployStart: 0.44, deployEnd: 0.68,
+      teeth: 32, rTip: 35.0, rRoot: 29.0, spokes: 5,
+      innerTeeth: 12, innerRTip: 13.8, innerRRoot: 11.4,
+      strokeWidth: 0.88, opacity: 0.60,
+      speedRatio: 0.503, phase: 5.6
+    },
+    {
+      // 6. Bottom-Center: High-Speed Escapement Pinion (pops out from behind Gear 5)
+      cx: 11.1, cy: 59.4, fromX: -34.8, fromY: 63.4,
+      deployStart: 0.55, deployEnd: 0.79,
+      teeth: 14, rTip: 15.8, rRoot: 12.2, spokes: 3,
+      innerTeeth: 6, innerRTip: 7.8, innerRRoot: 6.2,
+      strokeWidth: 0.78, opacity: 0.56,
+      speedRatio: -1.150, phase: 12.8
+    },
+    {
+      // 7. Bottom-Right: Winding Transfer Wheel (pops out from behind Gear 6)
+      cx: 49.1, cy: 41.6, fromX: 11.1, fromY: 59.4,
+      deployStart: 0.66, deployEnd: 0.90,
+      teeth: 28, rTip: 30.8, rRoot: 25.2, spokes: 5,
+      innerTeeth: 10, innerRTip: 11.8, innerRRoot: 9.8,
+      strokeWidth: 0.85, opacity: 0.58,
+      speedRatio: 0.575, phase: 6.4
+    }
+  ];
+
+  // Append in reverse order (Gear 7 -> Gear 1) so each child gear is layered underneath its parent gear in SVG painter order,
+  // physically emerging from BEHIND the parent gear!
+  for (let idx = interconnectedTrain.length - 1; idx >= 0; idx--){
+    const gConf = interconnectedTrain[idx];
+    addSkeletonGear(gearLayerG, gConf.cx, gConf.cy, gConf);
   }
 
-  // B) Concentric Epicyclic Ring Gears bridging the exact gap between the shrunk 3-ring dial (r = 139) and the 4th Leap Chrone ring (r = 156)
+  // B) Concentric Epicyclic Ring Gears
   // B1. Inner Sun Gear Ring (r = 123, 60 outward golden teeth)
-  const sunRingG = el("g", {transform: "rotate(0)"}, gearLayerG);
+  const sunRingAnchor = el("g", {}, gearLayerG);
+  const sunRingG = el("g", {transform: "rotate(0)"}, sunRingAnchor);
   el("path", {
     d: buildInvoluteGearPath(60, 125.2, 121.8, 0.30, 0.25),
     fill: "none", stroke: "#e0b25a", "stroke-width": "0.95", opacity: "0.82"
@@ -5086,10 +5156,16 @@ function createMartianDial(svgEl, prefix){
     cx: 0, cy: 0, r: "120.2",
     fill: "none", stroke: "#ffe3a8", "stroke-width": "0.65", opacity: "0.65"
   }, sunRingG);
-  gearSpinNodes.push({ node: sunRingG, basePhase: 0, speedRatio: -0.32 });
+  gearSpinNodes.push({
+    anchorNode: sunRingAnchor, node: sunRingG,
+    targetX: 0, targetY: 0, originX: 0, originY: 0,
+    deployStart: 0.05, deployEnd: 0.45,
+    basePhase: 0, speedRatio: -0.32, isRing: true, ringStartScale: 0.78
+  });
 
-  // B2. Outer Annulus Carrier Ring Gear (r = 155.5, 76 inward-meshing golden teeth right inside the 4th ring)
-  const annulusRingG = el("g", {transform: "rotate(0)"}, gearLayerG);
+  // B2. Outer Annulus Carrier Ring Gear (r = 155.5, 76 inward-meshing golden teeth)
+  const annulusRingAnchor = el("g", {}, gearLayerG);
+  const annulusRingG = el("g", {transform: "rotate(0)"}, annulusRingAnchor);
   el("path", {
     d: buildInvoluteGearPath(76, 153.2, 156.8, 0.30, 0.25),
     fill: "none", stroke: "#ffe3a8", "stroke-width": "1.0", opacity: "0.86"
@@ -5098,44 +5174,59 @@ function createMartianDial(svgEl, prefix){
     cx: 0, cy: 0, r: "158.2",
     fill: "none", stroke: "#e0b25a", "stroke-width": "0.75", "stroke-dasharray": "6 3", opacity: "0.72"
   }, annulusRingG);
-  gearSpinNodes.push({ node: annulusRingG, basePhase: 0, speedRatio: 0.25 });
+  gearSpinNodes.push({
+    anchorNode: annulusRingAnchor, node: annulusRingG,
+    targetX: 0, targetY: 0, originX: 0, originY: 0,
+    deployStart: 0.15, deployEnd: 0.65,
+    basePhase: 0, speedRatio: 0.25, isRing: true, ringStartScale: 0.84
+  });
 
-  // C) Epicyclic Planetary Gear Train (16 precision-meshing golden outline cogs in the r = 123..156 annular track)
-  // At 8 symmetrical stations around the clock (every 45 degrees):
-  // - Primary 16-tooth Planetary Wheel (r_orbit = 139.2, rTip = 16.8, rRoot = 13.6) bridging r = 122.4 to r = 156.0!
-  // - flanked by 2 meshing 10-tooth Transfer Pinions (at +13.5 deg, r_orbit = 131.5 and -13.5 deg, r_orbit = 146.8)
+  // C) Epicyclic Planetary Gear Train (8 stations cascading sequentially around the clock):
+  // At each station, the 2 flanking transfer pinions pop out from behind the Main Planetary Cog,
+  // while the Main Planetary Cog pops out radially from behind the inner dial rim!
   for (let sIdx = 0; sIdx < 8; sIdx++){
     const deg0 = sIdx * 45 - 90;
     const rad0 = (deg0 * Math.PI) / 180;
+    const stStart = sIdx * 0.072; // Sequential cascade around the 8 stations (0.00 -> 0.50)
 
-    // 1. Main Planetary Bridge Cog (spans exact gap from shrunk inner dial r=122.4 to outer Leap Chrone ring r=156.0)
     const px = 139.2 * Math.cos(rad0), py = 139.2 * Math.sin(rad0);
-    addSkeletonGear(gearLayerG, px, py, {
-      teeth: 16, rTip: 16.8, rRoot: 13.6, spokes: 5,
-      innerTeeth: 8, innerRTip: 6.8, innerRRoot: 5.0,
-      strokeWidth: 1.12, bright: (sIdx % 2 === 0), opacity: 0.95,
-      phase: sIdx * 11.25,
-      speedRatio: 1.35
-    });
+    // Hidden origin behind the inner dial ring (r = 96)
+    const pFromX = 96.0 * Math.cos(rad0), pFromY = 96.0 * Math.sin(rad0);
 
-    // 2. Inner Meshing Pinion (interlocks with both Main Planetary Cog and Inner Sun Ring)
     const radIn = ((deg0 + 11.8) * Math.PI) / 180;
     const ix = 130.8 * Math.cos(radIn), iy = 130.8 * Math.sin(radIn);
+
+    const radOut = ((deg0 - 11.2) * Math.PI) / 180;
+    const ox = 147.2 * Math.cos(radOut), oy = 147.2 * Math.sin(radOut);
+
+    // Append flanking pinions FIRST so they sit behind the Main Planetary Cog and pop out from behind its axle (px, py)!
     addSkeletonGear(gearLayerG, ix, iy, {
+      fromX: px, fromY: py,
+      deployStart: stStart + 0.14, deployEnd: Math.min(0.96, stStart + 0.42),
       teeth: 10, rTip: 10.6, rRoot: 8.2, spokes: 3,
       strokeWidth: 0.98, bright: true, opacity: 0.90,
       phase: sIdx * 18 + 9,
       speedRatio: -2.16
     });
 
-    // 3. Outer Meshing Pinion (interlocks with both Main Planetary Cog and Outer Annulus Ring)
-    const radOut = ((deg0 - 11.2) * Math.PI) / 180;
-    const ox = 147.2 * Math.cos(radOut), oy = 147.2 * Math.sin(radOut);
     addSkeletonGear(gearLayerG, ox, oy, {
+      fromX: px, fromY: py,
+      deployStart: stStart + 0.18, deployEnd: Math.min(0.98, stStart + 0.46),
       teeth: 10, rTip: 10.4, rRoot: 8.0, spokes: 4,
       strokeWidth: 0.98, bright: false, opacity: 0.88,
       phase: sIdx * 18,
       speedRatio: -2.16
+    });
+
+    // Main Planetary Bridge Cog (layered on top of its two child pinions; pops out radially from behind inner dial rim)
+    addSkeletonGear(gearLayerG, px, py, {
+      fromX: pFromX, fromY: pFromY,
+      deployStart: stStart, deployEnd: stStart + 0.28,
+      teeth: 16, rTip: 16.8, rRoot: 13.6, spokes: 5,
+      innerTeeth: 8, innerRTip: 6.8, innerRRoot: 5.0,
+      strokeWidth: 1.12, bright: (sIdx % 2 === 0), opacity: 0.95,
+      phase: sIdx * 11.25,
+      speedRatio: 1.35
     });
   }
 
@@ -6074,14 +6165,55 @@ const soundBtn = $("soundBtn");
 if (soundBtn) soundBtn.addEventListener("click", () => { initAudio(); });
 initAudio();
 
-function applyGearTrainAngle(refs, baseAngleDeg){
+// Crisp mechanical spring-out curve (slight overshoot as a gear pops out from behind its parent and locks into mesh)
+function easeGearPopOut(t){
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  const c1 = 1.45;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
+// Apply both rotational motion and per-gear sequential pop-out / tuck-in deployment state (deployMasterP in [0..1])
+function applyGearTrainState(refs, baseAngleDeg, deployMasterP){
   if (!refs || !refs.gearSpinNodes) return;
+  const p = (deployMasterP !== undefined) ? deployMasterP : 1.0;
   const nodes = refs.gearSpinNodes;
+
   for (let i = 0; i < nodes.length; i++){
     const item = nodes[i];
-    const ang = item.basePhase + baseAngleDeg * item.speedRatio;
+    const span = Math.max(0.05, item.deployEnd - item.deployStart);
+    const localU = Math.max(0, Math.min(1, (p - item.deployStart) / span));
+
+    if (localU <= 0.001){
+      item.anchorNode.setAttribute("opacity", "0");
+      continue;
+    }
+
+    const easedPos = easeGearPopOut(localU);
+    // Rapid fade-in as the gear emerges from behind its parent gear, and crisp fade-out as it tucks back behind
+    const alpha = Math.min(1, localU / 0.28);
+    item.anchorNode.setAttribute("opacity", alpha.toFixed(3));
+
+    if (item.isRing){
+      const sc = item.ringStartScale + (1 - item.ringStartScale) * easedPos;
+      item.anchorNode.setAttribute("transform", `scale(${sc.toFixed(3)})`);
+    } else {
+      const curX = item.originX + (item.targetX - item.originX) * easedPos;
+      const curY = item.originY + (item.targetY - item.originY) * easedPos;
+      const sc = 0.28 + 0.72 * easedPos;
+      item.anchorNode.setAttribute("transform", `translate(${curX.toFixed(2)}, ${curY.toFixed(2)}) scale(${sc.toFixed(3)})`);
+    }
+
+    // Add extra burst of spin while popping out / tucking in so each gear visibly rolls out from behind its parent
+    const popSpinBonus = (1 - localU) * -65 * Math.sign(item.speedRatio || 1);
+    const ang = item.basePhase + baseAngleDeg * item.speedRatio + popSpinBonus;
     item.node.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
   }
+}
+
+function applyGearTrainAngle(refs, baseAngleDeg){
+  applyGearTrainState(refs, baseAngleDeg, 1.0);
 }
 
 function computeLeapSecGearAngle(curLeapSecs){
@@ -6104,50 +6236,32 @@ function triggerGearCogTransition(refs, isActivating){
     refs.gearRafId = null;
   }
 
-  const durMs = 1320; // Matches the exact duration of the heavy Gears 1 audio sample
+  // Synchronized with the ~1.18s active mechanical ratchet burst of the Gears 1 sound effect
+  const durMs = isActivating ? 1180 : 1040;
   const startMs = performance.now();
   const startOffset = refs.gearAngleAccum || 0;
   const dir = isActivating ? 1 : -1;
   const totalSpinDeg = 165 * dir;
 
-  // Mechanical easing curve with subtle ratcheting steps and a crisp detent lock recoil at t = 0.80
-  function mechEase(u){
-    if (u < 0.80){
-      const p = u / 0.80;
-      const base = p < 0.25
-        ? 2 * p * p
-        : (1 - Math.pow(1 - p, 2.2) * 0.88);
-      const ripple = Math.sin(p * Math.PI * 10) * 0.012 * (1 - p);
-      return Math.min(1.035, base + ripple);
-    } else {
-      const q = (u - 0.80) / 0.20;
-      return 1.0 + Math.cos(q * Math.PI * 1.5) * 0.035 * (1 - q);
-    }
-  }
-
   function stepGearAnim(now){
     const elapsed = now - startMs;
     const u = Math.min(1, Math.max(0, elapsed / durMs));
 
-    if (isActivating){
-      // Fade in over first 140ms, then REMAIN VISIBLE (opacity 0.92) for the entire Leap Chrone
-      const alpha = u < 0.12 ? (u / 0.12) * 0.95 : (0.95 - (u - 0.12) * 0.034);
-      refs.gearLayerG.style.opacity = alpha.toFixed(3);
-    } else {
-      // On deactivation: stay visible during reverse gear spin, then fade out over the final 320ms
-      let alpha = 0.92;
-      if (u >= 0.72){
-        const fadeOut = (u - 0.72) / 0.28;
-        alpha = 0.92 * Math.pow(1 - fadeOut, 1.8);
-      }
-      refs.gearLayerG.style.opacity = alpha.toFixed(3);
-    }
+    // Master deployment progress p:
+    // On activation: p goes 0 -> 1 (gears pop out one by one down the chain)
+    // On deactivation: p goes 1 -> 0 (gears tuck back behind one another in exact reverse order!)
+    const deployP = isActivating
+      ? (1 - Math.pow(1 - u, 1.35))
+      : Math.pow(1 - u, 1.35);
 
-    const rotProgress = mechEase(u);
-    refs.gearAngleAccum = startOffset + totalSpinDeg * rotProgress;
+    refs.gearLayerG.style.opacity = deployP > 0.002 ? "0.94" : "0";
+    refs.gearLayerG.style.transform = "scale(1)";
+
+    const rotEase = 1 - Math.pow(1 - u, 1.85);
+    refs.gearAngleAccum = startOffset + totalSpinDeg * rotEase;
 
     const liveLeapAngle = refs.wasInLeap ? computeLeapSecGearAngle(refs.lastRawLeapSecs || 0) : (refs.lastFrozenLeapAngle || 0);
-    applyGearTrainAngle(refs, refs.gearAngleAccum + liveLeapAngle);
+    applyGearTrainState(refs, refs.gearAngleAccum + liveLeapAngle, deployP);
 
     if (u < 1){
       refs.gearRafId = requestAnimationFrame(stepGearAnim);
@@ -6155,8 +6269,10 @@ function triggerGearCogTransition(refs, isActivating){
       refs.gearRafId = null;
       if (isActivating && refs.wasInLeap){
         refs.gearLayerG.style.opacity = "0.92";
+        applyGearTrainState(refs, refs.gearAngleAccum + liveLeapAngle, 1.0);
       } else if (!refs.wasInLeap){
         refs.gearLayerG.style.opacity = "0";
+        applyGearTrainState(refs, refs.gearAngleAccum + liveLeapAngle, 0.0);
       }
     }
   }
@@ -6210,7 +6326,7 @@ function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs){
           refs.leapOrbG.setAttribute("transform", "rotate(0)");
           refs.leapTrail.setAttribute("stroke-dashoffset", LEAP_CIRC.toFixed(2));
         }
-      }, 700);
+      }, 1150);
     } else if (!refs.deactivateTimer){
       refs.leapOrbG.setAttribute("transform", "rotate(0)");
       refs.leapTrail.setAttribute("stroke-dashoffset", LEAP_CIRC.toFixed(2));
