@@ -6074,6 +6074,29 @@ const soundBtn = $("soundBtn");
 if (soundBtn) soundBtn.addEventListener("click", () => { initAudio(); });
 initAudio();
 
+function applyGearTrainAngle(refs, baseAngleDeg){
+  if (!refs || !refs.gearSpinNodes) return;
+  const nodes = refs.gearSpinNodes;
+  for (let i = 0; i < nodes.length; i++){
+    const item = nodes[i];
+    const ang = item.basePhase + baseAngleDeg * item.speedRatio;
+    item.node.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
+  }
+}
+
+function computeLeapSecGearAngle(curLeapSecs){
+  const clamped = Math.max(0, Math.min(CHRONE, curLeapSecs || 0));
+  const secFloor = Math.floor(clamped);
+  const secFrac = clamped - secFloor;
+  // Dynamic mechanical escapement pulse: 82% of the tooth advancement occurs in a crisp 0.22s stroke
+  const pulse = secFrac < 0.22
+    ? Math.sin((secFrac / 0.22) * (Math.PI * 0.5)) * 0.82
+    : (0.82 + ((secFrac - 0.22) / 0.78) * 0.18);
+  const stepProgress = secFloor + pulse;
+  // 60 degrees per second on the carrier base (162 deg/s on pinions), matching the rotational speed of activation/deactivation
+  return stepProgress * 60.0;
+}
+
 function triggerGearCogTransition(refs, isActivating){
   if (!refs || !refs.gearLayerG || !refs.gearSpinNodes) return;
   if (refs.gearRafId){
@@ -6083,7 +6106,7 @@ function triggerGearCogTransition(refs, isActivating){
 
   const durMs = 1320; // Matches the exact duration of the heavy Gears 1 audio sample
   const startMs = performance.now();
-  const startBaseAngle = refs.gearAngleAccum || 0;
+  const startOffset = refs.gearAngleAccum || 0;
   const dir = isActivating ? 1 : -1;
   const totalSpinDeg = 165 * dir;
 
@@ -6091,14 +6114,12 @@ function triggerGearCogTransition(refs, isActivating){
   function mechEase(u){
     if (u < 0.80){
       const p = u / 0.80;
-      // Smooth S-curve acceleration into steady gear mesh + subtle tooth-engagement micro-ripple
       const base = p < 0.25
         ? 2 * p * p
         : (1 - Math.pow(1 - p, 2.2) * 0.88);
       const ripple = Math.sin(p * Math.PI * 10) * 0.012 * (1 - p);
       return Math.min(1.035, base + ripple);
     } else {
-      // Detent pawl lock recoil bounce (1.035 -> 0.992 -> 1.000)
       const q = (u - 0.80) / 0.20;
       return 1.0 + Math.cos(q * Math.PI * 1.5) * 0.035 * (1 - q);
     }
@@ -6108,34 +6129,35 @@ function triggerGearCogTransition(refs, isActivating){
     const elapsed = now - startMs;
     const u = Math.min(1, Math.max(0, elapsed / durMs));
 
-    // Opacity envelope: crisp fade-in over first 140ms, full golden clarity during gear engagement, smooth fade-out over final 300ms
-    let alpha = 0;
-    if (u < 0.11){
-      alpha = (u / 0.11);
-    } else if (u < 0.76){
-      alpha = 1.0;
+    if (isActivating){
+      // Fade in over first 140ms, then REMAIN VISIBLE (opacity 0.92) for the entire Leap Chrone
+      const alpha = u < 0.12 ? (u / 0.12) * 0.95 : (0.95 - (u - 0.12) * 0.034);
+      refs.gearLayerG.style.opacity = alpha.toFixed(3);
     } else {
-      const fadeOut = (u - 0.76) / 0.24;
-      alpha = Math.pow(1 - fadeOut, 1.8);
+      // On deactivation: stay visible during reverse gear spin, then fade out over the final 320ms
+      let alpha = 0.92;
+      if (u >= 0.72){
+        const fadeOut = (u - 0.72) / 0.28;
+        alpha = 0.92 * Math.pow(1 - fadeOut, 1.8);
+      }
+      refs.gearLayerG.style.opacity = alpha.toFixed(3);
     }
-    refs.gearLayerG.style.opacity = (alpha * 0.95).toFixed(3);
 
     const rotProgress = mechEase(u);
-    const curDeltaDeg = totalSpinDeg * rotProgress;
-    refs.gearAngleAccum = startBaseAngle + curDeltaDeg;
+    refs.gearAngleAccum = startOffset + totalSpinDeg * rotProgress;
 
-    const nodes = refs.gearSpinNodes;
-    for (let i = 0; i < nodes.length; i++){
-      const item = nodes[i];
-      const ang = item.basePhase + refs.gearAngleAccum * item.speedRatio;
-      item.node.setAttribute("transform", `rotate(${ang.toFixed(2)})`);
-    }
+    const liveLeapAngle = refs.wasInLeap ? computeLeapSecGearAngle(refs.lastRawLeapSecs || 0) : (refs.lastFrozenLeapAngle || 0);
+    applyGearTrainAngle(refs, refs.gearAngleAccum + liveLeapAngle);
 
     if (u < 1){
       refs.gearRafId = requestAnimationFrame(stepGearAnim);
     } else {
-      refs.gearLayerG.style.opacity = "0";
       refs.gearRafId = null;
+      if (isActivating && refs.wasInLeap){
+        refs.gearLayerG.style.opacity = "0.92";
+      } else if (!refs.wasInLeap){
+        refs.gearLayerG.style.opacity = "0";
+      }
     }
   }
 
@@ -6149,11 +6171,20 @@ function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs){
       clearTimeout(refs.deactivateTimer);
       refs.deactivateTimer = null;
     }
+    refs.lastRawLeapSecs = curLeapSecs;
+    const leapSecAngle = computeLeapSecGearAngle(curLeapSecs);
+    refs.lastFrozenLeapAngle = leapSecAngle;
+
     if (!refs.wasInLeap){
       refs.leapDialG.classList.remove("inactivating");
       refs.leapDialG.classList.add("active");
       triggerGearCogTransition(refs, true);
+    } else if (!refs.gearRafId){
+      // Keep golden gear cobs visible and rotating in sync with the 355 seconds of the Leap Chrone
+      refs.gearLayerG.style.opacity = "0.92";
+      applyGearTrainAngle(refs, (refs.gearAngleAccum || 0) + leapSecAngle);
     }
+
     const leapProg = Math.min(1, Math.max(0, curLeapSecs / CHRONE));
     refs.lastLeapProg = leapProg;
     refs.lastSolN = curSolN;
@@ -6183,6 +6214,9 @@ function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs){
     } else if (!refs.deactivateTimer){
       refs.leapOrbG.setAttribute("transform", "rotate(0)");
       refs.leapTrail.setAttribute("stroke-dashoffset", LEAP_CIRC.toFixed(2));
+      if (!refs.gearRafId && refs.gearLayerG){
+        refs.gearLayerG.style.opacity = "0";
+      }
     }
     refs.lastSolN = curSolN;
   }
