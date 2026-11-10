@@ -4452,7 +4452,7 @@ const isBothLeapAndChroneSol = (n, d = fromN0(n - 1)) => isLeapSol(d) && isChron
 const pad3 = y => String(y).padStart(3,'0');
 const fmt = n => Number(n).toLocaleString('en-US');
 function clockParts(secs){
-  if (secs >= SOL_BASE) return { a: 24, c: 10, s: secs - SOL_BASE };
+  if (secs >= SOL_BASE) return { a: 24, c: 9, s: Math.min(354, Math.floor(secs - SOL_BASE)) };
   const a = Math.floor(secs / ARCHON), rem = secs - a*ARCHON, c = Math.floor(rem / CHRONE);
   return { a, c, s: rem - c*CHRONE };
 }
@@ -6711,7 +6711,7 @@ function updateClock(){
   mainDialRefs.hSec.setAttribute("transform", `rotate(${angleS.toFixed(2)})`);
   mainDialRefs.progRing.setAttribute("stroke-dashoffset", (PROG_C * (1 - mainProg)).toFixed(2));
 
-  const displaySec = S.inLeapChrone ? (Math.min(CHRONE - 1, Math.floor(S.leapSecs)) + 1) : (p.s === 0 ? 355 : p.s);
+  const displaySec = S.inLeapChrone ? Math.min(CHRONE - 1, Math.floor(S.leapSecs)) : p.s;
   setText(mainDialRefs.digiText, String(displaySec).padStart(3, "0"));
   const mainSecColor = S.inLeapChrone ? "#FF7838" : "#e0b25a";
   mainDialRefs.digiText.setAttribute("fill", mainSecColor);
@@ -6724,27 +6724,27 @@ function updateClock(){
   if (S.inLeapChrone){
 
     const leapSecFloor = Math.min(CHRONE - 1, Math.floor(S.leapSecs));
-    const displayLeapSec = leapSecFloor + 1;
+    const displayLeapSec = leapSecFloor;
     const leapSecTxt = String(displayLeapSec).padStart(3, "0");
     const totalWholeSecs = SOL_BASE + leapSecFloor;
 
     setText(digBig, `Leap Chrone · ${leapSecTxt} s`);
-    setText(digSub, `Main clock paused at 25:10:355 · Measuring Leap Chrone (${displayLeapSec}/355 s)`);
+    setText(digSub, `Main clock paused at 24:9:354 · Measuring Leap Chrone (${displayLeapSec}/354 s)`);
     setText(digDate, `Year ${pad3(d.year)} · ${NAMES[d.m]} · Sol ${d.sol} · ${WD[d.wd]}`);
     setText(digSec, `${fmt(totalWholeSecs)} of ${fmt(L)} s into this sol`);
-    setText($("scrubLabel"), `Leap Chrone : ${leapSecTxt} / 355 s`);
+    setText($("scrubLabel"), `Leap Chrone : ${leapSecTxt} / 354 s`);
     setText($("dialHint"), "Leap Chrone in progress — drag anywhere on the dial or scrubber to position the 355 leap seconds.");
 
     if (!mainScrubbing) scrub.value = Math.min(totalWholeSecs, L - 1);
   } else {
 
-    const dialArchon = p.a === 0 ? 25 : p.a;
-    const dialChrone = p.c === 0 ? 10 : p.c;
-    const dialSecond = p.s === 0 ? 355 : p.s;
+    const dialArchon = p.a;
+    const dialChrone = p.c;
+    const dialSecond = p.s;
     const secTxt = String(dialSecond).padStart(3, "0");
 
     setText(digBig, `Archon ${dialArchon} · Chrone ${dialChrone} · ${secTxt} s`);
-    setText(digSub, `Archon ${dialArchon}/25 · Chrone ${dialChrone}/10 · Second ${dialSecond}/355`);
+    setText(digSub, `Archon ${dialArchon}/24 · Chrone ${dialChrone}/9 · Second ${dialSecond}/354`);
     setText(digDate, `Year ${pad3(d.year)} · ${NAMES[d.m]} · Sol ${d.sol} · ${WD[d.wd]}`);
     setText(digSec, `${fmt(mainWholeSecs)} of ${fmt(L)} s into this sol`);
     setText($("scrubLabel"), `Archon ${dialArchon} : Chrone ${dialChrone} : ${secTxt} s`);
@@ -6807,7 +6807,7 @@ function updateSolClock(){
   solDialRefs.hSec.setAttribute("transform", `rotate(${angleS.toFixed(2)})`);
   solDialRefs.progRing.setAttribute("stroke-dashoffset", (PROG_C * (1 - mainProg)).toFixed(2));
 
-  const solDisplaySec = SOL_CLK.inLeapChrone ? (Math.min(CHRONE - 1, Math.floor(SOL_CLK.leapSecs)) + 1) : (p.s === 0 ? 355 : p.s);
+  const solDisplaySec = SOL_CLK.inLeapChrone ? Math.min(CHRONE - 1, Math.floor(SOL_CLK.leapSecs)) : p.s;
   setText(solDialRefs.digiText, String(solDisplaySec).padStart(3, "0"));
   const solSecColor = SOL_CLK.inLeapChrone ? "#FF7838" : "#e0b25a";
   solDialRefs.digiText.setAttribute("fill", solSecColor);
@@ -6820,26 +6820,26 @@ function updateSolClock(){
   if (SOL_CLK.inLeapChrone){
 
     const leapSecFloor = Math.min(CHRONE - 1, Math.floor(SOL_CLK.leapSecs));
-    const displayLeapSec = leapSecFloor + 1;
+    const displayLeapSec = leapSecFloor;
     const leapSecTxt = String(displayLeapSec).padStart(3, "0");
     const totalWholeSecs = SOL_BASE + leapSecFloor;
 
     setText(solDigBig, `Leap Chrone · ${leapSecTxt} s`);
-    setText(solDigSub, `Main clock paused at 25:10:355 · Measuring Leap Chrone (${displayLeapSec}/355 s)`);
+    setText(solDigSub, `Main clock paused at 24:9:354 · Measuring Leap Chrone (${displayLeapSec}/354 s)`);
     setText(solDigSec, `${fmt(totalWholeSecs)} of ${fmt(L)} s into Sol ${n}`);
-    setText($("solScrubLabel"), `Leap Chrone : ${leapSecTxt} / 355 s`);
+    setText($("solScrubLabel"), `Leap Chrone : ${leapSecTxt} / 354 s`);
     setText($("solDialHint"), "Leap Chrone in progress on this Chrone sol — drag anywhere on the dial or scrubber to position the 355 extra seconds.");
 
     if (!SOL_CLK.scrubbing) scrub.value = Math.min(totalWholeSecs, L - 1);
   } else {
 
-    const dialArchon = p.a === 0 ? 25 : p.a;
-    const dialChrone = p.c === 0 ? 10 : p.c;
-    const dialSecond = p.s === 0 ? 355 : p.s;
+    const dialArchon = p.a;
+    const dialChrone = p.c;
+    const dialSecond = p.s;
     const secTxt = String(dialSecond).padStart(3, "0");
 
     setText(solDigBig, `Archon ${dialArchon} · Chrone ${dialChrone} · ${secTxt} s`);
-    setText(solDigSub, `Archon ${dialArchon}/25 · Chrone ${dialChrone}/10 · Second ${dialSecond}/355`);
+    setText(solDigSub, `Archon ${dialArchon}/24 · Chrone ${dialChrone}/9 · Second ${dialSecond}/354`);
     setText(solDigSec, `${fmt(mainWholeSecs)} of ${fmt(L)} s into this sol`);
     setText($("solScrubLabel"), `Archon ${dialArchon} : Chrone ${dialChrone} : ${secTxt} s`);
     setText($("solDialHint"), "Drag anywhere on the dial to scrub through this sol.");
@@ -6853,7 +6853,7 @@ function updateSolClock(){
     if (SOL_CLK.inLeapChrone){
       $("solLeapBadge").innerHTML = '<span class="badge ember">Leap Chrone Active · +355 s Outer Ring</span>';
     } else if (isChrone){
-      $("solLeapBadge").innerHTML = '<span class="badge ghost">Main Clock Running · Outer Ring at 25:10:355</span>';
+      $("solLeapBadge").innerHTML = '<span class="badge ghost">Main Clock Running · Outer Ring at 24:9:354</span>';
     } else {
       $("solLeapBadge").innerHTML = '<span class="badge ghost">Main Clock Running · 25 Archons</span>';
     }
@@ -7123,12 +7123,12 @@ function renderDetail(){
     : '<span class="badge ghost">Standard Sol</span>';
 
   const typeLabel = both
-    ? `Gains the 28th leap-year date in ${NAMES[d.m]} and appends a 355-second Leap Chrone after 25:10:355.`
+    ? `Gains the 28th leap-year date in ${NAMES[d.m]} and appends a 355-second Leap Chrone after 24:9:354.`
     : chroneSol
-    ? `Appends a 355-second Leap Chrone after 25:10:355 (insertion #${cyc} of 16 in the 225-sol cycle).`
+    ? `Appends a 355-second Leap Chrone after 24:9:354 (insertion #${cyc} of 16 in the 225-sol cycle).`
     : leapSol
     ? `Extra 28th sol added to ${NAMES[d.m]} during a 671-sol leap year.`
-    : "Regular 25-Archon sol running from 1:1:001 to 25:10:355.";
+    : "Regular 25-Archon sol running from 0:0:000 to 24:9:354.";
 
   const callClass = both ? "ember" : (chroneSol || leapSol) ? "gold" : "";
 
@@ -7171,7 +7171,7 @@ function renderDetail(){
         <div class="sol-metric-card">
           <div class="m-lbl">Clock Duration</div>
           <div class="m-val">${fmt(L)} s</div>
-          <div class="m-sub">${chroneSol ? "1:1:001 → 25:10:355 + 355 s" : "Archon 1:1:001 → 25:10:355"}</div>
+          <div class="m-sub">${chroneSol ? "0:0:000 → 24:9:354 + 355 s" : "Archon 0:0:000 → 24:9:354"}</div>
         </div>
         <div class="sol-metric-card">
           <div class="m-lbl">WEEK OF YEAR</div>
