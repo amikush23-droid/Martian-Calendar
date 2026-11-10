@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#2A1610">
+<meta name="theme-color" content="#0f261b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,13 +12,17 @@
 <title>Martian Calendar</title>
 <style>
 :root{
-  --bg:#2A1610; --card:#3b2219; --card2:#4a2b20; --ink:#f6ece2; --muted:#c9b3a3;
-  --rust:#B5532E; --rust2:#d9734a; --ember:#FF7838; --sand:#E9D8C7; --gold:#e0b25a; --line:#5a3b2e; --cell:#2f1b13;
+  --pine-void:#0f261b; --pine-mist:#265c3f;
+  --bg:#0f261b; --card:#173828; --card2:#1f4834; --ink:#f2f9f0; --muted:#b5cfc0;
+  --green:#238b53; --green-glow:#3bbf77;
+  --rust:#B5532E; --rust2:#c4683e; --copper:#c4683e; --brass:#c99846;
+  --ember:#3bbf77; --sand:#E9D8C7; --gold:#e0b25a; --champagne:#ffe3a8;
+  --line:#2f6347; --cell:#122e20;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
-  background:radial-gradient(1200px 600px at 50% -10%,#4a2619 0%,#2A1610 45%,#1a0c07 100%)}
+  background:radial-gradient(920px 620px at 78% 42%,rgba(181,83,46,.22) 0%,rgba(196,104,62,.08) 46%,transparent 76%),radial-gradient(1250px 680px at 38% -10%,#265c3f 0%,#0f261b 48%,#07140e 100%)}
 #stars,
 #mars{
   position:fixed;top:0;left:0;right:0;bottom:0;
@@ -32,24 +36,24 @@ nav.top a:first-of-type{margin-left:auto}
 nav.top a{color:var(--muted);text-decoration:none;padding:6px 11px;border-radius:999px;transition:background .2s,color .2s;cursor:pointer}
 nav.top a:hover{color:var(--ink);background:var(--card)}
 nav.top a.on{color:#fff;background:var(--rust)}
-main{max-width:1160px;margin:0 auto;padding:22px 16px 70px}
-.page{display:block;scroll-margin-top:140px;margin-bottom:56px}
+main{max-width:1160px;margin:0 auto;padding:36px 16px 70px}
+.page{display:block;scroll-margin-top:36px;margin-bottom:56px}
 .page.on{display:block;animation:pageIn .6s cubic-bezier(.2,.7,.2,1) both}
 @keyframes pageIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 h1,h2,h3{font-family:Cambria,Georgia,serif;margin:0 0 10px;font-weight:bold}
 h1{font-size:clamp(28px,4.6vw,50px);line-height:1.08}
 h2{font-size:clamp(24px,3.2vw,34px)}
 h3{font-size:20px}
-.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--rust2);margin:0 0 10px}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--green-glow);text-shadow:0 0 12px rgba(59,191,119,.22);margin:0 0 10px}
 .lead{color:var(--muted);font-size:18px;max-width:720px;line-height:1.5}
 .muted{color:var(--muted)}
 .small{font-size:13px}
-.card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015) 60%,rgba(255,255,255,.03)),linear-gradient(180deg,rgba(59,34,25,.22),rgba(44,26,19,.16));border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:18px;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 30px rgba(0,0,0,.25);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015) 60%,rgba(255,255,255,.03)),linear-gradient(180deg,rgba(23,56,40,.34),rgba(14,35,24,.26));border:1px solid rgba(224,178,90,.28);border-radius:18px;padding:18px;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
+  box-shadow:inset 0 1px 0 rgba(255,227,168,.12),0 10px 30px rgba(0,0,0,.32);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
 .card.golden-hue{
-  background:linear-gradient(180deg, rgba(224,178,90,.26) 0%, rgba(158,108,36,.18) 52%, rgba(59,38,18,.48) 100%) !important;
+  background:linear-gradient(180deg, rgba(224,178,90,.26) 0%, rgba(35,139,83,.22) 52%, rgba(15,38,27,.68) 100%) !important;
   border-color:rgba(224,178,90,.82) !important;
-  box-shadow:0 0 0 1px rgba(224,178,90,.35), 0 16px 42px rgba(224,178,90,.20), inset 0 1px 24px rgba(240,199,118,.14) !important;
+  box-shadow:0 0 0 1px rgba(224,178,90,.35), 0 16px 42px rgba(35,139,83,.24), inset 0 1px 24px rgba(255,227,168,.18) !important;
 }
 .card.golden-hue h3{
   color:#ffe3a8;
@@ -63,20 +67,21 @@ h3{font-size:20px}
 .space{justify-content:space-between}
 .mt{margin-top:18px}
 button,.btn{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 16px;
-  cursor:pointer;text-decoration:none;display:inline-block;transition:transform .15s,background .2s,box-shadow .25s}
-button:hover,.btn:hover{background:#5a3527;transform:translateY(-1px)}
+  cursor:pointer;text-decoration:none;display:inline-block;transition:transform .15s,background .2s,box-shadow .25s,border-color .2s}
+button:hover,.btn:hover{background:#265940;transform:translateY(-1px)}
 button:active{transform:scale(.97)}
-button.primary,.btn.primary{background:linear-gradient(180deg,var(--rust2),var(--rust));border-color:var(--rust);box-shadow:0 8px 20px rgba(181,83,46,.35)}
+button.primary,.btn.primary{background:linear-gradient(180deg,#2ea866,var(--green));border-color:rgba(255,227,168,.52);color:#fff;box-shadow:0 8px 20px rgba(35,139,83,.38)}
+button.primary:hover,.btn.primary:hover{background:linear-gradient(180deg,#3bbf77,#259659);box-shadow:0 10px 24px rgba(35,139,83,.52)}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 button:disabled{opacity:.45;cursor:default;transform:none}
-input[type=range]{accent-color:var(--rust);width:100%;margin:8px 0 4px}
+input[type=range]{accent-color:var(--green-glow);width:100%;margin:8px 0 4px}
 input[type=range]:disabled{opacity:.45;cursor:not-allowed}
 select,input[type=number]{font:inherit;color:var(--ink);background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 label{display:block;font-size:14px;color:var(--muted)}
 .badge{display:inline-block;padding:4px 11px;border-radius:999px;background:var(--rust);font-size:13px;margin:2px 4px 2px 0;transition:transform .3s}
-.badge.gold{background:var(--gold);color:#2a1610}
-.badge.ember{background:var(--ember);color:#1a0c07;font-weight:bold;box-shadow:0 0 14px rgba(255,120,56,.55)}
-.badge.ghost{background:var(--card2)}
+.badge.gold{background:linear-gradient(135deg,#ffe3a8,#e0b25a);color:#0f2419;font-weight:600}
+.badge.ember{background:linear-gradient(135deg,#3bbf77,#238b53);color:#081c12;font-weight:bold;box-shadow:0 0 14px rgba(59,191,119,.48)}
+.badge.ghost{background:rgba(31,72,52,.78);border:1px solid rgba(47,99,71,.55);color:var(--sand)}
 .banner{background:linear-gradient(90deg,rgba(224,178,90,.22),rgba(224,178,90,.06));border:1px solid rgba(224,178,90,.55);border-radius:14px;padding:12px 16px;margin-top:14px}
 .detail{margin-top:12px;line-height:1.7}
 .detail strong{color:var(--sand)}
@@ -84,7 +89,7 @@ label{display:block;font-size:14px;color:var(--muted)}
 .digital > div{white-space:nowrap}
 #digBig,#solDigBig{font-size:clamp(17px,4.6vw,26px);transition:color .25s}
 .digital .big{font-family:Cambria,Georgia,serif;font-size:28px;color:var(--sand)}
-.digital .big.emberText{color:var(--ember);text-shadow:0 0 14px rgba(255,120,56,.35)}
+.digital .big.emberText{color:var(--green-glow);text-shadow:0 0 14px rgba(59,191,119,.38)}
 .hint{font-size:13px;color:var(--muted);text-align:center;margin-top:6px}
 .dialWrap{position:relative;max-width:460px;margin:0 auto}
 svg.dial{width:100%;height:auto;display:block;touch-action:none;cursor:grab;user-select:none}
@@ -232,9 +237,9 @@ svg.dial:active{cursor:grabbing}
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .ringLegend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.ringPill{background:rgba(47,27,19,.75);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35;text-align:center}
+.ringPill{background:rgba(18,46,32,.75);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35;text-align:center}
 .ringPill strong{display:block;font-size:13px;margin-bottom:2px}
-.divBox{background:rgba(47,27,19,.65);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:13.5px;line-height:1.6}
+.divBox{background:rgba(18,46,32,.65);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:13.5px;line-height:1.6}
 .divBox strong{color:var(--sand)}
 .yearNum{font-family:Cambria,Georgia,serif;font-size:34px;color:var(--sand);margin-right:10px}
 .yearBox{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
@@ -254,41 +259,41 @@ svg.dial:active{cursor:grabbing}
 .sol{aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:0;position:relative;background:var(--cell);
   border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--ink);transition:transform .15s,background .2s}
 .sol.blank{background:transparent;border:none;cursor:default;transform:none!important}
-.sol:hover{transform:scale(1.08);background:#43261b}
+.sol:hover{transform:scale(1.08);background:#1f4834;border-color:rgba(224,178,90,.55)}
 .sol.leap::after{content:"";position:absolute;right:5px;top:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
 .sol.extra{border-color:var(--gold);animation:glow 2.4s ease-in-out infinite}
-.sol.both{border-color:var(--ember);background:linear-gradient(145deg,rgba(255,120,56,.28),rgba(224,178,90,.22));box-shadow:0 0 12px rgba(255,120,56,.45)}
+.sol.both{border-color:var(--green-glow);background:linear-gradient(145deg,rgba(59,191,119,.30),rgba(224,178,90,.24));box-shadow:0 0 12px rgba(59,191,119,.42)}
 .sol.both::after{background:var(--ember);box-shadow:0 0 8px var(--ember),0 0 0 2px var(--gold)}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(224,178,90,.0)}50%{box-shadow:0 0 14px 2px rgba(224,178,90,.45)}}
-.sol.sel{background:var(--rust);border-color:var(--rust);transform:scale(1.06)}
+.sol.sel{background:linear-gradient(180deg,#28945a,#1b6b3f);border-color:#ffe3a8;color:#fff;transform:scale(1.06);box-shadow:0 0 12px rgba(35,139,83,.5)}
 .sol.pop{animation:pop .35s ease}
 @keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
 .cal-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(233,216,199,.14)}
 .cal-nav-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.sol-clock-box{background:rgba(28,14,9,.45);border:1px solid rgba(224,178,90,.28);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:100%}
+.sol-clock-box{background:rgba(14,34,24,.52);border:1px solid rgba(224,178,90,.28);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:100%}
 .sol-info-panel{display:flex;flex-direction:column;justify-content:space-between;gap:14px;height:100%}
-.sol-header-box{background:rgba(28,14,9,.38);border:1px solid rgba(233,216,199,.14);border-radius:14px;padding:14px 16px}
-.sol-call-box{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(47,27,19,.65);border-left:3px solid var(--rust2);font-size:13.5px;line-height:1.45;color:var(--ink)}
-.sol-call-box.gold{border-left-color:var(--gold);background:rgba(224,178,90,.11)}
-.sol-call-box.ember{border-left-color:var(--ember);background:rgba(255,120,56,.14)}
+.sol-header-box{background:rgba(14,34,24,.46);border:1px solid rgba(47,99,71,.48);border-radius:14px;padding:14px 16px}
+.sol-call-box{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(18,46,32,.68);border-left:3px solid var(--copper);font-size:13.5px;line-height:1.45;color:var(--ink)}
+.sol-call-box.gold{border-left-color:var(--gold);background:rgba(224,178,90,.12)}
+.sol-call-box.ember{border-left-color:var(--green-glow);background:rgba(59,191,119,.15)}
 .sol-metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.sol-metric-card{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
+.sol-metric-card{background:rgba(14,34,24,.48);border:1px solid rgba(47,99,71,.42);border-radius:12px;padding:11px 13px}
 .sol-metric-card .m-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:3px}
 .sol-metric-card .m-val{font-family:Cambria,Georgia,serif;font-size:21px;font-weight:bold;color:var(--sand);line-height:1.15}
 .sol-metric-card .m-sub{font-size:12px;color:var(--muted);margin-top:3px}
-.sol-telem-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:12px 14px;display:grid;gap:12px}
+.sol-telem-box{background:rgba(14,34,24,.48);border:1px solid rgba(47,99,71,.42);border-radius:12px;padding:12px 14px;display:grid;gap:12px}
 .telem-row-head{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;margin-bottom:5px}
-.telem-bar{height:7px;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid rgba(255,255,255,.07)}
-.telem-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--rust),var(--gold));transition:width .4s ease}
+.telem-bar{height:7px;border-radius:99px;background:rgba(7,20,14,.65);overflow:hidden;border:1px solid rgba(224,178,90,.14)}
+.telem-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--rust),var(--copper),var(--gold),var(--green-glow));transition:width .4s ease}
 .telem-sub{font-size:12px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
-.sol-week-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
+.sol-week-box{background:rgba(14,34,24,.48);border:1px solid rgba(47,99,71,.42);border-radius:12px;padding:11px 13px}
 .sol-week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
-.sol-sun-box{background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.12);border-radius:12px;padding:11px 13px}
-.sun-svg{width:100%;height:auto;display:block;margin-top:6px;border-radius:9px;background:linear-gradient(180deg,rgba(217,115,74,.14) 0%,rgba(224,178,90,.07) 46%,rgba(14,6,4,.65) 46%,rgba(10,4,3,.82) 100%);border:1px solid rgba(233,216,199,.1);cursor:ew-resize;touch-action:none;user-select:none}
+.sol-sun-box{background:rgba(14,34,24,.48);border:1px solid rgba(47,99,71,.42);border-radius:12px;padding:11px 13px}
+.sun-svg{width:100%;height:auto;display:block;margin-top:6px;border-radius:9px;background:linear-gradient(180deg,rgba(224,178,90,.13) 0%,rgba(59,191,119,.07) 46%,rgba(11,26,18,.72) 46%,rgba(7,18,12,.88) 100%);border:1px solid rgba(224,178,90,.18);cursor:ew-resize;touch-action:none;user-select:none}
 .wk-btn{padding:6px 2px;border-radius:9px;background:var(--cell);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
 .wk-btn strong{font-size:13px;color:var(--ink)}
-.wk-btn:hover:not(:disabled){transform:translateY(-2px);background:#43261b}
-.wk-btn.active{background:var(--rust);border-color:var(--sand);color:#fff;box-shadow:0 4px 12px rgba(181,83,46,.4)}
+.wk-btn:hover:not(:disabled){transform:translateY(-2px);background:#1f4834;border-color:var(--gold)}
+.wk-btn.active{background:linear-gradient(180deg,#28945a,#1b6b3f);border-color:#ffe3a8;color:#fff;box-shadow:0 4px 12px rgba(35,139,83,.42)}
 .wk-btn.active strong{color:#fff}
 .wk-btn.is-chrone{border-color:rgba(224,178,90,.6)}
 .ring{position:relative;width:min(380px,92vw);aspect-ratio:1;margin:12px auto}
@@ -314,6 +319,7 @@ svg.dial:active{cursor:grabbing}
 .clockCardText p:last-child{margin-bottom:0}
 
 .hl{color:#e0b25a;font-weight:bold}
+.hl.eq{color:#52d18c;font-weight:bold}
 .eq{white-space:nowrap}
 .bars{display:flex;align-items:flex-end;gap:10px;height:200px;margin-top:12px;padding-top:12px}
 .bar{flex:1;background:linear-gradient(180deg,var(--rust2),var(--rust));border-radius:10px 10px 4px 4px;position:relative;
@@ -333,7 +339,7 @@ svg.dial:active{cursor:grabbing}
   }
 }
 .drift-wheel-box {
-  background: rgba(28, 14, 9, 0.45);
+  background: rgba(14, 34, 24, 0.50);
   border: 1px solid rgba(224, 178, 90, 0.28);
   border-radius: 16px;
   padding: 14px;
@@ -371,15 +377,15 @@ svg.dial:active{cursor:grabbing}
 .drift-node.is-hover .drift-node-bg {
   stroke: #ffe3a8 !important;
   stroke-width: 2.4px !important;
-  fill: #542b1a !important;
-  filter: drop-shadow(0 0 8px rgba(224, 178, 90, 0.65));
+  fill: #1f4834 !important;
+  filter: drop-shadow(0 0 8px rgba(59, 191, 119, 0.65));
 }
 .drift-node.is-active:hover .drift-node-bg,
 .drift-node.is-active.is-hover .drift-node-bg {
   stroke: #ffffff !important;
   stroke-width: 2.8px !important;
-  fill: #FF7838 !important;
-  filter: drop-shadow(0 0 10px rgba(255, 120, 56, 0.85));
+  fill: #238b53 !important;
+  filter: drop-shadow(0 0 10px rgba(59, 191, 119, 0.85));
 }
 .drift-node-text {
   transition: fill .2s ease, font-size .2s ease;
@@ -443,7 +449,7 @@ svg.dial:active{cursor:grabbing}
   }
 }
 .drift-yr-tile {
-  background: rgba(47, 27, 19, 0.75);
+  background: rgba(18, 46, 32, 0.78);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px 6px;
@@ -584,7 +590,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   font-size: 13px;
   font-weight: bold;
   border-radius: 999px;
-  background: rgba(47, 27, 19, 0.65);
+  background: rgba(18, 46, 32, 0.72);
   border: 1px solid var(--line);
   color: var(--sand);
   cursor: pointer;
@@ -598,19 +604,20 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   pointer-events: none;
 }
 .conv-tab-btn:hover {
-  background: rgba(90, 53, 39, 0.9) !important;
-  border-color: var(--gold) !important;
+  background: rgba(35, 88, 61, 0.92) !important;
+  border-color: var(--green-glow) !important;
   color: #fff !important;
+  box-shadow: 0 0 10px rgba(59, 191, 119, 0.32) !important;
   transform: none !important;
 }
 .conv-tab-btn.active {
-  background: linear-gradient(180deg, var(--rust2), var(--rust)) !important;
-  border-color: var(--gold) !important;
+  background: linear-gradient(180deg, #2ca062, #1d7545) !important;
+  border-color: #ffe3a8 !important;
   color: #fff !important;
-  box-shadow: 0 0 12px rgba(224, 178, 90, 0.45) !important;
+  box-shadow: 0 0 14px rgba(35, 139, 83, 0.48) !important;
 }
 .conv-panel {
-  background: rgba(28, 14, 9, 0.45);
+  background: rgba(14, 34, 24, 0.50);
   border: 1px solid rgba(233, 216, 199, 0.16);
   border-radius: 16px;
   padding: 20px 22px;
@@ -655,7 +662,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 .conv-flip-panel.flipping {
   border-color: rgba(224, 178, 90, 0.65) !important;
-  box-shadow: 0 0 24px rgba(224, 178, 90, 0.28), inset 0 0 14px rgba(255, 120, 56, 0.18) !important;
+  box-shadow: 0 0 24px rgba(224, 178, 90, 0.30), inset 0 0 14px rgba(59, 191, 119, 0.22) !important;
 }
 
 /* 3D Perspective Stage */
@@ -671,10 +678,10 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   inset: -30px;
   background: linear-gradient(110deg, 
     transparent 15%, 
-    rgba(255, 120, 56, 0.15) 35%, 
+    rgba(59, 191, 119, 0.18) 35%, 
     rgba(224, 178, 90, 0.55) 48%, 
-    rgba(255, 248, 220, 0.8) 52%, 
-    rgba(255, 120, 56, 0.25) 58%, 
+    rgba(255, 248, 220, 0.85) 52%, 
+    rgba(59, 191, 119, 0.25) 58%, 
     transparent 75%
   );
   transform: translateX(-130%) skewX(-25deg);
@@ -759,7 +766,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   font-size: 13px;
   font-weight: bold;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(181, 83, 46, 0.45), rgba(70, 35, 22, 0.75));
+  background: linear-gradient(180deg, rgba(35, 139, 83, 0.42), rgba(18, 45, 31, 0.82));
   border: 1px solid rgba(224, 178, 90, 0.55);
   color: var(--sand);
   cursor: pointer;
@@ -774,10 +781,10 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   pointer-events: none;
 }
 .conv-flip-btn:hover {
-  background: linear-gradient(180deg, var(--rust2), var(--rust)) !important;
-  border-color: var(--gold) !important;
+  background: linear-gradient(180deg, #2ca062, #1d7545) !important;
+  border-color: #ffe3a8 !important;
   color: #fff !important;
-  box-shadow: 0 0 16px rgba(224, 178, 90, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 16px rgba(59, 191, 119, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
   transform: none !important;
 }
 .conv-flip-btn:hover .conv-flip-icon {
@@ -829,7 +836,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   font-size: 15px;
   font-weight: bold;
   color: var(--sand);
-  background: rgba(18, 8, 5, 0.78);
+  background: rgba(11, 28, 19, 0.82);
   border: 1px solid var(--line);
   border-radius: 10px;
   transition: border-color .2s, box-shadow .2s;
@@ -841,7 +848,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   box-shadow: 0 0 10px rgba(224, 178, 90, 0.28);
 }
 .conv-readout {
-  background: rgba(18, 8, 5, 0.58);
+  background: rgba(12, 30, 21, 0.62);
   border: 1px solid rgba(224, 178, 90, 0.22);
   border-radius: 14px;
   padding: 15px 18px;
@@ -872,7 +879,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   gap: 8px;
 }
 .conv-stat-pill {
-  background: rgba(47, 27, 19, 0.65);
+  background: rgba(18, 46, 32, 0.68);
   border: 1px solid rgba(233, 216, 199, 0.1);
   border-radius: 10px;
   padding: 8px 11px;
@@ -900,7 +907,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   padding: 6px 13px;
   font-size: 12.5px;
   border-radius: 8px;
-  background: rgba(59, 34, 25, 0.75);
+  background: rgba(23, 56, 40, 0.78);
   border: 1px solid var(--line);
   color: var(--sand);
   cursor: pointer;
@@ -915,7 +922,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 .conv-preset-btn:hover {
   border-color: var(--gold) !important;
-  background: rgba(90, 53, 39, 0.95) !important;
+  background: rgba(34, 82, 58, 0.95) !important;
   color: #fff !important;
   box-shadow: 0 0 12px rgba(224, 178, 90, 0.4) !important;
   transform: none !important;
@@ -930,7 +937,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   gap: 6px;
   padding: 7px 15px;
   font-weight: bold;
-  background: linear-gradient(180deg, rgba(181, 83, 46, 0.4), rgba(70, 35, 22, 0.75));
+  background: linear-gradient(180deg, rgba(35, 139, 83, 0.38), rgba(18, 45, 31, 0.78));
   border: 1px solid rgba(224, 178, 90, 0.5);
   color: var(--sand);
 }
@@ -943,14 +950,14 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 .conv-bar-track {
   height: 8px;
-  background: rgba(18, 8, 5, 0.85);
+  background: rgba(9, 23, 16, 0.85);
   border-radius: 99px;
   overflow: hidden;
   border: 1px solid rgba(233, 216, 199, 0.12);
 }
 .conv-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--rust), var(--gold));
+  background: linear-gradient(90deg, var(--rust), var(--copper), var(--gold), var(--green-glow));
   border-radius: 99px;
   transition: width .3s ease;
 }
@@ -968,7 +975,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   }
 }
 .seas-card-equal {
-  background: rgba(28, 14, 9, 0.45);
+  background: rgba(14, 34, 24, 0.50);
   border: 1px solid rgba(224, 178, 90, 0.28);
   border-radius: 14px;
   padding: 14px 14px 12px;
@@ -981,7 +988,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   min-width: 0;
 }
 .seas-wheel-card {
-  background: rgba(28, 14, 9, 0.45);
+  background: rgba(14, 34, 24, 0.50);
   border: 1px solid rgba(224, 178, 90, 0.28);
   border-radius: 14px;
   padding: 14px 14px 12px;
@@ -1060,7 +1067,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 @keyframes sunPulse {
   0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 180, 60, 0.7)); }
-  50% { filter: drop-shadow(0 0 22px rgba(255, 120, 56, 0.95)); }
+  50% { filter: drop-shadow(0 0 22px rgba(224, 178, 90, 0.95)); }
 }
 .seas-tooltip {
   position: absolute;
@@ -1091,13 +1098,13 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   gap: 10px;
 }
 .seas-sub-card {
-  background: rgba(28, 14, 9, 0.45);
+  background: rgba(14, 34, 24, 0.50);
   border: 1px solid rgba(233, 216, 199, 0.16);
   border-radius: 14px;
   padding: 11px 15px;
 }
 .seas-info-slide {
-  background: linear-gradient(135deg, rgba(181, 83, 46, 0.22), rgba(28, 14, 9, 0.68));
+  background: linear-gradient(135deg, rgba(35, 139, 83, 0.22), rgba(14, 34, 24, 0.72));
   border: 1px solid rgba(224, 178, 90, 0.45);
   border-radius: 14px;
   padding: 11px 15px;
@@ -1124,7 +1131,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, rgba(34, 16, 10, 0.92), rgba(18, 8, 5, 0.96));
+  background: linear-gradient(135deg, rgba(19, 46, 32, 0.92), rgba(10, 26, 18, 0.96));
   border: 1px solid rgba(224, 178, 90, 0.45);
   border-radius: 999px;
   padding: 5px 20px 5px 6px;
@@ -1137,7 +1144,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 .seas-mars-switch:hover {
   border-color: var(--gold);
-  background: linear-gradient(135deg, rgba(50, 24, 14, 0.96), rgba(28, 12, 7, 0.98));
+  background: linear-gradient(135deg, rgba(28, 66, 46, 0.96), rgba(14, 34, 24, 0.98));
   box-shadow: 0 0 22px rgba(224, 178, 90, 0.48), 0 6px 20px rgba(0, 0, 0, 0.55);
   transform: translateY(-1px);
 }
@@ -1194,7 +1201,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   font-size: 12px;
   font-weight: bold;
   border-radius: 8px;
-  background: rgba(47, 27, 19, 0.75);
+  background: rgba(18, 46, 32, 0.78);
   border: 1px solid var(--line);
   color: var(--sand);
   cursor: pointer;
@@ -1257,7 +1264,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   font-size: 10px;
   font-weight: bold;
   border-radius: 999px;
-  background: rgba(47, 27, 19, 0.75);
+  background: rgba(18, 46, 32, 0.78);
   border: 1px solid var(--line);
   color: var(--sand);
   cursor: pointer;
@@ -1268,7 +1275,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 }
 .seas-gas-tab:hover {
   border-color: var(--gold);
-  background: rgba(90, 53, 39, 0.9);
+  background: rgba(34, 82, 58, 0.92);
   color: #fff;
 }
 .seas-gas-tab.active {
@@ -1284,7 +1291,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   margin-top: 10px;
 }
 .seas-cap-box {
-  background: rgba(18, 8, 5, 0.58);
+  background: rgba(12, 30, 21, 0.62);
   border: 1px solid rgba(233, 216, 199, 0.12);
   border-radius: 12px;
   padding: 10px 14px;
@@ -1296,9 +1303,9 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
 /* ===== Steampunk Navigation Gear Cluster (Fullscreen & Mute Meshed Gears) ===== */
 .fs-nav-wrap {
   position: fixed;
-  top: 9px;
-  left: 16px;
-  z-index: 30;
+  top: 14px;
+  left: 18px;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -1363,15 +1370,15 @@ body.is-fullscreen .fs-nav-wrap {
   filter: grayscale(0.2);
 }
 .mute-gear-btn.is-muted:hover {
-  filter: drop-shadow(0 0 10px rgba(255, 120, 56, 0.75));
+  filter: drop-shadow(0 0 10px rgba(196, 104, 62, 0.75));
 }
 
 @media (max-width: 520px) {
   .fs-nav-wrap {
     position: fixed;
-    top: calc(var(--safe-t) + 9px);
-    right: 14px;
-    left: auto;
+    top: calc(var(--safe-t) + 12px);
+    left: 16px;
+    right: auto;
     z-index: 95;
     margin: 0;
   }
@@ -1385,8 +1392,8 @@ body.is-fullscreen .fs-nav-wrap {
   transform: translate(-50%, -14px);
   z-index: 120;
   background: linear-gradient(180deg, rgba(59, 34, 25, 0.96), rgba(32, 16, 11, 0.98));
-  border: 1px solid rgba(255, 120, 56, 0.75);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 120, 56, 0.28);
+  border: 1px solid rgba(196, 104, 62, 0.75);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(196, 104, 62, 0.28);
   color: #ffe3a8;
   padding: 9px 18px;
   border-radius: 999px;
@@ -1432,24 +1439,24 @@ body.is-fullscreen .fs-nav-wrap {
   max-width: 500px;
   width: 100%;
   background: linear-gradient(145deg, rgba(68, 38, 27, 0.92), rgba(36, 18, 12, 0.96));
-  border: 1px solid rgba(255, 120, 56, 0.68);
+  border: 1px solid rgba(196, 104, 62, 0.68);
   border-radius: 22px;
   padding: 32px 28px;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 28px rgba(255, 120, 56, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 28px rgba(196, 104, 62, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 .quiz-fs-guard-icon {
   width: 54px;
   height: 54px;
   margin: 0 auto 16px;
   border-radius: 50%;
-  background: rgba(255, 120, 56, 0.16);
-  border: 1px solid rgba(255, 120, 56, 0.55);
+  background: rgba(196, 104, 62, 0.16);
+  border: 1px solid rgba(196, 104, 62, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--ember);
-  box-shadow: 0 0 20px rgba(255, 120, 56, 0.3);
+  box-shadow: 0 0 20px rgba(196, 104, 62, 0.3);
 }
 
 /* Aesthetic Fullscreen Layout Refinements across all sections */
@@ -1461,10 +1468,10 @@ body.is-fullscreen nav.top {
 body.is-fullscreen main {
   max-width: min(1280px, 94vw);
   margin: 0 auto;
-  padding: 26px 28px 72px;
+  padding: 40px 28px 72px;
 }
 body.is-fullscreen .page {
-  scroll-margin-top: 76px;
+  scroll-margin-top: 36px;
   margin-bottom: 68px;
 }
 body.is-fullscreen #home {
@@ -1550,10 +1557,10 @@ body.quiz-locked #quizCard {
   line-height: 1.45;
   border-radius: 14px;
   border: 1px solid rgba(233, 216, 199, 0.18);
-  background: rgba(48, 26, 18, 0.68);
+  background: rgba(18, 44, 31, 0.72);
 }
 #quizCard .opt:hover:not(:disabled) {
-  background: rgba(90, 53, 39, 0.82);
+  background: rgba(31, 74, 52, 0.88);
   border-color: rgba(224, 178, 90, 0.55);
 }
 #quizCard .qtext {
@@ -1731,7 +1738,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   display: none !important;
 }
 .visa-unlock-banner {
-  background: linear-gradient(135deg, rgba(224, 178, 90, 0.24) 0%, rgba(181, 83, 46, 0.26) 55%, rgba(42, 22, 16, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(224, 178, 90, 0.24) 0%, rgba(35, 139, 83, 0.26) 55%, rgba(15, 38, 27, 0.88) 100%);
   border: 1.5px solid rgba(224, 178, 90, 0.82);
   border-radius: 18px;
   padding: 20px 24px;
@@ -1761,7 +1768,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   justify-content: space-between;
   height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(165deg, rgba(59, 34, 25, 0.78), rgba(32, 16, 11, 0.88));
+  background: linear-gradient(165deg, rgba(22, 54, 38, 0.82), rgba(12, 30, 21, 0.90));
   border: 1px solid rgba(224, 178, 90, 0.38);
   border-radius: 18px;
   padding: 20px;
@@ -1776,7 +1783,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(30, 14, 9, 0.76);
+  background: rgba(13, 33, 23, 0.80);
   border: 1px solid rgba(224, 178, 90, 0.38);
   border-left: 3.5px solid var(--gold);
   border-radius: 10px;
@@ -1827,7 +1834,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   font: inherit;
   font-size: 14px;
   color: var(--ink);
-  background: rgba(24, 11, 7, 0.82);
+  background: rgba(11, 28, 19, 0.85);
   border: 1px solid rgba(224, 178, 90, 0.34);
   border-radius: 10px;
   padding: 9px 11px;
@@ -1899,7 +1906,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(36, 18, 12, 0.72);
+  background: rgba(15, 38, 27, 0.76);
   border: 1px solid rgba(224, 178, 90, 0.28);
   border-radius: 14px;
   padding: 12px 16px;
@@ -1917,7 +1924,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   font: inherit;
   font-size: 14px;
   color: var(--ink);
-  background: rgba(24, 11, 7, 0.82);
+  background: rgba(11, 28, 19, 0.85);
   border: 1px solid rgba(224, 178, 90, 0.34);
   border-radius: 10px;
   padding: 9px 11px;
@@ -1942,7 +1949,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   justify-content: center;
   gap: 6px;
   padding: 6px 10px;
-  background: rgba(24, 11, 7, 0.9);
+  background: rgba(11, 28, 19, 0.92);
   border: 1px solid rgba(224, 178, 90, 0.52);
   border-radius: 10px;
   height: 38px;
@@ -1971,7 +1978,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   border-radius: 9px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(24, 11, 7, 0.78);
+  background: rgba(11, 28, 19, 0.82);
   border: 1px solid rgba(224, 178, 90, 0.36);
   color: var(--sand);
   cursor: pointer;
@@ -1994,7 +2001,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 390px);
   align-items: center;
   gap: 24px;
-  background: linear-gradient(135deg, rgba(224, 178, 90, 0.22) 0%, rgba(181, 83, 46, 0.25) 55%, rgba(42, 22, 16, 0.88) 100%);
+  background: linear-gradient(135deg, rgba(224, 178, 90, 0.22) 0%, rgba(35, 139, 83, 0.25) 55%, rgba(15, 38, 27, 0.90) 100%);
   border: 1.5px solid rgba(224, 178, 90, 0.85);
   border-radius: 20px;
   padding: 22px 24px;
@@ -2095,7 +2102,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
 .quiz-visa-preview-card:hover {
   transform: translateY(-3px) scale(1.02);
   border-color: #ffe3a8;
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.7), 0 0 32px rgba(255, 120, 56, 0.45);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.7), 0 0 32px rgba(196, 104, 62, 0.45);
 }
 .quiz-visa-preview-card:active {
   transform: translateY(-1px) scale(0.99);
@@ -2133,8 +2140,8 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #FF7838;
-  box-shadow: 0 0 6px #FF7838;
+  background: #3bbf77;
+  box-shadow: 0 0 6px #3bbf77;
 }
 
 /* Diagonal Holographic Shining Beam Animation (Slow, Elegant Sweep) */
@@ -2144,11 +2151,11 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   background: linear-gradient(
     115deg,
     transparent 15%,
-    rgba(255, 120, 56, 0.12) 32%,
+    rgba(59, 191, 119, 0.16) 32%,
     rgba(224, 178, 90, 0.48) 46%,
     rgba(255, 255, 255, 0.92) 50%,
     rgba(224, 178, 90, 0.48) 54%,
-    rgba(255, 120, 56, 0.16) 66%,
+    rgba(59, 191, 119, 0.18) 66%,
     transparent 82%
   );
   transform: translateX(-160%) skewX(-25deg);
@@ -2179,7 +2186,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
     border-color: rgba(224, 178, 90, 0.65);
   }
   50% {
-    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.72), 0 0 32px rgba(255, 120, 56, 0.42), 0 0 14px rgba(224, 178, 90, 0.48);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.72), 0 0 32px rgba(59, 191, 119, 0.38), 0 0 14px rgba(224, 178, 90, 0.48);
     border-color: rgba(255, 227, 168, 0.92);
   }
 }
@@ -2212,7 +2219,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   filter: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  background: linear-gradient(165deg, rgba(58, 32, 22, 0.90), rgba(28, 14, 9, 0.94));
+  background: linear-gradient(165deg, rgba(22, 54, 38, 0.90), rgba(12, 30, 21, 0.94));
 }
 .tf-video-grid {
   display: grid;
@@ -2226,7 +2233,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   }
 }
 .tf-video-card {
-  background: rgba(28, 14, 9, 0.65);
+  background: rgba(14, 34, 24, 0.68);
   border: 1px solid rgba(224, 178, 90, 0.30);
   border-radius: 16px;
   padding: 16px;
@@ -2366,7 +2373,7 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
 
 /* ===== Terraforming Approaches Concluding Commentary ===== */
 #tfCommentaryCard {
-  background: rgba(28, 14, 9, 0.65);
+  background: rgba(14, 34, 24, 0.68);
   border: 1px solid rgba(224, 178, 90, 0.30);
   border-radius: 16px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 12px 28px rgba(0, 0, 0, 0.32);
@@ -2460,7 +2467,7 @@ nav.top .l-short{display:none}
 
   /* Fullscreen toggle floats top-right at the TOP of the phone screen */
   .fs-nav-wrap{
-    position:fixed;top:calc(var(--safe-t) + 12px);right:14px;left:auto;
+    position:fixed;top:calc(var(--safe-t) + 12px);left:16px;right:auto;
     z-index:95;margin:0;display:flex;align-items:center;
   }
   .fs-nav-btn,
@@ -2484,7 +2491,7 @@ nav.top .l-short{display:none}
   main,
   body.is-fullscreen main{
     max-width:none;width:100%;margin:0;
-    padding:calc(var(--safe-t) + 18px) 12px calc(var(--dock-h) + var(--safe-b) + 28px);
+    padding:calc(var(--safe-t) + 18px) 12px calc(var(--safe-b) + 32px);
   }
   .page,
   body.is-fullscreen .page{
@@ -2902,7 +2909,7 @@ nav.top .l-short{display:none}
 :root {
   --sp-brass: #e0b25a;
   --sp-brass-bright: #ffe3a8;
-  --sp-copper: #d9734a;
+  --sp-copper: #c4683e;
   --sp-bronze: #8c583a;
   --sp-rivet: radial-gradient(circle, #ffe3a8 0%, #e0b25a 45%, #6e4427 80%, transparent 100%);
 }
@@ -2924,8 +2931,8 @@ nav.top .l-short{display:none}
     radial-gradient(circle at calc(100% - 10px) 10px, rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
     radial-gradient(circle at 10px calc(100% - 10px), rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
     radial-gradient(circle at calc(100% - 10px) calc(100% - 10px), rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
-    linear-gradient(135deg, rgba(224, 178, 90, 0.06), rgba(255, 255, 255, 0.015) 60%, rgba(217, 115, 74, 0.04)),
-    linear-gradient(180deg, rgba(59, 34, 25, 0.32), rgba(38, 20, 14, 0.26));
+    linear-gradient(135deg, rgba(224, 178, 90, 0.09), rgba(59, 191, 119, 0.05) 50%, rgba(196, 104, 62, 0.08)),
+    linear-gradient(180deg, rgba(22, 52, 37, 0.36), rgba(16, 32, 23, 0.32));
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
 }
 
@@ -2962,7 +2969,7 @@ nav.top a:hover {
   box-shadow: inset 0 1px 0 rgba(255, 227, 168, 0.15);
 }
 nav.top a.on {
-  background: linear-gradient(180deg, #d9734a 0%, #9e4220 100%);
+  background: linear-gradient(180deg, #c4683e 0%, #9e4220 100%);
   border-color: rgba(255, 227, 168, 0.55);
   box-shadow: 0 3px 14px rgba(181, 83, 46, 0.45), inset 0 1px 0 rgba(255, 227, 168, 0.35);
 }
@@ -2976,8 +2983,8 @@ button:hover:not(:disabled), .btn:hover {
   box-shadow: inset 0 1px 0 rgba(255, 227, 168, 0.26), 0 5px 14px rgba(0, 0, 0, 0.32);
 }
 button.primary, .btn.primary {
-  border-color: rgba(255, 227, 168, 0.48);
-  box-shadow: inset 0 1px 0 rgba(255, 227, 168, 0.35), 0 8px 20px rgba(181, 83, 46, 0.4);
+  border-color: rgba(255, 227, 168, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 227, 168, 0.35), 0 8px 20px rgba(35, 139, 83, 0.42);
 }
 
 /* Engraved Brass Vernier Range Sliders */
@@ -2988,7 +2995,7 @@ input[type=range] {
   border-radius: 999px;
   background:
     repeating-linear-gradient(90deg, rgba(224, 178, 90, 0.28) 0px, rgba(224, 178, 90, 0.28) 1px, transparent 1px, transparent 10px),
-    linear-gradient(180deg, #1b0c07 0%, #2f1810 100%);
+    linear-gradient(180deg, #0b1c14 0%, #173828 100%);
   border: 1px solid rgba(224, 178, 90, 0.38);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 227, 168, 0.12);
   cursor: pointer;
@@ -3088,21 +3095,97 @@ body.intro-void #steampunkCornerFrame {
   stroke: #ffe3a8;
 }
 
-/* Right-Edge Horological Scroll Vernier Rack & Dual-Gear Carriage */
-.sp-scroll-rack {
+/* Right-Edge Horological Section Navigation Rail & Dual-Gear Carriage */
+.sp-scroll-rack-wrap {
   position: fixed;
-  right: 6px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 28px;
-  height: 220px;
-  z-index: 14;
-  pointer-events: none;
-  opacity: 0.54;
-  transition: opacity 0.3s ease;
+  width: 54px;
+  height: 350px;
+  z-index: 50;
+  pointer-events: auto;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75));
+  transition: filter 0.25s ease, opacity 0.3s ease;
+  user-select: none;
 }
-body.intro-void .sp-scroll-rack {
+.sp-scroll-rack-wrap:hover {
+  filter: drop-shadow(0 0 16px rgba(224, 178, 90, 0.45));
+}
+body.intro-void .sp-scroll-rack-wrap {
   opacity: 0 !important;
+  pointer-events: none;
+}
+.sp-scroll-rack-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  cursor: pointer;
+}
+.rack-flyout-tag {
+  position: absolute;
+  right: 58px;
+  top: 24px;
+  transform: translateY(-50%);
+  background: rgba(15, 36, 25, 0.95);
+  border: 1.2px solid #ffe3a8;
+  color: #ffe3a8;
+  font-family: Cambria, Georgia, serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 12px rgba(59,191,119,0.35);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rack-flyout-tag.show {
+  opacity: 1;
+  transform: translateY(-50%) translateX(-4px);
+}
+.rack-station {
+  cursor: pointer;
+}
+.rack-station:hover .st-jewel {
+  stroke: #ffe3a8;
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 6px rgba(224, 178, 90, 0.9));
+}
+.rack-station.active .st-jewel {
+  stroke: #3bbf77;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 7px rgba(59, 191, 119, 0.92));
+}
+.rack-station.visa-unlocked .st-jewel {
+  stroke: #ffe3a8;
+  filter: drop-shadow(0 0 6px rgba(224, 178, 90, 0.9));
+}
+.rack-station.visa-unlocked .st-core {
+  fill: #ffe3a8;
+}
+.rack-station.active .st-core {
+  fill: #3bbf77;
+}
+.rack-carriage-group {
+  will-change: transform;
+  pointer-events: none;
+}
+@media (max-width: 768px) {
+  .sp-scroll-rack-wrap {
+    right: 4px;
+    transform: translateY(-50%) scale(0.82);
+    transform-origin: right center;
+  }
+}
+@media (max-width: 480px) {
+  .sp-scroll-rack-wrap {
+    right: 2px;
+    transform: translateY(-50%) scale(0.72);
+    transform-origin: right center;
+  }
 }
 
 /* Section Header 3-Gear Meshing Train Badges & Engraved Filigree Rules */
@@ -3138,7 +3221,7 @@ body.intro-void .sp-scroll-rack {
 .sp-sec-divider-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, rgba(224, 178, 90, 0.68), rgba(217, 115, 74, 0.3) 70%, transparent);
+  background: linear-gradient(90deg, rgba(224, 178, 90, 0.72), rgba(59, 191, 119, 0.38) 65%, transparent);
 }
 .sp-sec-divider-diamond {
   width: 6px;
@@ -3199,8 +3282,8 @@ body.intro-void .sp-scroll-rack {
         <circle cx="0" cy="0" r="12.4" fill="none" stroke="#f5c01e" stroke-width="0.5" opacity="0.6"/>
       </g>
       <g id="fsBtnIcon">
-        <circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#ffe3a8" stroke-width="1.2"/>
-        <path d="M -4.1 -6.5 H 4.9 V -3.9 H -1.3 V -1.15 H 3.6 V 1.15 H -1.3 V 6.5 H -4.1 Z" fill="#ffe3a8"/>
+        <circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#ffe3a8" stroke-width="1.2"/>
+        <path d="M -6.2 -3.0 V -6.2 H -3.0 M 3.0 -6.2 H 6.2 V -3.0 M 6.2 3.0 V 6.2 H 3.0 M -3.0 6.2 H -6.2 V 3.0" fill="none" stroke="#ffe3a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </g>
     </svg>
   </button>
@@ -3213,7 +3296,7 @@ body.intro-void .sp-scroll-rack {
         <circle cx="0" cy="0" r="12.4" fill="none" stroke="#f5c01e" stroke-width="0.5" opacity="0.6"/>
       </g>
       <g id="muteBtnIcon">
-        <circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#ffe3a8" stroke-width="1.2"/>
+        <circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#ffe3a8" stroke-width="1.2"/>
         <path d="M-6.2 -3.0h2.6l3.4-3.2v12.4l-3.4-3.2h-2.6z" fill="#ffe3a8" stroke="#ffe3a8" stroke-width="0.6"/>
         <path d="M2.5 -4.0a5.6 5.6 0 0 1 0 8 M5.2 -6.5a9.2 9.2 0 0 1 0 13" fill="none" stroke="#ffe3a8" stroke-width="1.3" stroke-linecap="round"/>
       </g>
@@ -3227,23 +3310,16 @@ body.intro-void .sp-scroll-rack {
   <svg id="spCornerTR" class="sp-corner-svg sp-corner-tr" viewBox="0 0 160 160"></svg>
   <svg id="spCornerBL" class="sp-corner-svg sp-corner-bl" viewBox="0 0 180 180"></svg>
   <svg id="spCornerBR" class="sp-corner-svg sp-corner-br" viewBox="0 0 180 180"></svg>
-  <svg id="spScrollRack" class="sp-scroll-rack" viewBox="0 0 28 220"></svg>
 </div>
 
-<nav class="top" aria-label="Main">
-  <a data-p="home" href="#home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.8l8.5 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-4v-5.5h-6V20.5H5A1.5 1.5 0 0 1 3.5 19z"/></svg><span class="l-full">Home</span><span class="l-short">Home</span></a>
-  <a data-p="clock" href="#clock"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span class="l-full">Clock</span><span class="l-short">Clock</span></a>
-  <a data-p="calendar" href="#calendar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span class="l-full">Calendar</span><span class="l-short">Calendar</span></a>
-  <a data-p="seasons" href="#seasons"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg><span class="l-full">Seasons</span><span class="l-short">Seasons</span></a>
-  <a data-p="drift" href="#drift"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3L19.5 8.5"/><path d="M19.5 4v4.5H15"/><path d="M19.5 12a7.5 7.5 0 0 1-12.8 5.3L4.5 15.5"/><path d="M4.5 20v-4.5H9"/></svg><span class="l-full">Weekday drift</span><span class="l-short">Drift</span></a>
-  <a data-p="convert" href="#convert"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg><span class="l-full">Converter</span><span class="l-short">Convert</span></a>
-  <a data-p="terraform" href="#terraform"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3c-2.8 3-4.5 6-4.5 9s1.7 6 4.5 9"/></svg><span class="l-full">Terraforming</span><span class="l-short">Terra</span></a>
-  <a data-p="quiz" href="#quiz"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5"/><path d="M12 17.2h.01"/></svg><span class="l-full">Quiz</span><span class="l-short">Quiz</span></a>
-  <a id="navVisaLink" class="visa-hidden" data-p="visa" href="#visa" style="color:#ffe3a8;border:1px solid rgba(224,178,90,0.55);background:rgba(224,178,90,0.14);"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.2 5.1 5.3.5-4 3.6 1.2 5.3L12 15.5l-4.7 2.5 1.2-5.3-4-3.6 5.3-.5z"/></svg><span class="l-full">Mars Visa &#10022;</span><span class="l-short">Visa</span></a>
-</nav>
+<!-- Right-Edge Horological Section Navigation Rail & Dual-Gear Carriage -->
+<div id="spScrollRackWrap" class="sp-scroll-rack-wrap" aria-label="Section Navigation Elevator">
+  <div id="rackFlyoutTag" class="rack-flyout-tag" aria-hidden="true">Home</div>
+  <svg id="spScrollRack" class="sp-scroll-rack-svg" viewBox="0 0 54 340"></svg>
+</div>
 
 <div id="fsLockToast" class="fs-lock-toast" role="status" aria-live="polite">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF7838" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4683e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
   </svg>
@@ -3312,10 +3388,10 @@ body.intro-void .sp-scroll-rack {
         <!-- Right Column: Upgraded Solar Elevation Graph & Controls Sub Box -->
         <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:16px;padding:18px 20px;height:100%;">
           <!-- Expanded Graph filling upper space proportionally -->
-          <div id="mainSunBox" class="sol-sun-box" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.14);border-radius:14px;"></div>
+          <div id="mainSunBox" class="sol-sun-box" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;background:rgba(14,34,24,.50);border:1px solid rgba(47,99,71,.48);border-radius:14px;"></div>
 
           <!-- Controls unit framed in matching sub-box anchored cleanly at bottom -->
-          <div style="display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:rgba(28,14,9,.38);border:1px solid rgba(233,216,199,.12);border-radius:14px;">
+          <div style="display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:rgba(14,34,24,.45);border:1px solid rgba(47,99,71,.42);border-radius:14px;">
             <!-- Scrub this sol lever (long) -->
             <div>
               <div class="row space" style="align-items:baseline;margin-bottom:5px;">
@@ -3422,10 +3498,10 @@ body.intro-void .sp-scroll-rack {
         <!-- Right Column: Upgraded Solar Elevation Graph & Controls Sub Box -->
         <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:16px;padding:18px 20px;height:100%;">
           <!-- Expanded Graph filling upper space proportionally -->
-          <div id="solSunBoxWrapper" class="sol-sun-box" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;background:rgba(28,14,9,.42);border:1px solid rgba(233,216,199,.14);border-radius:14px;"></div>
+          <div id="solSunBoxWrapper" class="sol-sun-box" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;background:rgba(14,34,24,.50);border:1px solid rgba(47,99,71,.48);border-radius:14px;"></div>
 
           <!-- Controls unit framed in matching sub-box anchored cleanly at bottom -->
-          <div style="display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:rgba(28,14,9,.38);border:1px solid rgba(233,216,199,.12);border-radius:14px;">
+          <div style="display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:rgba(14,34,24,.45);border:1px solid rgba(47,99,71,.42);border-radius:14px;">
             <!-- Scrub this sol lever (long) -->
             <div>
               <div class="row space" style="align-items:baseline;margin-bottom:5px;">
@@ -3552,7 +3628,7 @@ body.intro-void .sp-scroll-rack {
           </div>
 
           <div style="width:100%;display:flex;justify-content:center;align-items:center;font-size:11px;margin-top:4px;white-space:nowrap;">
-            <span id="seasDustBandLegend" style="color:#FF7838;transition:all 0.25s ease;">&#9676; Dust Band (210&deg;&ndash;330&deg;)</span>
+            <span id="seasDustBandLegend" style="color:#c4683e;transition:all 0.25s ease;">&#9676; Dust Band (210&deg;&ndash;330&deg;)</span>
           </div>
         </div>
 
@@ -3615,7 +3691,7 @@ body.intro-void .sp-scroll-rack {
           <div class="seas-polar-row" style="margin-top:3px;gap:8px;">
             <div class="seas-cap-box" style="padding:5px 8px;gap:7px;min-width:0;">
               <svg width="34" height="34" viewBox="-28 -28 56 56" style="flex-shrink:0;">
-                <circle cx="0" cy="0" r="24" fill="#3b2219" stroke="rgba(233,216,199,0.25)" stroke-width="1.2"/>
+                <circle cx="0" cy="0" r="24" fill="#142e21" stroke="rgba(224,178,90,0.32)" stroke-width="1.2"/>
                 <circle id="northCapCircle" cx="0" cy="0" r="16" fill="#e8f4f8" stroke="#ffffff" stroke-width="1.5" style="transition: r 0.2s ease, opacity 0.2s ease; filter: drop-shadow(0 0 6px rgba(200,235,255,0.7));"/>
               </svg>
               <div style="min-width:0;">
@@ -3626,7 +3702,7 @@ body.intro-void .sp-scroll-rack {
 
             <div class="seas-cap-box" style="padding:5px 8px;gap:7px;min-width:0;">
               <svg width="34" height="34" viewBox="-28 -28 56 56" style="flex-shrink:0;">
-                <circle cx="0" cy="0" r="24" fill="#3b2219" stroke="rgba(233,216,199,0.25)" stroke-width="1.2"/>
+                <circle cx="0" cy="0" r="24" fill="#142e21" stroke="rgba(224,178,90,0.32)" stroke-width="1.2"/>
                 <circle id="southCapCircle" cx="0" cy="0" r="14" fill="#e8f4f8" stroke="#ffffff" stroke-width="1.5" style="transition: r 0.2s ease, opacity 0.2s ease; filter: drop-shadow(0 0 6px rgba(200,235,255,0.7));"/>
               </svg>
               <div style="min-width:0;">
@@ -3753,7 +3829,7 @@ body.intro-void .sp-scroll-rack {
               <div style="display:flex;align-items:center;gap:6px;">
                 <span class="muted small" style="font-size:12px;">Go to Year:</span>
                 <input id="driftYearInput" type="number" min="1" max="500" value="1" aria-label="Enter Martian Year (1 to 500)"
-                  style="width:68px;padding:3px 6px;font-size:13px;background:rgba(28,14,9,0.85);border:1px solid var(--line);border-radius:6px;color:var(--sand);text-align:center;font-weight:bold;">
+                  style="width:68px;padding:3px 6px;font-size:13px;background:rgba(14,34,24,0.88);border:1px solid var(--line);border-radius:6px;color:var(--sand);text-align:center;font-weight:bold;">
               </div>
             </div>
             <input id="driftSlider" type="range" min="1" max="500" step="1" value="1" aria-label="Martian Year" style="width:100%;margin:4px 0 8px;">
@@ -4508,7 +4584,7 @@ const SEASONS = [
     solStart: 194,
     solEnd: 371,
     duration: 178,
-    color: "#D9734A",
+    color: "#c4683e",
     description: "Mars passes aphelion at Ls 71°. Northern summers are long and mild; southern winters are long and cold."
   },
   {
@@ -4710,15 +4786,15 @@ function updateFullscreenUI(){
     if (isQuizLocked()){
       btn.title = "Fullscreen is locked until the quiz session is over";
       btn.setAttribute("aria-label", "Fullscreen locked while quiz is active");
-      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#FF7838" stroke-width="1.2"/><rect x="-5" y="-1.5" width="10" height="8" rx="2" stroke="#FF7838" stroke-width="1.2" fill="none"/><path d="M-3 -1.5v-3a3 3 0 0 1 6 0v3" stroke="#FF7838" stroke-width="1.2" fill="none"/><text x="0" y="2.5" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-weight="900" font-size="6.5" fill="#FF7838">F</text>';
+      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#3bbf77" stroke-width="1.2"/><rect x="-5" y="-1.5" width="10" height="8" rx="2" stroke="#c4683e" stroke-width="1.2" fill="none"/><path d="M-3 -1.5v-3a3 3 0 0 1 6 0v3" stroke="#c4683e" stroke-width="1.2" fill="none"/><circle cx="0" cy="2.5" r="1.2" fill="#c4683e"/>';
     } else if (active){
       btn.title = "Exit Fullscreen (Press F)";
       btn.setAttribute("aria-label", "Exit Fullscreen (Press F)");
-      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#FF7838" stroke-width="1.2"/><path d="M -4.1 -6.5 H 4.9 V -3.9 H -1.3 V -1.15 H 3.6 V 1.15 H -1.3 V 6.5 H -4.1 Z" fill="#FF7838"/>';
+      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#3bbf77" stroke-width="1.2"/><path d="M -6.2 -2.2 H -2.2 V -6.2 M 6.2 -2.2 H 2.2 V -6.2 M 6.2 2.2 H 2.2 V 6.2 M -6.2 2.2 H -2.2 V 6.2" fill="none" stroke="#3bbf77" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
     } else {
       btn.title = "Enter Fullscreen (Press F)";
       btn.setAttribute("aria-label", "Enter Fullscreen (Press F)");
-      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#ffe3a8" stroke-width="1.2"/><path d="M -4.1 -6.5 H 4.9 V -3.9 H -1.3 V -1.15 H 3.6 V 1.15 H -1.3 V 6.5 H -4.1 Z" fill="#ffe3a8"/>';
+      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#ffe3a8" stroke-width="1.2"/><path d="M -6.2 -3.0 V -6.2 H -3.0 M 3.0 -6.2 H 6.2 V -3.0 M 6.2 3.0 V 6.2 H 3.0 M -3.0 6.2 H -6.2 V 3.0" fill="none" stroke="#ffe3a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
     }
   }
 }
@@ -4751,9 +4827,9 @@ function toggleSiteAudioMute(){
 
   if (icon){
     if (isSiteAudioMuted){
-      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#B5532E" stroke-width="1.2"/><path d="M-6.2 -3.0h2.6l3.4-3.2v12.4l-3.4-3.2h-2.6z" fill="#a89284" stroke="#a89284" stroke-width="0.6" opacity="0.65"/><line x1="-7.5" y1="7.5" x2="7.5" y2="-7.5" stroke="#FF7838" stroke-width="2.2" stroke-linecap="round"/>';
+      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#B5532E" stroke-width="1.2"/><path d="M-6.2 -3.0h2.6l3.4-3.2v12.4l-3.4-3.2h-2.6z" fill="#a89284" stroke="#a89284" stroke-width="0.6" opacity="0.65"/><line x1="-7.5" y1="7.5" x2="7.5" y2="-7.5" stroke="#B5532E" stroke-width="2.2" stroke-linecap="round"/>';
     } else {
-      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#200d07" stroke="#ffe3a8" stroke-width="1.2"/><path d="M-6.2 -3.0h2.6l3.4-3.2v12.4l-3.4-3.2h-2.6z" fill="#ffe3a8" stroke="#ffe3a8" stroke-width="0.6"/><path d="M2.5 -4.0a5.6 5.6 0 0 1 0 8 M5.2 -6.5a9.2 9.2 0 0 1 0 13" fill="none" stroke="#ffe3a8" stroke-width="1.3" stroke-linecap="round"/>';
+      icon.innerHTML = '<circle cx="0" cy="0" r="11.0" fill="#102419" stroke="#ffe3a8" stroke-width="1.2"/><path d="M-6.2 -3.0h2.6l3.4-3.2v12.4l-3.4-3.2h-2.6z" fill="#ffe3a8" stroke="#ffe3a8" stroke-width="0.6"/><path d="M2.5 -4.0a5.6 5.6 0 0 1 0 8 M5.2 -6.5a9.2 9.2 0 0 1 0 13" fill="none" stroke="#ffe3a8" stroke-width="1.3" stroke-linecap="round"/>';
     }
   }
 }
@@ -5043,6 +5119,7 @@ function show(name){
   if (name === "clock" && typeof updateClock === "function") updateClock();
   if (name === "calendar" && CAL.sel !== null && typeof updateSolClock === "function") updateSolClock();
   document.querySelectorAll("nav.top a").forEach(a => a.classList.toggle("on", a.dataset.p === name));
+  document.querySelectorAll(".rack-station").forEach(st => st.classList.toggle("active", st.dataset.sec === name));
   document.title = name === "home" ? "Martian Calendar" : TITLES[name] + " · Martian Calendar";
 }
 function go(name){
@@ -5065,6 +5142,9 @@ function updateActive(){
   }
   if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = ($("visa") && !$("visa").hidden) ? "visa" : "quiz";
   if (cur !== currentPage) show(cur);
+  document.querySelectorAll(".rack-station").forEach(st => {
+    st.classList.toggle("active", st.dataset.sec === cur);
+  });
 }
 let activeQueued = false;
 window.addEventListener("scroll", () => {
@@ -5086,7 +5166,7 @@ window.addEventListener("hashchange", () => {
 });
 
 // ---------- Reusable 3-Ring Martian Clock Dial + 4th Outermost Leap Chrone Ring Builder ----------
-const ARCH_C = "#B5532E", CHR_C = "#E9D8C7", SEC_C = "#e0b25a", LEAP_C = "#FF7838";
+const ARCH_C = "#B5532E", CHR_C = "#E9D8C7", SEC_C = "#e0b25a", LEAP_C = "#3bbf77";
 const PROG_C = 2 * Math.PI * 190;
 const LEAP_R_OUTER = 198;
 const LEAP_R_INNER = 156;
@@ -5121,7 +5201,7 @@ function createMartianDial(svgEl, prefix){
   progRing.setAttribute("transform", "rotate(-90)");
 
   // 1. OUTERMOST MAIN RING: ARCHONS (1-25)
-  el("circle", {cx:0, cy:0, r:182, fill:"rgba(26,12,7,.36)", stroke:ARCH_C, "stroke-width":2}, mainDialG);
+  el("circle", {cx:0, cy:0, r:182, fill:"rgba(15,36,25,.42)", stroke:ARCH_C, "stroke-width":2}, mainDialG);
   el("circle", {cx:0, cy:0, r:128, fill:"none", stroke:ARCH_C, "stroke-width":1, "stroke-dasharray":"3 3"}, mainDialG);
   for (let i = 0; i < 25; i++){
     const displayNum = i === 0 ? 25 : i;
@@ -5152,7 +5232,7 @@ function createMartianDial(svgEl, prefix){
   tpArch.textContent = "ARCHONS";
 
   // 2. MIDDLE RING: CHRONES (1-10)
-  el("circle", {cx:0, cy:0, r:122, fill:"rgba(20,9,5,.48)", stroke:CHR_C, "stroke-width":1.8}, mainDialG);
+  el("circle", {cx:0, cy:0, r:122, fill:"rgba(12,28,20,.52)", stroke:CHR_C, "stroke-width":1.8}, mainDialG);
   el("circle", {cx:0, cy:0, r:78, fill:"none", stroke:CHR_C, "stroke-width":1, "stroke-dasharray":"2 3"}, mainDialG);
   for (let i = 0; i < 10; i++){
     const a = (i * 36 - 90) * Math.PI / 180;
@@ -5181,7 +5261,7 @@ function createMartianDial(svgEl, prefix){
   tpChr.textContent = "CHRONES";
 
   // 3. INNERMOST RING: SECONDS (1-355) — symmetrical 5-second interval markings (5, 10, 15 ... 350, 355)
-  el("circle", {cx:0, cy:0, r:72, fill:"rgba(12,5,3,.65)", stroke:"#b88940", "stroke-width":1.6}, mainDialG);
+  el("circle", {cx:0, cy:0, r:72, fill:"rgba(8,20,14,.68)", stroke:"#c99846", "stroke-width":1.6}, mainDialG);
   for (let sec = 0; sec < 355; sec++){
     const deg = (sec / 355) * 360;
     const angDeg = deg - 90;
@@ -5213,7 +5293,7 @@ function createMartianDial(svgEl, prefix){
   tpSec.textContent = "SECONDS";
 
   el("circle", {cx:0, cy:0, r:183, fill:`url(#${prefix}RecessGrad)`, class:"main-recess-veil", "pointer-events":"none"}, mainDialG);
-  el("circle", {cx:0, cy:0, r:190, fill:"none", stroke:"#FF7838", "stroke-width":3.2, class:"main-lock-halo", "pointer-events":"none"}, mainDialG);
+  el("circle", {cx:0, cy:0, r:190, fill:"none", stroke:"#3bbf77", "stroke-width":3.2, class:"main-lock-halo", "pointer-events":"none"}, mainDialG);
 
   // DIGITAL SECONDS DISPLAY
   const digiText = el("text", {
@@ -5346,11 +5426,11 @@ function createMartianDial(svgEl, prefix){
     // 5. Solid jewel bearing hub & ruby center cap (smooth non-flickering solid cap)
     el("circle", {
       cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
-      fill: "rgba(42,22,16,0.72)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2), opacity: "0.9"
+      fill: "rgba(15,36,25,0.78)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2), opacity: "0.9"
     }, rotG);
     el("circle", {
       cx: 0, cy: 0, r: 1.4,
-      fill: "#FF7838", stroke: "none", opacity: 0.88
+      fill: "#3bbf77", stroke: "none", opacity: 0.90
     }, rotG);
 
     gearSpinNodes.push({
@@ -5576,7 +5656,7 @@ function createMartianDial(svgEl, prefix){
     el("line", {
       x1: (LEAP_R_OUTER * Math.cos(a)).toFixed(2), y1: (LEAP_R_OUTER * Math.sin(a)).toFixed(2),
       x2: (r2 * Math.cos(a)).toFixed(2), y2: (r2 * Math.sin(a)).toFixed(2),
-      stroke: isFive ? LEAP_C : "#8f3d19",
+      stroke: isFive ? LEAP_C : "#2f6347",
       "stroke-width": isFive ? 1.35 : 0.55
     }, leapCrownG);
     if (isFive){
@@ -5588,7 +5668,7 @@ function createMartianDial(svgEl, prefix){
         transform: `rotate(${rot.toFixed(2)} ${tx.toFixed(2)} ${ty.toFixed(2)})`,
         "text-anchor": "middle", "dominant-baseline": "central",
         "font-size": 4.8, "font-weight": "bold",
-        fill: sec === 0 ? LEAP_C : "#ffd9c2"
+        fill: sec === 0 ? LEAP_C : "#d4f5e2"
       }, leapCrownG);
       t.textContent = sec === 0 ? 355 : sec;
     }
@@ -5599,7 +5679,7 @@ function createMartianDial(svgEl, prefix){
   tpLeap.textContent = "LEAP CHRONE · 355 S";
 
   const leapOrbG = el("g", {transform: "rotate(0)"}, leapSweepG);
-  el("circle", {cx: 0, cy: -LEAP_R_OUTER, r: 12, fill: "rgba(255, 120, 56, 0.28)"}, leapOrbG);
+  el("circle", {cx: 0, cy: -LEAP_R_OUTER, r: 12, fill: "rgba(59, 191, 119, 0.28)"}, leapOrbG);
   el("circle", {cx: 0, cy: -LEAP_R_OUTER, r: 6.8, fill: LEAP_C, filter: `url(#${prefix}EmberGlow)`}, leapOrbG);
   el("circle", {cx: -1.8, cy: -LEAP_R_OUTER - 1.8, r: 2.2, fill: "#fff2e6", opacity: 0.85}, leapOrbG);
 
@@ -5811,7 +5891,7 @@ function createSunGraph(containerId, prefix){
     <div class="telem-row-head" style="margin-bottom:4px;align-items:center">
       <div>
         <strong style="${tall ? "font-size:15px;color:var(--sand)" : ""}">Solar Elevation &amp; Diurnal Cycle</strong>
-        <div class="muted small" style="font-size:11.5px;color:var(--rust2)">As observed on the Equator</div>
+        <div class="muted small" style="font-size:11.5px;color:var(--green-glow)">As observed on the Equator</div>
       </div>
       <span id="${prefix}PhaseBadge" class="badge ghost" style="margin:0;padding:3px 10px;font-size:11.5px"></span>
     </div>
@@ -5826,14 +5906,14 @@ function createSunGraph(containerId, prefix){
           <rect id="${prefix}ClipRect" x="16" y="0" width="0" height="${vbH}"></rect>
         </clipPath>
         <linearGradient id="${prefix}Grad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#B5532E"></stop>
+          <stop offset="0%" stop-color="#c4683e"></stop>
           <stop offset="50%" stop-color="#ffe3a8"></stop>
-          <stop id="${prefix}GradEnd" offset="100%" stop-color="#B5532E"></stop>
+          <stop id="${prefix}GradEnd" offset="100%" stop-color="#3bbf77"></stop>
         </linearGradient>
         <linearGradient id="${prefix}AreaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ffe3a8" stop-opacity="0.22"></stop>
-          <stop offset="55%" stop-color="#d9734a" stop-opacity="0.06"></stop>
-          <stop offset="100%" stop-color="#1a0c07" stop-opacity="0.0"></stop>
+          <stop offset="0%" stop-color="#ffe3a8" stop-opacity="0.24"></stop>
+          <stop offset="55%" stop-color="#3bbf77" stop-opacity="0.08"></stop>
+          <stop offset="100%" stop-color="#0f261b" stop-opacity="0.0"></stop>
         </linearGradient>
       </defs>
       <g id="${prefix}LeapZoneG"></g>
@@ -5863,11 +5943,11 @@ function createSunGraph(containerId, prefix){
       <text id="${prefix}TxtSunset" x="262" y="${lblY1}" font-size="8.2" fill="#c9b3a3" text-anchor="middle">Sunset</text>
       <text id="${prefix}EndLabel" x="344" y="${lblY1}" font-size="8.2" fill="#c9b3a3" text-anchor="end">88,750 s</text>
 
-      <text x="16" y="${lblY2}" font-size="7.8" fill="#d9734a" font-weight="bold" text-anchor="start">0 Archons</text>
-      <text id="${prefix}TxtSunriseA" x="50" y="${lblY2}" font-size="7.8" fill="#d9734a" text-anchor="middle">5.73 Archons</text>
+      <text x="16" y="${lblY2}" font-size="7.8" fill="#c4683e" font-weight="bold" text-anchor="start">0 Archons</text>
+      <text id="${prefix}TxtSunriseA" x="50" y="${lblY2}" font-size="7.8" fill="#c4683e" text-anchor="middle">5.73 Archons</text>
       <text x="180" y="${lblY2}" font-size="8.2" fill="#e0b25a" font-weight="bold" text-anchor="middle">12.5 Archons</text>
-      <text id="${prefix}TxtSunsetA" x="262" y="${lblY2}" font-size="7.8" fill="#d9734a" text-anchor="middle">18.75 Archons</text>
-      <text id="${prefix}EndArchon" x="344" y="${lblY2}" font-size="7.8" fill="#d9734a" font-weight="bold" text-anchor="end">25 Archons</text>
+      <text id="${prefix}TxtSunsetA" x="262" y="${lblY2}" font-size="7.8" fill="#c4683e" text-anchor="middle">18.75 Archons</text>
+      <text id="${prefix}EndArchon" x="344" y="${lblY2}" font-size="7.8" fill="#c4683e" font-weight="bold" text-anchor="end">25 Archons</text>
     </svg>
     <div class="telem-sub" style="margin-top:6px">
       <span id="${prefix}FooterText">Continuous 88,750 s solar cycle (25 Archons)</span>
@@ -6048,7 +6128,7 @@ function updateSunGraph(totalElapsed, L, refs, inLeapChrone, isChrone){
 
   if (refs.leapZoneG) {
     if (isChrone) {
-      refs.leapZoneG.innerHTML = `<rect x="${leapZoneX}" y="${topY - 4}" width="${leapZoneW}" height="${botY - topY + 4}" fill="rgba(255,120,56,0.22)"></rect><line x1="${leapZoneX}" y1="${topY - 4}" x2="${leapZoneX}" y2="${botY}" stroke="#FF7838" stroke-width="1" stroke-dasharray="2 2"></line>`;
+      refs.leapZoneG.innerHTML = `<rect x="${leapZoneX}" y="${topY - 4}" width="${leapZoneW}" height="${botY - topY + 4}" fill="rgba(59,191,119,0.22)"></rect><line x1="${leapZoneX}" y1="${topY - 4}" x2="${leapZoneX}" y2="${botY}" stroke="#3bbf77" stroke-width="1" stroke-dasharray="2 2"></line>`;
     } else {
       refs.leapZoneG.innerHTML = "";
     }
@@ -6063,15 +6143,15 @@ function updateSunGraph(totalElapsed, L, refs, inLeapChrone, isChrone){
   
   if (refs.endLabel) {
     refs.endLabel.textContent = isChrone ? "89,105 s" : "88,750 s";
-    refs.endLabel.setAttribute("fill", isChrone ? "#FF7838" : "#c9b3a3");
+    refs.endLabel.setAttribute("fill", isChrone ? "#3bbf77" : "#b5cfc0");
     refs.endLabel.setAttribute("font-weight", isChrone ? "bold" : "normal");
   }
   if (refs.endArchon) {
     refs.endArchon.textContent = isChrone ? "25 Archons + Leap" : "25 Archons";
-    refs.endArchon.setAttribute("fill", isChrone ? "#FF7838" : "#d9734a");
+    refs.endArchon.setAttribute("fill", isChrone ? "#3bbf77" : "#c4683e");
   }
   if (refs.gradEnd) {
-    refs.gradEnd.setAttribute("stop-color", isChrone ? "#FF7838" : "#B5532E");
+    refs.gradEnd.setAttribute("stop-color", "#3bbf77");
   }
   if (refs.footerText) {
     refs.footerText.innerHTML = isChrone ? "Continuous 89,105 s solar cycle (includes 355 s Leap Chrone)" : "Continuous 88,750 s solar cycle (25 Archons)";
@@ -6090,13 +6170,13 @@ function updateSunGraph(totalElapsed, L, refs, inLeapChrone, isChrone){
   refs.clipRect.setAttribute("width", Math.max(0, sunX - 16).toFixed(2));
   
   if (inLeapChrone){
-    refs.core.setAttribute("fill", "#FF7838");
-    refs.halo.setAttribute("fill", "rgba(255,120,56,0.34)");
+    refs.core.setAttribute("fill", "#3bbf77");
+    refs.halo.setAttribute("fill", "rgba(59,191,119,0.36)");
   } else if (elevDeg >= 0){
     refs.core.setAttribute("fill", "#ffe3a8");
     refs.halo.setAttribute("fill", "rgba(224,178,90,0.32)");
   } else {
-    refs.core.setAttribute("fill", "#d9734a");
+    refs.core.setAttribute("fill", "#c4683e");
     refs.halo.setAttribute("fill", "rgba(181,83,46,0.24)");
   }
   
@@ -6713,7 +6793,7 @@ function updateClock(){
 
   const displaySec = S.inLeapChrone ? Math.min(CHRONE - 1, Math.floor(S.leapSecs)) : p.s;
   setText(mainDialRefs.digiText, String(displaySec).padStart(3, "0"));
-  const mainSecColor = S.inLeapChrone ? "#FF7838" : "#e0b25a";
+  const mainSecColor = S.inLeapChrone ? "#3bbf77" : "#e0b25a";
   mainDialRefs.digiText.setAttribute("fill", mainSecColor);
   mainDialRefs.digiText.setAttribute("filter", S.inLeapChrone ? `url(#${mainDialRefs.prefix}EmberGlow)` : "none");
 
@@ -6809,7 +6889,7 @@ function updateSolClock(){
 
   const solDisplaySec = SOL_CLK.inLeapChrone ? Math.min(CHRONE - 1, Math.floor(SOL_CLK.leapSecs)) : p.s;
   setText(solDialRefs.digiText, String(solDisplaySec).padStart(3, "0"));
-  const solSecColor = SOL_CLK.inLeapChrone ? "#FF7838" : "#e0b25a";
+  const solSecColor = SOL_CLK.inLeapChrone ? "#3bbf77" : "#e0b25a";
   solDialRefs.digiText.setAttribute("fill", solSecColor);
   solDialRefs.digiText.setAttribute("filter", SOL_CLK.inLeapChrone ? `url(#${solDialRefs.prefix}EmberGlow)` : "none");
 
@@ -7146,10 +7226,10 @@ function renderDetail(){
         </div>
         <div class="sol-call-box ${callClass}" style="margin-top:10px;">${typeLabel}</div>
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(233,216,199,.12);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;font-size:13.5px;line-height:1.4;">
-          <div><strong style="color:#d9734a">Archons:</strong> 25 per Sol (1–25)</div>
+          <div><strong style="color:#c4683e">Archons:</strong> 25 per Sol (1–25)</div>
           <div><strong style="color:#E9D8C7">Chrones:</strong> 10 per Archon (1–10)</div>
           <div><strong style="color:#e0b25a">Seconds:</strong> 355 per Chrone (1–355)</div>
-          <div><strong style="color:#FF7838">Leap Chrone:</strong> 355 s outer ring</div>
+          <div><strong style="color:#3bbf77">Leap Chrone:</strong> 355 s outer ring</div>
         </div>
       </div>
     `;
@@ -7316,7 +7396,7 @@ function initWheelSvg(){
   el("path", {d:"M 0 1.5 L 8 5 L 0 8.5 z", fill:"#E0B25A"}, markerGold);
 
   const markerEmber = el("marker", {id: "driftArrowEmber", viewBox:"0 0 10 10", refX:"6", refY:"5", markerWidth:"6", markerHeight:"6", orient:"auto-start-reverse"}, defs);
-  el("path", {d:"M 0 1.5 L 8 5 L 0 8.5 z", fill:"#FF7838"}, markerEmber);
+  el("path", {d:"M 0 1.5 L 8 5 L 0 8.5 z", fill:"#3bbf77"}, markerEmber);
 
   // Background ring, horological epicyclic gear train & heptagram guide chords
   const bgG = el("g", {}, wheelSvg);
@@ -7411,7 +7491,7 @@ function drawWheel(){
   if ($("driftCoreYear")) $("driftCoreYear").textContent = `Year ${pad3(y)}`;
   if ($("driftCoreType")) {
     $("driftCoreType").textContent = leap ? "✦ Leap Year" : "Common Year";
-    $("driftCoreType").setAttribute("fill", leap ? "#FF7838" : "#e0b25a");
+    $("driftCoreType").setAttribute("fill", leap ? "#3bbf77" : "#e0b25a");
   }
   if ($("driftCoreSols")) {
     $("driftCoreSols").textContent = leap ? "671 sols · +6d drift" : "668 sols · +3d drift";
@@ -7430,11 +7510,11 @@ function drawWheel(){
 
     if (glow) {
       glow.setAttribute("opacity", isActive ? "1" : "0");
-      glow.setAttribute("stroke", leap ? "#FF7838" : "#E0B25A");
+      glow.setAttribute("stroke", leap ? "#3bbf77" : "#E0B25A");
     }
     if (bg) {
-      bg.setAttribute("fill", isActive ? (leap ? "#FF7838" : "#B5532E") : isPrev ? "rgba(70, 35, 22, 0.85)" : "rgba(47, 27, 19, 0.88)");
-      bg.setAttribute("stroke", isActive ? "#ffe3a8" : isPrev ? "#d9734a" : "#5a3b2e");
+      bg.setAttribute("fill", isActive ? (leap ? "#c4683e" : "#B5532E") : isPrev ? "rgba(70, 35, 22, 0.85)" : "rgba(47, 27, 19, 0.88)");
+      bg.setAttribute("stroke", isActive ? "#ffe3a8" : isPrev ? "#c4683e" : "#2f6347");
       bg.setAttribute("stroke-width", isActive ? "2.2" : "1.2");
     }
     if (txt) {
@@ -7458,7 +7538,7 @@ function drawWheel(){
       el("path", {
         d: pathD,
         fill: "none",
-        stroke: prevLeap ? "#FF7838" : "#E0B25A",
+        stroke: prevLeap ? "#3bbf77" : "#E0B25A",
         "stroke-width": 2.5,
         "stroke-linecap": "round",
         "marker-end": prevLeap ? "url(#driftArrowEmber)" : "url(#driftArrowGold)"
@@ -7643,10 +7723,10 @@ function hideSeasTooltip(){
 // Canonical season color map: ensures Spring is always green, Summer is always warm rust,
 // Autumn is always golden amber, and Winter is always cool ice-blue in both hemispheres!
 const SEASON_TYPE_COLORS = {
-  Spring: "#76A065",
-  Summer: "#D9734A",
-  Autumn: "#E0B25A",
-  Winter: "#5B8FA8"
+  Spring: "#3bbf77",
+  Summer: "#c4683e",
+  Autumn: "#e0b25a",
+  Winter: "#5299a8"
 };
 
 function getSeasonCleanName(s, hemi){
@@ -7679,9 +7759,9 @@ function buildSeasWheelSvg(){
   el("feMergeNode", {in:"SourceGraphic"}, fm);
 
   const dialBgGrad = el("radialGradient", {id:"seasAstrolabeGrad", cx:"50%", cy:"50%", r:"50%"}, defs);
-  el("stop", {offset:"0%", "stop-color":"#221009", "stop-opacity":"0.95"}, dialBgGrad);
-  el("stop", {offset:"68%", "stop-color":"#160905", "stop-opacity":"0.88"}, dialBgGrad);
-  el("stop", {offset:"100%", "stop-color":"#2d150d", "stop-opacity":"0.94"}, dialBgGrad);
+  el("stop", {offset:"0%", "stop-color":"#11281d", "stop-opacity":"0.95"}, dialBgGrad);
+  el("stop", {offset:"68%", "stop-color":"#0a1912", "stop-opacity":"0.90"}, dialBgGrad);
+  el("stop", {offset:"100%", "stop-color":"#173627", "stop-opacity":"0.94"}, dialBgGrad);
 
   // 1. Static Astrolabe Background Plate & Concentric Compass Rings
   el("circle", {cx:0, cy:0, r:174, fill:"url(#seasAstrolabeGrad)", stroke:"rgba(224,178,90,0.32)", "stroke-width":1.6}, svg);
@@ -7853,7 +7933,7 @@ function buildSeasWheelSvg(){
     id: "seasDustBandPath",
     d: describeStrokeArc(165, dustStartDeg, dustEndDeg),
     fill: "none",
-    stroke: "#FF7838",
+    stroke: "#c4683e",
     "stroke-width": 5.5,
     "stroke-linecap": "round",
     "stroke-dasharray": "5 4",
@@ -7879,7 +7959,7 @@ function buildSeasWheelSvg(){
       id: "periMarker",
       ls: 251,
       label: "Perihelion",
-      color: "#FF7838",
+      color: "#c4683e",
       tip: "<strong>Perihelion (Ls 251&deg;):</strong> Mars is closest to the Sun (1.381 AU). Orbital speed peaks at 26.50 km/s, creating short, hot Southern Summers."
     }
   ];
@@ -7927,7 +8007,7 @@ function buildSeasWheelSvg(){
 
   // 6. Center Chronometer Hub Readout
   const coreG = el("g", {id:"seasWheelCore"}, svg);
-  el("circle", {cx:0, cy:0, r:78, fill:"rgba(18, 8, 5, 0.96)", stroke:"#5a3b2e", "stroke-width":2}, coreG);
+  el("circle", {cx:0, cy:0, r:78, fill:"rgba(10, 24, 17, 0.96)", stroke:"#2f6347", "stroke-width":2}, coreG);
   el("circle", {cx:0, cy:0, r:72, fill:"none", stroke:"rgba(224,178,90,0.28)", "stroke-width":1, "stroke-dasharray":"2 3"}, coreG);
 
   const coreSol = el("text", {x:0, y:-21, "text-anchor":"middle", "font-family":"Cambria,Georgia,serif", "font-size":"20", "font-weight":"bold", fill:"#E9D8C7", id:"seasCoreSol"}, coreG);
@@ -8027,8 +8107,8 @@ function initSeasOrbitSvg(){
   const sunGrad = el("radialGradient", {id:"seasSunGrad"}, defs);
   el("stop", {offset:"0%", "stop-color":"#fffceb"}, sunGrad);
   el("stop", {offset:"40%", "stop-color":"#ffcc4d"}, sunGrad);
-  el("stop", {offset:"75%", "stop-color":"#ff7838"}, sunGrad);
-  el("stop", {offset:"100%", "stop-color":"#ff7838", "stop-opacity":"0"}, sunGrad);
+  el("stop", {offset:"75%", "stop-color":"#e0b25a"}, sunGrad);
+  el("stop", {offset:"100%", "stop-color":"#c4683e", "stop-opacity":"0"}, sunGrad);
 
   // 1. Perspective Orbital Plane Reference Disc (establishes 3D depth in space)
   el("ellipse", {
@@ -8074,10 +8154,10 @@ function initSeasOrbitSvg(){
 
   // 6. Aphelion & Perihelion Markers (Flipped 180°: Perihelion on the LEFT, Aphelion on the RIGHT)
   // Perihelion (Ls 251°): Closest distance 206.650M km (1.381 AU), Max velocity 26.50 km/s — on the LEFT (-a, 0)
-  el("circle", {cx: -a, cy: 0, r: 4.5, fill:"#FF7838", stroke:"#1a0c07", "stroke-width":1.2}, svg);
-  const periT = el("text", {x: -a + 8, y: -10, "text-anchor":"start", "font-size":"9.5", fill:"#FF7838", "font-weight":"bold", stroke:"#1a0c07", "stroke-width":"2.5", "paint-order":"stroke fill"}, svg);
+  el("circle", {cx: -a, cy: 0, r: 4.5, fill:"#c4683e", stroke:"#0a1912", "stroke-width":1.2}, svg);
+  const periT = el("text", {x: -a + 8, y: -10, "text-anchor":"start", "font-size":"9.5", fill:"#e0b25a", "font-weight":"bold", stroke:"#1a0c07", "stroke-width":"2.5", "paint-order":"stroke fill"}, svg);
   periT.textContent = "Perihelion (251°) · 206.7M km";
-  const periV = el("text", {x: -a + 8, y: 14, "text-anchor":"start", "font-size":"8.5", fill:"#FF7838", stroke:"#1a0c07", "stroke-width":"2.5", "paint-order":"stroke fill"}, svg);
+  const periV = el("text", {x: -a + 8, y: 14, "text-anchor":"start", "font-size":"8.5", fill:"#e0b25a", stroke:"#1a0c07", "stroke-width":"2.5", "paint-order":"stroke fill"}, svg);
   periV.textContent = "Max: 26.50 km/s (1.381 AU)";
 
   // Aphelion (Ls 71°): Farthest distance 249.261M km (1.666 AU), Min velocity 21.97 km/s — on the RIGHT (+a, 0)
@@ -8097,7 +8177,7 @@ function initSeasOrbitSvg(){
       class: "seas-trail-dot",
       cx: 0, cy: 0,
       r: rDot.toFixed(1),
-      fill: "#D9734A",
+      fill: "#c4683e",
       opacity: op.toFixed(2)
     }, trailG);
   }
@@ -8106,7 +8186,7 @@ function initSeasOrbitSvg(){
   const marsG = el("g", {id:"seasOrbitMarsG"}, svg);
   const marsBody = el("g", {id:"seasOrbitMarsBody"}, marsG);
   el("circle", {cx:0, cy:0, r:10, fill:"rgba(217, 115, 74, 0.28)"}, marsBody);
-  el("circle", {cx:0, cy:0, r:5.5, fill:"#D9734A", stroke:"#ffe3a8", "stroke-width":1.6}, marsBody);
+  el("circle", {cx:0, cy:0, r:5.5, fill:"#c4683e", stroke:"#ffe3a8", "stroke-width":1.6}, marsBody);
   const lsLbl = el("text", {x:0, y:-12, "text-anchor":"middle", "font-size":"10.5", "font-weight":"bold", fill:"#ffe3a8", id:"seasOrbitMarsLs"}, marsG);
   lsLbl.textContent = "Ls 0°";
 }
@@ -8118,7 +8198,7 @@ const GAS_CONFIG = {
     yMax: "8.7 mb", yMid: "6.36 mb", yMin: "4.0 mb"
   },
   co2: {
-    color: "#FF7838",
+    color: "#c4683e",
     yMax: "8.3 mb", yMid: "6.05 mb", yMin: "3.8 mb"
   },
   n2: {
@@ -8267,7 +8347,7 @@ function initSeasPressureSvg(){
   const multiG = el("g", {id:"seasMultiGasOverlayG"}, svg);
   el("polyline", {
     points: ptsCO2Overlay.join(" "),
-    fill: "none", stroke: "#FF7838", "stroke-width": 1.5, "stroke-dasharray": "4 2", opacity: 0.85
+    fill: "none", stroke: "#c4683e", "stroke-width": 1.5, "stroke-dasharray": "4 2", opacity: 0.85
   }, multiG);
   el("polyline", {
     points: ptsN2Overlay.join(" "),
@@ -8275,11 +8355,11 @@ function initSeasPressureSvg(){
   }, multiG);
   el("polyline", {
     points: ptsArOverlay.join(" "),
-    fill: "none", stroke: "#b388ff", "stroke-width": 1.2, "stroke-dasharray": "2 2", opacity: 0.72
+    fill: "none", stroke: "#c99846", "stroke-width": 1.2, "stroke-dasharray": "2 2", opacity: 0.72
   }, multiG);
   el("polyline", {
     points: ptsO2Overlay.join(" "),
-    fill: "none", stroke: "#5ec88a", "stroke-width": 1.1, "stroke-dasharray": "1.5 2", opacity: 0.65
+    fill: "none", stroke: "#3bbf77", "stroke-width": 1.1, "stroke-dasharray": "1.5 2", opacity: 0.75
   }, multiG);
 
   // 4. Primary Active Gas Curve (Morphs shape & color when switching gas tabs)
@@ -8295,7 +8375,7 @@ function initSeasPressureSvg(){
   // 5. Traveling marker & cursor guide line on active curve
   el("line", {id:"seasPressGuideLine", x1:0, y1:yTop, x2:0, y2:yBot, stroke:"rgba(255,227,168,0.45)", "stroke-width":1.2, "stroke-dasharray":"2 2"}, svg);
   const pMarker = el("g", {id:"seasPressMarkerG"}, svg);
-  el("circle", {id:"seasPressMarkerDot", cx:0, cy:0, r:5.5, fill:"#FF7838", stroke:"#ffe3a8", "stroke-width":1.8}, pMarker);
+  el("circle", {id:"seasPressMarkerDot", cx:0, cy:0, r:5.5, fill:"#c4683e", stroke:"#ffe3a8", "stroke-width":1.8}, pMarker);
 
   lastBuiltGasChartMode = null;
 }
@@ -8356,7 +8436,7 @@ function syncGasChartGeometry(activeGas){
 
   const dot = $("seasPressMarkerDot");
   if (dot) {
-    dot.setAttribute("fill", activeGas === "all" ? "#FF7838" : cfg.color);
+    dot.setAttribute("fill", activeGas === "all" ? "#3bbf77" : cfg.color);
   }
 }
 
@@ -8414,12 +8494,12 @@ function renderSeasonsFrame(){
   if (dustLegend) {
     if (inDustBand) {
       dustLegend.textContent = "Planetary dust storm is active";
-      dustLegend.style.color = "#FF7838";
+      dustLegend.style.color = "#c4683e";
       dustLegend.style.fontWeight = "bold";
-      dustLegend.style.textShadow = "0 0 8px rgba(255,120,56,0.65)";
+      dustLegend.style.textShadow = "0 0 8px rgba(196,104,62,0.65)";
     } else {
       dustLegend.innerHTML = "&#9676; Dust Band (210&deg;&ndash;330&deg;)";
-      dustLegend.style.color = "#FF7838";
+      dustLegend.style.color = "#c4683e";
       dustLegend.style.fontWeight = "normal";
       dustLegend.style.textShadow = "none";
     }
@@ -8451,8 +8531,8 @@ function renderSeasonsFrame(){
   if ($("seasHemiProgressText")) $("seasHemiProgressText").textContent = `${pct}% through current season`;
 
   // Colors: cool blue for winter (#4A89AA), warm rust for summer (#D96B38 / intense #FF5E1A for Southern Summer), intermediate for spring (#76A065) and autumn (#D49B4B)
-  const northColors = ["#76A065", "#D9734A", "#D49B4B", "#4A89AA"];
-  const southColors = ["#D49B4B", "#4A89AA", "#76A065", "#FF5E1A"]; // Southern Summer (idx 3) is intense hot orange-rust
+  const northColors = ["#3bbf77", "#c4683e", "#e0b25a", "#5299a8"];
+  const southColors = ["#e0b25a", "#5299a8", "#3bbf77", "#B5532E"]; // Southern Summer (idx 3) is intense hot orange-rust
   const northNotes = ["194 sols · Long & Mild", "178 sols · Aphelion Warmth", "142 sols · Rapid Cooling", `${info.effectiveDuration} sols · Mild Winter`];
   const southNotes = ["194 sols · Long Cooling", "178 sols · Deep Cold Winter", "142 sols · Rapid Thaw", `${info.effectiveDuration} sols · Short, Hot Perihelion Summer`];
 
@@ -8826,10 +8906,10 @@ function updateSeasonsTick(dt){
     }
 
     if (glow) {
-      glow.setAttribute("stroke", isNorth ? "#e0b25a" : "#FF7838");
+      glow.setAttribute("stroke", isNorth ? "#e0b25a" : "#c4683e");
       glow.style.filter = isNorth
         ? "drop-shadow(0 -1px 6px rgba(224,178,90,0.85))"
-        : "drop-shadow(0 1px 6px rgba(255,120,56,0.85))";
+        : "drop-shadow(0 1px 6px rgba(196,104,62,0.85))";
     }
 
     if (lbl) {
@@ -8842,7 +8922,7 @@ function updateSeasonsTick(dt){
         ? "Active: Northern Hemisphere · Tap globe to shift to Southern (Mars axial tilt 25.19°)"
         : "Active: Southern Hemisphere · Tap globe to shift to Northern (Mars axial tilt 25.19°)");
       sw.setAttribute("aria-label", isNorth ? "Active hemisphere: Northern. Tap globe to switch to Southern." : "Active hemisphere: Southern. Tap globe to switch to Northern.");
-      sw.style.borderColor = isNorth ? "rgba(224, 178, 90, 0.45)" : "rgba(255, 120, 56, 0.55)";
+      sw.style.borderColor = isNorth ? "rgba(224, 178, 90, 0.45)" : "rgba(196, 104, 62, 0.55)";
     }
   }
 
@@ -10337,7 +10417,7 @@ function answer(btn, q){
   $("fb").appendChild(next);
 }
 function confetti(){
-  const colors = ["#e0b25a","#B5532E","#E9D8C7","#d9734a","#8fd3a5"];
+  const colors = ["#e0b25a","#B5532E","#E9D8C7","#c4683e","#8fd3a5"];
   for (let i = 0; i < 70; i++){
     const c = document.createElement("span");
     c.className = "confetti";
@@ -10820,6 +10900,8 @@ function lockMarsVisa(){
   VISA_STATE.verifiedScore = 0;
   const visaSec = $("visa");
   if (visaSec) visaSec.hidden = true;
+  const visaStation = document.querySelector('.rack-station[data-sec="visa"]');
+  if (visaStation) visaStation.classList.remove("visa-unlocked");
   const navLink = $("navVisaLink");
   if (navLink) {
     navLink.classList.add("visa-hidden");
@@ -10841,6 +10923,8 @@ function unlockMarsVisa(score, total = 20){
   const badge = $("visaClearanceBadge");
   if (badge) badge.textContent = `Clearance: ${score}/${total} Quiz Verified (Max 10 Earth Yrs)`;
   renderMarsVisaCard();
+  const visaStation = document.querySelector('.rack-station[data-sec="visa"]');
+  if (visaStation) visaStation.classList.add("visa-unlocked");
 }
 
 function drawOctagonPath(ctx, x1, y1, x2, y2, chamfer){
@@ -12734,11 +12818,11 @@ let startHomeTyping = () => {};
     // Jewel bearing hub & ruby center cap
     spEl("circle", {
       cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
-      fill: "rgba(42,22,16,0.75)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2)
+      fill: "rgba(15,36,25,0.78)", stroke: "#ffe3a8", "stroke-width": (sw * 0.85).toFixed(2)
     }, rotG);
     spEl("circle", {
       cx: 0, cy: 0, r: 1.4,
-      fill: "#FF7838", stroke: "none", opacity: 0.88
+      fill: "#3bbf77", stroke: "none", opacity: 0.90
     }, rotG);
 
     return {
@@ -12796,7 +12880,7 @@ let startHomeTyping = () => {};
       gears: [
         { cx: 22, cy: 24, teeth: 32, rTip: 42, rRoot: 35.5, spokes: 6, innerTeeth: 12, innerRTip: 15, innerRRoot: 12, ratio: 0.45, phase: 0, interactive: true, title: "Click to wind top-left horological escapement" },
         { cx: 74, cy: 40, teeth: 18, rTip: 23.5, rRoot: 18.8, spokes: 4, ratio: -0.80, phase: 10, color: "#ffe3a8", interactive: true, title: "Click to wind intermediate pinion" },
-        { cx: 40, cy: 84, teeth: 24, rTip: 30.5, rRoot: 25.5, spokes: 5, ratio: 0.60, phase: 4, color: "#d9734a" }
+        { cx: 40, cy: 84, teeth: 24, rTip: 30.5, rRoot: 25.5, spokes: 5, ratio: 0.60, phase: 4, color: "#c4683e" }
       ]
     },
     {
@@ -12804,7 +12888,7 @@ let startHomeTyping = () => {};
       gears: [
         { cx: 138, cy: 24, teeth: 34, rTip: 44, rRoot: 37, spokes: 6, innerTeeth: 14, innerRTip: 16.5, innerRRoot: 13.5, ratio: -0.42, phase: 5, interactive: true, title: "Click to wind top-right horological escapement" },
         { cx: 84, cy: 42, teeth: 18, rTip: 23.5, rRoot: 18.8, spokes: 4, ratio: 0.79, phase: 12, color: "#ffe3a8", interactive: true, title: "Click to wind transfer wheel" },
-        { cx: 122, cy: 86, teeth: 22, rTip: 28.5, rRoot: 23.5, spokes: 5, ratio: -0.65, phase: 8, color: "#d9734a" }
+        { cx: 122, cy: 86, teeth: 22, rTip: 28.5, rRoot: 23.5, spokes: 5, ratio: -0.65, phase: 8, color: "#3bbf77" }
       ]
     },
     {
@@ -12812,7 +12896,7 @@ let startHomeTyping = () => {};
       gears: [
         { cx: 24, cy: 156, teeth: 36, rTip: 48, rRoot: 41, spokes: 7, innerTeeth: 14, innerRTip: 17.5, innerRRoot: 14.5, ratio: 0.38, phase: 0, interactive: true, title: "Click to wind bottom-left barrel gear" },
         { cx: 82, cy: 132, teeth: 20, rTip: 26.5, rRoot: 21.5, spokes: 5, ratio: -0.68, phase: 9, color: "#ffe3a8", interactive: true, title: "Click to wind escapement pinion" },
-        { cx: 42, cy: 88, teeth: 16, rTip: 21, rRoot: 16.8, spokes: 4, ratio: 0.85, phase: 14, color: "#d9734a" }
+        { cx: 42, cy: 88, teeth: 16, rTip: 21, rRoot: 16.8, spokes: 4, ratio: 0.85, phase: 14, color: "#3bbf77" }
       ]
     },
     {
@@ -12820,7 +12904,7 @@ let startHomeTyping = () => {};
       gears: [
         { cx: 156, cy: 156, teeth: 38, rTip: 50, rRoot: 42.5, spokes: 7, innerTeeth: 16, innerRTip: 19, innerRRoot: 15.5, ratio: -0.36, phase: 3, interactive: true, title: "Click to wind bottom-right master chronometer wheel" },
         { cx: 94, cy: 134, teeth: 22, rTip: 28.5, rRoot: 23.5, spokes: 5, ratio: 0.62, phase: 11, color: "#ffe3a8", interactive: true, title: "Click to wind intermediate wheel" },
-        { cx: 138, cy: 86, teeth: 18, rTip: 23.5, rRoot: 19, spokes: 4, ratio: -0.76, phase: 6, color: "#d9734a" }
+        { cx: 138, cy: 86, teeth: 18, rTip: 23.5, rRoot: 19, spokes: 4, ratio: -0.76, phase: 6, color: "#c4683e" }
       ]
     }
   ];
@@ -12842,29 +12926,116 @@ let startHomeTyping = () => {};
     });
   });
 
-  // 2. Build Right-Edge Horological Scroll Vernier Rack & Dual-Gear Compound Carriage
+  // 2. Populate Revamped Right-Edge Horological Section Navigation Rail & Dual-Gear Carriage
   const rackSvg = document.getElementById("spScrollRack");
+  const flyoutTag = document.getElementById("rackFlyoutTag");
   if (rackSvg){
-    spEl("line", {x1: 22, y1: 10, x2: 22, y2: 210, stroke: "rgba(224,178,90,0.48)", "stroke-width": 1.25}, rackSvg);
-    for (let y = 14; y <= 206; y += 5){
-      const major = ((y - 14) % 20 === 0);
+    // Decorative top & bottom finials
+    spEl("path", {d: "M 42 12 Q 42 6 36 6 Q 30 6 30 12 L 42 12 Z", fill: "#ffe3a8", opacity: "0.85"}, rackSvg);
+    spEl("path", {d: "M 42 328 Q 42 334 36 334 Q 30 334 30 328 L 42 328 Z", fill: "#ffe3a8", opacity: "0.85"}, rackSvg);
+
+    // Vertical main brass rail
+    spEl("line", {x1: 42, y1: 12, x2: 42, y2: 328, stroke: "#ffe3a8", "stroke-width": 1.8, "stroke-linecap": "round"}, rackSvg);
+    spEl("line", {x1: 44, y1: 14, x2: 44, y2: 326, stroke: "#3bbf77", "stroke-width": 0.75, opacity: "0.55"}, rackSvg);
+
+    // Continuous precision rack gear teeth along rail
+    let rackTeethD = "";
+    for (let y = 20; y <= 320; y += 4){
+      rackTeethD += `M 42.0 ${y.toFixed(1)} L 38.0 ${(y+1.2).toFixed(1)} L 38.0 ${(y+2.8).toFixed(1)} L 42.0 ${(y+4.0).toFixed(1)} `;
+    }
+    spEl("path", {d: rackTeethD.trim(), fill: "none", stroke: "#ffe3a8", "stroke-width": 0.85, opacity: "0.75"}, rackSvg);
+
+    // Vernier scale micro-ticks
+    for (let y = 20; y <= 320; y += 2){
+      const isFive = (y % 10 === 0);
+      const w = isFive ? 4.5 : 2.5;
       spEl("line", {
-        x1: major ? 15 : 17.5, y1: y, x2: 22, y2: y,
-        stroke: major ? "#ffe3a8" : "#e0b25a",
-        "stroke-width": major ? 1.35 : 0.85,
-        opacity: major ? 0.88 : 0.58
+        x1: 42.0, y1: y, x2: 42.0 + w, y2: y,
+        stroke: isFive ? "#ffe3a8" : "#e0b25a",
+        "stroke-width": isFive ? 0.85 : 0.55,
+        opacity: isFive ? 0.8 : 0.45
       }, rackSvg);
     }
-    const rackTravelG = spEl("g", {class: "sp-gpu-rot", transform: "translate(12, 14)"}, rackSvg);
-    // Primary 14T rack pinion meshing directly with the vertical vernier teeth
-    const pinion = createWatchmakerGear(rackTravelG, {
-      cx: 0, cy: 0, teeth: 14, rPitch: 7.0, rTip: 8.1, rRoot: 5.8, spokes: 4,
-      color: "#ffe3a8", sw: 0.92, ratio: 1.0, phase: 0
+
+    // 9 Interactive Section Navigation Stations
+    const stations = [
+      { key: "home", label: "Home" },
+      { key: "clock", label: "Clock" },
+      { key: "calendar", label: "Calendar" },
+      { key: "seasons", label: "Seasons" },
+      { key: "drift", label: "Weekday Drift" },
+      { key: "convert", label: "Converter" },
+      { key: "terraform", label: "Terraforming" },
+      { key: "quiz", label: "Quiz" },
+      { key: "visa", label: "Mars Visa" }
+    ];
+
+    const stepSt = 292 / (stations.length - 1);
+    stations.forEach((st, i) => {
+      const y = 24 + i * stepSt;
+      const stG = spEl("g", {class: "rack-station", "data-sec": st.key, "data-label": st.label}, rackSvg);
+      // Invisible wide hit-box for easy clicking
+      spEl("rect", {x: 0, y: y - 16, width: 54, height: 32, fill: "transparent"}, stG);
+      // Station notch line
+      spEl("line", {x1: 28, y1: y.toFixed(1), x2: 42, y2: y.toFixed(1), stroke: "#ffe3a8", "stroke-width": 1.4, opacity: "0.85"}, stG);
+      // Station jewel pivot marker
+      spEl("circle", {cx: 42, cy: y.toFixed(1), r: 3.4, fill: "#102419", stroke: "#ffe3a8", "stroke-width": 1.1, class: "st-jewel"}, stG);
+      spEl("circle", {cx: 42, cy: y.toFixed(1), r: 1.6, fill: "#e0b25a", class: "st-core"}, stG);
+
+      stG.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (typeof go === "function") go(st.key);
+        pulseGearTrain(24);
+      });
+      stG.addEventListener("mouseenter", () => {
+        if (!flyoutTag) return;
+        flyoutTag.textContent = st.label;
+        flyoutTag.style.top = y.toFixed(1) + "px";
+        flyoutTag.classList.add("show");
+      });
+      stG.addEventListener("mouseleave", () => {
+        if (flyoutTag) flyoutTag.classList.remove("show");
+      });
     });
-    // Secondary 10T counter-rotating idler gear meshing with the 14T pinion (dist = 7.0 + 5.0 = 12.0)
+
+    // Rail scrub / drag listener
+    let isScrubbingRail = false;
+    function scrubToY(clientY){
+      if (!rackSvg) return;
+      const rect = rackSvg.getBoundingClientRect();
+      const relY = clientY - rect.top;
+      const frac = Math.min(1, Math.max(0, (relY - 24) / 292));
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo({ top: frac * maxScroll, behavior: "auto" });
+    }
+
+    rackSvg.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".rack-station")) return;
+      isScrubbingRail = true;
+      try { rackSvg.setPointerCapture(e.pointerId); } catch(err){}
+      scrubToY(e.clientY);
+      pulseGearTrain(18);
+    });
+    rackSvg.addEventListener("pointermove", (e) => {
+      if (isScrubbingRail) scrubToY(e.clientY);
+    });
+    window.addEventListener("pointerup", () => { isScrubbingRail = false; });
+    window.addEventListener("pointercancel", () => { isScrubbingRail = false; });
+
+    // Moving Dual-Gear Carriage (The Elevator)
+    const rackTravelG = spEl("g", {class: "rack-carriage-group", transform: "translate(28, 24)"}, rackSvg);
+    // Horizontal vernier index pointer needle
+    spEl("polygon", {points: "0,-1.5 14,0 0,1.5", fill: "#ffe3a8"}, rackTravelG);
+
+    // Primary 16T rack pinion meshing directly with the vertical rack teeth at x=42
+    const pinion = createWatchmakerGear(rackTravelG, {
+      cx: 0, cy: 0, teeth: 16, rPitch: 10.0, rTip: 11.5, rRoot: 8.5, spokes: 4,
+      color: "#ffe3a8", sw: 1.05, ratio: 1.0, phase: 0
+    });
+    // Secondary 10T counter-rotating idler wheel meshed with the 16T pinion (dist = 10.0 + 6.3 = 16.3)
     const idler = createWatchmakerGear(rackTravelG, {
-      cx: -6.2, cy: -10.28, teeth: 10, rPitch: 5.0, rTip: 6.0, rRoot: 3.9, spokes: 3,
-      color: "#d9734a", sw: 0.82, ratio: -1.4, phase: 11.5
+      cx: -10.5, cy: -12.5, teeth: 10, rPitch: 6.3, rTip: 7.5, rRoot: 5.2, spokes: 3,
+      color: "#c4683e", sw: 0.88, ratio: -1.6, phase: 11.5
     });
     SP.rackGroup = rackTravelG;
     SP.rackPinion = pinion;
@@ -12904,7 +13075,7 @@ let startHomeTyping = () => {};
     });
     const g3 = createWatchmakerGear(badgeSvg, {
       cx: 46.93, cy: 18.84, teeth: 16, rPitch: 9.20, rTip: 10.29, rRoot: 7.99, spokes: 4,
-      color: "#d9734a", sw: 0.98, ratio: 1.0625, phase: 14.51
+      color: (idx % 2 === 0 ? "#3bbf77" : "#c4683e"), sw: 0.98, ratio: 1.0625, phase: 14.51
     });
 
     hEl.classList.add("sp-sec-head-wrap");
@@ -12991,7 +13162,7 @@ let startHomeTyping = () => {};
       {
         teeth: 18, rPitch: 19.80, rTip: 22.00, rRoot: 17.50, spokes: 4,
         innerTeeth: 8, innerRTip: 9.8, innerRRoot: 7.8,
-        color: "#d9734a", sw: 0.80,
+        color: "#c4683e", sw: 0.80,
         cx: -52.01, cy: -40.63, fromX: 0.00, fromY: 0.00,
         deployStart: 0.44, deployEnd: 0.82,
         ratio: -0.9800, phase: 19.34
@@ -13054,11 +13225,11 @@ let startHomeTyping = () => {};
       // Center hub
       spEl("circle", {
         cx: 0, cy: 0, r: (rHub * 0.55).toFixed(2),
-        fill: "rgba(42,22,16,0.65)", stroke: "#ffe3a8", "stroke-width": (cfg.sw * 0.82).toFixed(2), opacity: "0.85"
+        fill: "rgba(15,36,25,0.72)", stroke: "#ffe3a8", "stroke-width": (cfg.sw * 0.82).toFixed(2), opacity: "0.85"
       }, rotG);
       spEl("circle", {
         cx: 0, cy: 0, r: 1.6,
-        fill: cfg.color === "#d9734a" ? "#ffe3a8" : "#FF7838",
+        fill: cfg.color === "#c4683e" ? "#ffe3a8" : "#3bbf77",
         stroke: "none", opacity: "0.85"
       }, rotG);
 
@@ -13134,7 +13305,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: 106.37, cy: -53.66, teeth: 12, rPitch: 15.30, rTip: 17.72, rRoot: 12.62, spokes: 3,
-        color: "#d9734a", sw: 0.88, ratio: 2.4000, phase: 6.50
+        color: "#c4683e", sw: 0.88, ratio: 2.4000, phase: 6.50
       }),
       // SE Quadrant: 14T Planet + 16T Transfer Gear
       createWatchmakerGear(parentG, {
@@ -13144,7 +13315,7 @@ let startHomeTyping = () => {};
       createWatchmakerGear(parentG, {
         cx: 52.36, cy: 104.09, teeth: 16, rPitch: 20.40, rTip: 22.82, rRoot: 17.72, spokes: 4,
         innerTeeth: 8, innerRTip: 9.4, innerRRoot: 7.4,
-        color: "#d9734a", sw: 0.88, ratio: 1.8000, phase: 9.13
+        color: "#3bbf77", sw: 0.88, ratio: 1.8000, phase: 9.13
       }),
       // SW Quadrant: 20T Planet + 12T Pinion
       createWatchmakerGear(parentG, {
@@ -13154,7 +13325,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: -110.33, cy: 54.11, teeth: 12, rPitch: 15.30, rTip: 17.72, rRoot: 12.62, spokes: 3,
-        color: "#d9734a", sw: 0.88, ratio: 2.4000, phase: 23.67
+        color: "#c4683e", sw: 0.88, ratio: 2.4000, phase: 23.67
       }),
       // NW Quadrant: 16T Planet + 14T Pinion
       createWatchmakerGear(parentG, {
@@ -13164,7 +13335,7 @@ let startHomeTyping = () => {};
       createWatchmakerGear(parentG, {
         cx: -51.85, cy: -104.56, teeth: 14, rPitch: 17.85, rTip: 20.27, rRoot: 15.17, spokes: 4,
         innerTeeth: 7, innerRTip: 8.6, innerRRoot: 6.8,
-        color: "#d9734a", sw: 0.88, ratio: 2.0571, phase: 8.29
+        color: "#3bbf77", sw: 0.88, ratio: 2.0571, phase: 8.29
       })
     ];
   };
@@ -13200,7 +13371,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: 22.10, cy: -107.97, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
-        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 2.57
+        color: "#c4683e", sw: 0.84, ratio: 1.5429, phase: 2.57
       }),
       // Arm 1 (-18°): 18T Planet + 14T Idler
       createWatchmakerGear(parentG, {
@@ -13210,7 +13381,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: 109.51, cy: -12.34, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
-        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 7.71
+        color: "#3bbf77", sw: 0.84, ratio: 1.5429, phase: 7.71
       }),
       // Arm 2 (+54°): 18T Planet + 14T Idler
       createWatchmakerGear(parentG, {
@@ -13220,7 +13391,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: 45.58, cy: 100.34, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
-        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 12.86
+        color: "#c4683e", sw: 0.84, ratio: 1.5429, phase: 12.86
       }),
       // Arm 3 (+126°): 18T Planet + 14T Idler
       createWatchmakerGear(parentG, {
@@ -13230,7 +13401,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: -81.34, cy: 74.36, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
-        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 18.00
+        color: "#3bbf77", sw: 0.84, ratio: 1.5429, phase: 18.00
       }),
       // Arm 4 (+198°): 18T Planet + 14T Idler
       createWatchmakerGear(parentG, {
@@ -13240,7 +13411,7 @@ let startHomeTyping = () => {};
       }),
       createWatchmakerGear(parentG, {
         cx: -95.85, cy: -54.38, teeth: 14, rPitch: 16.45, rTip: 18.68, rRoot: 13.98, spokes: 3,
-        color: "#d9734a", sw: 0.84, ratio: 1.5429, phase: 23.14
+        color: "#c4683e", sw: 0.84, ratio: 1.5429, phase: 23.14
       })
     ];
   };
@@ -13320,17 +13491,17 @@ let startHomeTyping = () => {};
       setGearRot(n, n.phase + totalDrive * n.ratio);
     }
 
-    // 2. Update Right-Edge Scroll Vernier Rack & Dual-Gear Carriage
+    // 2. Update Right-Edge Scroll Navigation Rail & Dual-Gear Carriage
     if (SP.rackGroup && SP.rackPinion){
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const frac = Math.min(1, Math.max(0, (window.scrollY || 0) / maxScroll));
-      const rackY = (14 + frac * 192).toFixed(1);
+      const rackY = (24 + frac * 292).toFixed(1);
       if (SP.lastRackYStr !== rackY){
         SP.lastRackYStr = rackY;
-        SP.rackGroup.setAttribute("transform", `translate(12, ${rackY})`);
+        SP.rackGroup.setAttribute("transform", `translate(28, ${rackY})`);
       }
-      // Exact rack-and-pinion rolling kinematics: θ (deg) = (Δy / rPitch) * (180 / π)
-      const rackRollDeg = ((frac * 192) / 7.0) * (180 / Math.PI) + SP.masterAngle * 0.45;
+      // Exact rack-and-pinion rolling kinematics: θ (deg) = (Δy / rPitch) * (180 / π) with rPitch = 10.0
+      const rackRollDeg = ((frac * 292) / 10.0) * (180 / Math.PI) + SP.masterAngle * 0.45;
       setGearRot(SP.rackPinion, rackRollDeg);
       if (SP.rackIdler){
         setGearRot(SP.rackIdler, SP.rackIdler.phase + rackRollDeg * SP.rackIdler.ratio);
