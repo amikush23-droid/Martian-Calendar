@@ -20,10 +20,15 @@
   --line:#2f6347; --cell:#122e20;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+html{background-color:#07140e;color-scheme:dark}
+html::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
   background:radial-gradient(920px 620px at 78% 42%,rgba(181,83,46,.22) 0%,rgba(196,104,62,.08) 46%,transparent 76%),radial-gradient(1250px 680px at 38% -10%,#265c3f 0%,#0f261b 48%,#07140e 100%)}
-#stars,
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;background:transparent}
+#stars{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;width:100vw;height:100vh;width:100dvw;height:100dvh;
+  z-index:-2;pointer-events:none;display:block;
+}
 #mars{
   position:fixed;top:0;left:0;right:0;bottom:0;
   width:100%;height:100%;width:100vw;height:100vh;width:100dvw;height:100dvh;
@@ -48,8 +53,8 @@ h3{font-size:20px}
 .lead{color:var(--muted);font-size:18px;max-width:720px;line-height:1.5}
 .muted{color:var(--muted)}
 .small{font-size:13px}
-.card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015) 60%,rgba(255,255,255,.03)),linear-gradient(180deg,rgba(23,56,40,.34),rgba(14,35,24,.26));border:1px solid rgba(224,178,90,.28);border-radius:18px;padding:18px;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
-  box-shadow:inset 0 1px 0 rgba(255,227,168,.12),0 10px 30px rgba(0,0,0,.32);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01) 60%,rgba(255,255,255,.025)),linear-gradient(180deg,rgba(21,51,36,.84),rgba(12,30,21,.88));border:1px solid rgba(224,178,90,.28);border-radius:18px;padding:18px;
+  box-shadow:inset 0 1px 0 rgba(255,227,168,.12),0 10px 30px rgba(0,0,0,.32)}
 .card.golden-hue{
   background:linear-gradient(180deg, rgba(224,178,90,.26) 0%, rgba(35,139,83,.22) 52%, rgba(15,38,27,.68) 100%) !important;
   border-color:rgba(224,178,90,.82) !important;
@@ -261,7 +266,7 @@ svg.dial:active{cursor:grabbing}
 .sol.blank{background:transparent;border:none;cursor:default;transform:none!important}
 .sol:hover{transform:scale(1.08);background:#1f4834;border-color:rgba(224,178,90,.55)}
 .sol.leap::after{content:"";position:absolute;right:5px;top:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
-.sol.extra{border-color:var(--gold);animation:glow 2.4s ease-in-out infinite}
+.sol.extra{border-color:var(--gold);box-shadow:0 0 10px rgba(224,178,90,.35)}
 .sol.both{border-color:var(--green-glow);background:linear-gradient(145deg,rgba(59,191,119,.30),rgba(224,178,90,.24));box-shadow:0 0 12px rgba(59,191,119,.42)}
 .sol.both::after{background:var(--ember);box-shadow:0 0 8px var(--ember),0 0 0 2px var(--gold)}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(224,178,90,.0)}50%{box-shadow:0 0 14px 2px rgba(224,178,90,.45)}}
@@ -309,7 +314,7 @@ svg.dial:active{cursor:grabbing}
 .navcard h3{color:var(--sand)}
 #home{min-height:calc(100vh - 100px)}
 @media (min-width:1150px){.home-head h1{margin-left:-26px}}
-.homeBox{padding:24px 24px 44px;max-width:520px;position:relative;left:-14px;top:24px;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.18);border-radius:22px;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 30px rgba(0,0,0,.25)}
+.homeBox{padding:24px 24px 44px;max-width:520px;position:relative;left:-14px;top:24px;background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.01)),linear-gradient(180deg,rgba(21,51,36,.82),rgba(12,30,21,.86));border:1px solid rgba(224,178,90,.28);border-radius:22px;box-shadow:inset 0 1px 0 rgba(255,227,168,.14),0 10px 30px rgba(0,0,0,.28)}
 .homeTitle{font-size:clamp(22px,2.8vw,30px);line-height:1.1;color:var(--sand);margin:0 0 18px}
 .homeType{font-family:"Segoe UI",Arial,Helvetica,sans-serif;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--ink);margin:0;white-space:pre-line;text-align:justify}
 .clockBox{padding:26px 28px;border-radius:20px;margin-bottom:24px}
@@ -1063,7 +1068,7 @@ body.quiz-locked #quiz { min-height: calc(100vh - 110px); display: flex; flex-di
   50% { transform: scale(1.45); opacity: 0.2; }
 }
 .seas-sun-core {
-  animation: sunPulse 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(224, 178, 90, 0.82));
 }
 @keyframes sunPulse {
   0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 180, 60, 0.7)); }
@@ -1333,12 +1338,10 @@ body.is-fullscreen .fs-nav-wrap {
   border-radius: 50%;
   position: relative;
   outline: none;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.65));
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .gear-nav-btn:hover {
   transform: scale(1.10);
-  filter: drop-shadow(0 0 10px rgba(224, 178, 90, 0.90));
 }
 .gear-nav-btn:active {
   transform: scale(0.92);
@@ -2097,7 +2100,6 @@ body.intro-void .fs-nav-btn.fs-void-pulse {
   cursor: default;
   transform: translateZ(0);
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-  animation: visaCardGlowPulse 4s ease-in-out infinite;
 }
 .quiz-visa-preview-card:hover {
   transform: translateY(-3px) scale(1.02);
@@ -2931,8 +2933,8 @@ nav.top .l-short{display:none}
     radial-gradient(circle at calc(100% - 10px) 10px, rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
     radial-gradient(circle at 10px calc(100% - 10px), rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
     radial-gradient(circle at calc(100% - 10px) calc(100% - 10px), rgba(255, 227, 168, 0.55) 0px, rgba(224, 178, 90, 0.45) 2px, rgba(90, 53, 32, 0.6) 3.2px, transparent 4px),
-    linear-gradient(135deg, rgba(224, 178, 90, 0.09), rgba(59, 191, 119, 0.05) 50%, rgba(196, 104, 62, 0.08)),
-    linear-gradient(180deg, rgba(22, 52, 37, 0.36), rgba(16, 32, 23, 0.32));
+    linear-gradient(135deg, rgba(224, 178, 90, 0.08), rgba(59, 191, 119, 0.05) 50%, rgba(196, 104, 62, 0.07)),
+    linear-gradient(180deg, rgba(20, 48, 34, 0.84), rgba(11, 27, 19, 0.88));
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
 }
 
@@ -3105,12 +3107,9 @@ body.intro-void #steampunkCornerFrame {
   height: 350px;
   z-index: 50;
   pointer-events: auto;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75));
-  transition: filter 0.25s ease, opacity 0.3s ease;
+  contain: layout style;
+  transition: opacity 0.3s ease;
   user-select: none;
-}
-.sp-scroll-rack-wrap:hover {
-  filter: drop-shadow(0 0 16px rgba(224, 178, 90, 0.45));
 }
 body.intro-void .sp-scroll-rack-wrap {
   opacity: 0 !important;
@@ -3151,13 +3150,11 @@ body.intro-void .sp-scroll-rack-wrap {
 }
 .rack-station:hover .st-jewel {
   stroke: #ffe3a8;
-  stroke-width: 1.4;
-  filter: drop-shadow(0 0 6px rgba(224, 178, 90, 0.9));
+  stroke-width: 1.6;
 }
 .rack-station.active .st-jewel {
   stroke: #3bbf77;
-  stroke-width: 1.5;
-  filter: drop-shadow(0 0 7px rgba(59, 191, 119, 0.92));
+  stroke-width: 1.8;
 }
 .rack-station.visa-unlocked .st-jewel {
   stroke: #ffe3a8;
@@ -3356,8 +3353,15 @@ body.intro-void .sp-scroll-rack-wrap {
 
     <div class="mt">
       <div class="card homeBox">
-        <h2 id="homeTitle" class="homeTitle" data-type="A Sol"></h2>
-        <p id="homeType" class="homeType" data-rich>A Martian day is known as a Sol, which is <span class="hl">24 hours, 39 minutes and 35.244 seconds</span> long, or <span class="hl">88,775.244 seconds</span> long. That is <span class="hl">almost the same as Earth</span> but it still gives rise <span class="hl">newer forms of time keeping</span> in order to make the daily lives of people on Mars easier.&#10;&#10;Let's explore...</p>
+        <h2 id="homeTitle" class="homeTitle" data-type="The Rusty Planet and its Days"></h2>
+        <p class="homeType" data-rich style="margin-bottom:16px;">Mars is the fourth planet from the Sun, and its <span class="hl">iron-rich dust</span> gives it a rusty red colour. A Martian year lasts about <span class="hl">687 Earth days</span> or <span class="hl">668.6 sols</span>, so the brave settlers who make it their home will need a dedicated calendar to plan their activities and work together as a community.</p>
+        
+        <div class="home-sol-bay" style="margin-top:14px;margin-bottom:16px;padding:10px 14px 10px 16px;border-left:2.5px solid rgba(224,178,90,0.52);background:linear-gradient(90deg,rgba(224,178,90,0.08),rgba(35,139,83,0.04) 50%,transparent);border-radius:0 12px 12px 0;">
+          <h3 class="homeSubTitle" data-rich style="font-family:Cambria,Georgia,serif;font-size:clamp(18px,2.1vw,23px);color:#ffe3a8;margin:0 0 8px;font-weight:bold;letter-spacing:0.02em;text-shadow:0 0 10px rgba(224,178,90,0.28);">The Sol</h3>
+          <p id="homeType" class="homeType" data-rich style="margin:0;font-size:clamp(14.5px,1.35vw,16.5px);line-height:1.62;color:#eaf3ec;">A Martian day is known as a Sol, which is <span class="hl">24 hours, 39 minutes and 35.244 seconds</span> long, or <span class="hl">88,775.244 seconds</span> long. That is <span class="hl">almost the same as Earth</span> but it still gives rise <span class="hl">newer forms of time keeping</span> in order to make the daily lives of people on Mars easier.</p>
+        </div>
+
+        <p class="homeType" data-rich style="margin:0;color:var(--sand);font-size:clamp(15px,1.4vw,17px);">Let's explore...</p>
       </div>
     </div>
     </section>
@@ -5108,6 +5112,67 @@ function setQuizLock(locked, stayOnQuiz = false){
   }, 750);
 })();
 
+// ---------- Cached Layout Metrics & Smooth Scroll Engine (Zero Layout Thrashing) ----------
+let __cachedMaxScroll = 1;
+let __cachedPageTops = {};
+let __cachedHomeBox = null;
+let __layoutDirty = true;
+let __smoothScrollRaf = null;
+window.__isRailFastScrolling = false;
+
+function invalidateLayoutCache(){
+  __layoutDirty = true;
+}
+window.invalidateLayoutCache = invalidateLayoutCache;
+
+function refreshLayoutCache(){
+  __layoutDirty = false;
+  const sy = window.scrollY || 0;
+  __cachedMaxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const tops = {};
+  for (let i = 0; i < PAGES.length; i++){
+    const pName = PAGES[i];
+    const node = document.getElementById(pName);
+    if (node && !node.hidden){
+      tops[pName] = node.getBoundingClientRect().top + sy;
+    }
+  }
+  __cachedPageTops = tops;
+  const box = document.querySelector(".homeBox");
+  if (box){
+    const r = box.getBoundingClientRect();
+    __cachedHomeBox = {
+      midYDoc: (r.top + r.bottom) * 0.5 + sy - 30,
+      rightDoc: r.right
+    };
+  }
+}
+
+function getCachedMaxScroll(){
+  if (__layoutDirty) refreshLayoutCache();
+  return __cachedMaxScroll;
+}
+
+window.addEventListener("resize", invalidateLayoutCache, { passive: true });
+setTimeout(invalidateLayoutCache, 400);
+setTimeout(invalidateLayoutCache, 1500);
+
+window.__cancelSmoothScroll = function(){
+  if (__smoothScrollRaf){
+    cancelAnimationFrame(__smoothScrollRaf);
+    __smoothScrollRaf = null;
+  }
+  window.__isRailFastScrolling = false;
+};
+
+// Cancel programmatic scroll immediately if user manually wheels or touches
+window.addEventListener("wheel", () => {
+  if (window.__isRailFastScrolling) window.__cancelSmoothScroll();
+}, { passive: true });
+window.addEventListener("touchstart", () => {
+  if (window.__isRailFastScrolling) window.__cancelSmoothScroll();
+}, { passive: true });
+
 // ---------- Routing ----------
 function show(name){
   if (isQuizLocked()) name = "quiz";
@@ -5118,33 +5183,72 @@ function show(name){
   currentPage = name;
   if (name === "clock" && typeof updateClock === "function") updateClock();
   if (name === "calendar" && CAL.sel !== null && typeof updateSolClock === "function") updateSolClock();
+  if (name === "seasons" && typeof renderSeasonsFrame === "function") renderSeasonsFrame();
   document.querySelectorAll("nav.top a").forEach(a => a.classList.toggle("on", a.dataset.p === name));
-  document.querySelectorAll(".rack-station").forEach(st => st.classList.toggle("active", st.dataset.sec === name));
+  document.querySelectorAll(".rack-station").forEach(st => st.classList.toggle("active", st.dataset.sec === name || (name === "visa" && st.dataset.sec === "quiz")));
   document.title = name === "home" ? "Martian Calendar" : TITLES[name] + " · Martian Calendar";
 }
 function go(name){
   if (isQuizLocked() && name !== "quiz") return;
+  if (typeof INTRO !== "undefined" && INTRO.active && typeof finishIntroImmediately === "function"){
+    finishIntroImmediately();
+  }
   const node = document.getElementById(name);
   if (!node) return;
-  try { history.replaceState(null, "", "#" + name); } catch (e) {}
-  node.scrollIntoView({behavior: "smooth", block: "start"});
+  window.__cancelSmoothScroll();
+  invalidateLayoutCache();
+  refreshLayoutCache();
   show(name);
+
+  const startY = window.scrollY || 0;
+  const rawTop = (__cachedPageTops[name] !== undefined) ? (__cachedPageTops[name] - 28) : (startY + node.getBoundingClientRect().top - 28);
+  const targetY = name === "home" ? 0 : Math.max(0, Math.min(__cachedMaxScroll, rawTop));
+  const dist = targetY - startY;
+
+  if (Math.abs(dist) < 4){
+    window.scrollTo(0, targetY);
+    try { history.replaceState(null, "", "#" + name); } catch (e) {}
+    return;
+  }
+
+  window.__isRailFastScrolling = true;
+  const dur = Math.min(420, Math.max(220, Math.abs(dist) * 0.045));
+  const t0 = performance.now();
+
+  function stepScroll(now){
+    const u = Math.min(1, Math.max(0, (now - t0) / dur));
+    const ease = 1 - Math.pow(1 - u, 3);
+    window.scrollTo(0, startY + dist * ease);
+    if (u < 1){
+      __smoothScrollRaf = requestAnimationFrame(stepScroll);
+    } else {
+      __smoothScrollRaf = null;
+      window.__isRailFastScrolling = false;
+      window.scrollTo(0, targetY);
+      show(name);
+      try { history.replaceState(null, "", "#" + name); } catch (e) {}
+    }
+  }
+  __smoothScrollRaf = requestAnimationFrame(stepScroll);
 }
 function updateActive(){
   if (isQuizLocked()){
     if (currentPage !== "quiz") show("quiz");
     return;
   }
+  // Keep destination station illuminated cleanly during programmatic rail glide
+  if (window.__isRailFastScrolling) return;
+  if (__layoutDirty) refreshLayoutCache();
+
+  const sy = window.scrollY || 0;
   let cur = "home";
-  for (const name of PAGES){
-    const node = document.getElementById(name);
-    if (node && !node.hidden && node.getBoundingClientRect().top <= 160) cur = name;
+  for (let i = 0; i < PAGES.length; i++){
+    const name = PAGES[i];
+    const topVal = __cachedPageTops[name];
+    if (topVal !== undefined && sy + 160 >= topVal) cur = name;
   }
-  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = ($("visa") && !$("visa").hidden) ? "visa" : "quiz";
+  if (sy >= __cachedMaxScroll - 4) cur = ($("visa") && !$("visa").hidden) ? "visa" : "quiz";
   if (cur !== currentPage) show(cur);
-  document.querySelectorAll(".rack-station").forEach(st => {
-    st.classList.toggle("active", st.dataset.sec === cur);
-  });
 }
 let activeQueued = false;
 window.addEventListener("scroll", () => {
@@ -5166,7 +5270,7 @@ window.addEventListener("hashchange", () => {
 });
 
 // ---------- Reusable 3-Ring Martian Clock Dial + 4th Outermost Leap Chrone Ring Builder ----------
-const ARCH_C = "#B5532E", CHR_C = "#E9D8C7", SEC_C = "#e0b25a", LEAP_C = "#3bbf77";
+const ARCH_C = "#3bbf77", CHR_C = "#eef8e3", SEC_C = "#e8be5a", LEAP_C = "#f59e0b";
 const PROG_C = 2 * Math.PI * 190;
 const LEAP_R_OUTER = 198;
 const LEAP_R_INNER = 156;
@@ -5306,20 +5410,20 @@ function createMartianDial(svgEl, prefix){
 
   // HANDS
   const hArch = el("g", {transform:"rotate(0)"}, mainDialG);
-  el("line", {x1:0, y1:18, x2:0, y2:-162, stroke:"#B5532E", "stroke-width":2.2, "stroke-linecap":"round"}, hArch);
-  el("circle", {cx:0, cy:0, r:3, fill:"#B5532E"}, hArch);
+  el("line", {x1:0, y1:18, x2:0, y2:-162, stroke:ARCH_C, "stroke-width":2.2, "stroke-linecap":"round"}, hArch);
+  el("circle", {cx:0, cy:0, r:3, fill:ARCH_C}, hArch);
 
   const hChr = el("g", {transform:"rotate(0)"}, mainDialG);
-  el("line", {x1:0, y1:14, x2:0, y2:-106, stroke:"#E9D8C7", "stroke-width":1.8, "stroke-linecap":"round"}, hChr);
-  el("circle", {cx:0, cy:0, r:2.5, fill:"#E9D8C7"}, hChr);
+  el("line", {x1:0, y1:14, x2:0, y2:-106, stroke:CHR_C, "stroke-width":1.8, "stroke-linecap":"round"}, hChr);
+  el("circle", {cx:0, cy:0, r:2.5, fill:CHR_C}, hChr);
 
   const hSec = el("g", {transform:"rotate(0)"}, mainDialG);
-  el("line", {x1:0, y1:12, x2:0, y2:-64, stroke:"#e0b25a", "stroke-width":1.4, "stroke-linecap":"round"}, hSec);
-  el("circle", {cx:0, cy:0, r:2, fill:"#e0b25a"}, hSec);
+  el("line", {x1:0, y1:12, x2:0, y2:-64, stroke:SEC_C, "stroke-width":1.4, "stroke-linecap":"round"}, hSec);
+  el("circle", {cx:0, cy:0, r:2, fill:SEC_C}, hSec);
 
   // Center cap
-  el("circle", {cx:0, cy:0, r:6.5, fill:"#2a1610", stroke:"#E9D8C7", "stroke-width":2}, mainDialG);
-  el("circle", {cx:0, cy:0, r:2.5, fill:"#e0b25a"}, mainDialG);
+  el("circle", {cx:0, cy:0, r:6.5, fill:"#2a1610", stroke:CHR_C, "stroke-width":2}, mainDialG);
+  el("circle", {cx:0, cy:0, r:2.5, fill:SEC_C}, mainDialG);
 
   // Group 1.5: PRECISION EPICYCLIC & SKELETON WATCHMAKER GEAR TRAIN (thin golden outlines, visible ONLY during Leap Chrone transition)
   function buildInvoluteGearPath(teeth, rTip, rRoot, tipRatio, rootRatio){
@@ -6105,56 +6209,61 @@ function updateSunGraph(totalElapsed, L, refs, inLeapChrone, isChrone){
   const topY = refs.topY || 14;
   const botY = refs.botY || 98;
 
-  const pts = [];
-  for (let i = 0; i <= 96; i++){
-    const uStep = i / 96;
-    const px = (16 + uStep * 328).toFixed(1);
-    const elevN = calcSolarElevationNorm(uStep * L, L);
-    const py = (horizonY - elevN * amp).toFixed(1);
-    pts.push(`${i === 0 ? "M" : "L"} ${px} ${py}`);
-  }
-  const sunCurveD = pts.join(" ");
-  refs.pathBase.setAttribute("d", sunCurveD);
-  refs.pathActive.setAttribute("d", sunCurveD);
-  if (refs.areaActive){
-    refs.areaActive.setAttribute("d", `${sunCurveD} L 344 ${botY} L 16 ${botY} Z`);
-  }
+  if (refs.lastStaticL !== L || refs.lastStaticChrone !== isChrone){
+    refs.lastStaticL = L;
+    refs.lastStaticChrone = isChrone;
 
-  const mainEndRatio = SOL_BASE / L;
-  const leapZoneX = (16 + mainEndRatio * 328).toFixed(2);
-  const leapZoneW = Math.max(2.5, 344 - Number(leapZoneX)).toFixed(2);
-  const xSunrise = (16 + (5.73 * ARCHON / L) * 328).toFixed(1);
-  const xSunset = (16 + (18.75 * ARCHON / L) * 328).toFixed(1);
-
-  if (refs.leapZoneG) {
-    if (isChrone) {
-      refs.leapZoneG.innerHTML = `<rect x="${leapZoneX}" y="${topY - 4}" width="${leapZoneW}" height="${botY - topY + 4}" fill="rgba(59,191,119,0.22)"></rect><line x1="${leapZoneX}" y1="${topY - 4}" x2="${leapZoneX}" y2="${botY}" stroke="#3bbf77" stroke-width="1" stroke-dasharray="2 2"></line>`;
-    } else {
-      refs.leapZoneG.innerHTML = "";
+    const pts = [];
+    for (let i = 0; i <= 96; i++){
+      const uStep = i / 96;
+      const px = (16 + uStep * 328).toFixed(1);
+      const elevN = calcSolarElevationNorm(uStep * L, L);
+      const py = (horizonY - elevN * amp).toFixed(1);
+      pts.push(`${i === 0 ? "M" : "L"} ${px} ${py}`);
     }
-  }
+    const sunCurveD = pts.join(" ");
+    refs.pathBase.setAttribute("d", sunCurveD);
+    refs.pathActive.setAttribute("d", sunCurveD);
+    if (refs.areaActive){
+      refs.areaActive.setAttribute("d", `${sunCurveD} L 344 ${botY} L 16 ${botY} Z`);
+    }
 
-  refs.lineSunrise.setAttribute("x1", xSunrise); refs.lineSunrise.setAttribute("x2", xSunrise);
-  refs.lineSunset.setAttribute("x1", xSunset); refs.lineSunset.setAttribute("x2", xSunset);
-  refs.txtSunrise.setAttribute("x", xSunrise);
-  refs.txtSunset.setAttribute("x", xSunset);
-  refs.txtSunriseA.setAttribute("x", xSunrise);
-  refs.txtSunsetA.setAttribute("x", xSunset);
-  
-  if (refs.endLabel) {
-    refs.endLabel.textContent = isChrone ? "89,105 s" : "88,750 s";
-    refs.endLabel.setAttribute("fill", isChrone ? "#3bbf77" : "#b5cfc0");
-    refs.endLabel.setAttribute("font-weight", isChrone ? "bold" : "normal");
-  }
-  if (refs.endArchon) {
-    refs.endArchon.textContent = isChrone ? "25 Archons + Leap" : "25 Archons";
-    refs.endArchon.setAttribute("fill", isChrone ? "#3bbf77" : "#c4683e");
-  }
-  if (refs.gradEnd) {
-    refs.gradEnd.setAttribute("stop-color", "#3bbf77");
-  }
-  if (refs.footerText) {
-    refs.footerText.innerHTML = isChrone ? "Continuous 89,105 s solar cycle (includes 355 s Leap Chrone)" : "Continuous 88,750 s solar cycle (25 Archons)";
+    const mainEndRatio = SOL_BASE / L;
+    const leapZoneX = (16 + mainEndRatio * 328).toFixed(2);
+    const leapZoneW = Math.max(2.5, 344 - Number(leapZoneX)).toFixed(2);
+    const xSunrise = (16 + (5.73 * ARCHON / L) * 328).toFixed(1);
+    const xSunset = (16 + (18.75 * ARCHON / L) * 328).toFixed(1);
+
+    if (refs.leapZoneG) {
+      if (isChrone) {
+        refs.leapZoneG.innerHTML = `<rect x="${leapZoneX}" y="${topY - 4}" width="${leapZoneW}" height="${botY - topY + 4}" fill="rgba(59,191,119,0.22)"></rect><line x1="${leapZoneX}" y1="${topY - 4}" x2="${leapZoneX}" y2="${botY}" stroke="#3bbf77" stroke-width="1" stroke-dasharray="2 2"></line>`;
+      } else {
+        refs.leapZoneG.innerHTML = "";
+      }
+    }
+
+    refs.lineSunrise.setAttribute("x1", xSunrise); refs.lineSunrise.setAttribute("x2", xSunrise);
+    refs.lineSunset.setAttribute("x1", xSunset); refs.lineSunset.setAttribute("x2", xSunset);
+    refs.txtSunrise.setAttribute("x", xSunrise);
+    refs.txtSunset.setAttribute("x", xSunset);
+    refs.txtSunriseA.setAttribute("x", xSunrise);
+    refs.txtSunsetA.setAttribute("x", xSunset);
+
+    if (refs.endLabel) {
+      refs.endLabel.textContent = isChrone ? "89,105 s" : "88,750 s";
+      refs.endLabel.setAttribute("fill", isChrone ? "#3bbf77" : "#b5cfc0");
+      refs.endLabel.setAttribute("font-weight", isChrone ? "bold" : "normal");
+    }
+    if (refs.endArchon) {
+      refs.endArchon.textContent = isChrone ? "25 Archons + Leap" : "25 Archons";
+      refs.endArchon.setAttribute("fill", isChrone ? "#3bbf77" : "#c4683e");
+    }
+    if (refs.gradEnd) {
+      refs.gradEnd.setAttribute("stop-color", "#3bbf77");
+    }
+    if (refs.footerText) {
+      refs.footerText.textContent = isChrone ? "Continuous 89,105 s solar cycle (includes 355 s Leap Chrone)" : "Continuous 88,750 s solar cycle (25 Archons)";
+    }
   }
 
   const u = Math.min(1, Math.max(0, totalElapsed / L));
@@ -7038,6 +7147,7 @@ function selectSol(n){
   renderCalendar();
 }
 function renderCalendar(){
+  if (typeof invalidateLayoutCache === "function") invalidateLayoutCache();
   const y = CAL.year, start0 = yearStart0(y), len = yearLen(y), leap = isLeapYear(y);
   const chroneSolsInYear = leapCount(start0 + len) - leapCount(start0);
   const bothCount = leap ? LEAP_MONTHS.filter(m => isChroneSol(toN0(y, m, 28) + 1)).length : 0;
@@ -10896,6 +11006,7 @@ function formatVisaDate(dateObj){
 }
 
 function lockMarsVisa(){
+  if (typeof invalidateLayoutCache === "function") invalidateLayoutCache();
   VISA_STATE.unlocked = false;
   VISA_STATE.verifiedScore = 0;
   const visaSec = $("visa");
@@ -10910,6 +11021,7 @@ function lockMarsVisa(){
 }
 
 function unlockMarsVisa(score, total = 20){
+  if (typeof invalidateLayoutCache === "function") invalidateLayoutCache();
   if (typeof score !== "number" || score < 15) return;
   VISA_STATE.unlocked = true;
   VISA_STATE.verifiedScore = score;
@@ -11950,28 +12062,26 @@ const MARS = { cur: 0, time: 0 };
 // Resting start point: just right of the "A Sol" box, vertically centred on it.
 const MARS_GAP = 170; // css px between the box and the planet
 function marsStartCanvas(W, H){
-  const box = document.querySelector(".homeBox");
-  if (!box) return null;
-  const r = box.getBoundingClientRect();
+  if (__layoutDirty) refreshLayoutCache();
+  if (!__cachedHomeBox) return null;
   const sx = W / (lastMarsCssW || innerWidth), sy = H / (lastMarsCssH || innerHeight);
   const R0 = Math.min(W, H) * 0.29;
-  let y = ((r.top + r.bottom) / 2 + scrollY - 30) * sy;   // 30 css px higher than the box centre
-  y = Math.max(y, R0 + 90 * sy);                           // never let the top of the planet hide under the nav bar
-  return { x: (r.right + MARS_GAP) * sx + R0, y };
+  let y = __cachedHomeBox.midYDoc * sy;
+  y = Math.max(y, R0 + 90 * sy);
+  return { x: (__cachedHomeBox.rightDoc + MARS_GAP) * sx + R0, y };
 }
 function updateMars(dt){
   if (!marsProg) return;
-  // Ensure buffer size is ALWAYS kept synchronized with CSS element box so Mars never stretches
-  const rect = marsGL.getBoundingClientRect();
-  const curCssW = Math.round(rect.width || innerWidth);
-  const curCssH = Math.round(rect.height || innerHeight);
+  const curCssW = innerWidth;
+  const curCssH = innerHeight;
   if (curCssW > 0 && curCssH > 0 && (curCssW !== lastMarsCssW || curCssH !== lastMarsCssH)){
     resizeMars(true);
   }
   MARS.time += dt;
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-  MARS.cur += (target - MARS.cur) * (1 - Math.exp(-dt * 5));
+  const max = getCachedMaxScroll();
+  const target = max > 0 ? Math.min(1, Math.max(0, (window.scrollY || 0) / max)) : 0;
+  const rate = window.__isRailFastScrolling ? 14 : 9;
+  MARS.cur += (target - MARS.cur) * (1 - Math.exp(-dt * rate));
   if (Math.abs(target - MARS.cur) < 0.00005) MARS.cur = target;
   drawMars(MARS.cur, MARS.time);
 }
@@ -12208,10 +12318,14 @@ function frame(now){
     }
   }
 
-  if (!isMobileDevice() || currentPage === "clock" || currentPage === "home") {
+  if (currentPage === "clock" || currentPage === "home") {
     updateClock();
+  } else {
+    tickSecond();
   }
-  updateSeasonsTick(dt);
+  if (currentPage === "seasons" || SEAS.needsRender) {
+    updateSeasonsTick(dt);
+  }
   updateMars(dt);
   drawStars(now, dt);
   if (window.stepSteampunkFrame) window.stepSteampunkFrame(now, dt);
@@ -12280,10 +12394,10 @@ let startHomeTyping = () => {};
       if (it.total === 0){ typeRichNext(rIdx + 1); return; }
       let i = 0;
       const step = () => {
-        i += 8;
+        i += 32;
         reveal(it, Math.min(it.total, i));
         if (i < it.total) setTimeout(step, 8);
-        else setTimeout(() => typeRichNext(rIdx + 1), 35);
+        else setTimeout(() => typeRichNext(rIdx + 1), 30);
       };
       step();
     };
@@ -12297,10 +12411,10 @@ let startHomeTyping = () => {};
       if (!full){ tIdx++; typeTitleNext(); return; }
       let i = 0;
       const step = () => {
-        i += 2;
+        i += 3;
         el.textContent = full.slice(0, Math.min(full.length, i));
-        if (i < full.length) setTimeout(step, 14);
-        else { tIdx++; setTimeout(typeTitleNext, 40); }
+        if (i < full.length) setTimeout(step, 12);
+        else { tIdx++; setTimeout(typeTitleNext, 35); }
       };
       step();
     };
@@ -12363,8 +12477,16 @@ let startHomeTyping = () => {};
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+          const checkSettled = () => {
+            if (typed) return;
+            if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+            const r = entry.target.getBoundingClientRect();
+            if (r.bottom > 40 && r.top < window.innerHeight - 40){
+              startTyping();
+              observer.disconnect();
+            }
+          };
+          setTimeout(checkSettled, 110);
         }
       });
     }, { threshold: 0.15 });
@@ -12426,8 +12548,16 @@ let startHomeTyping = () => {};
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+          const checkSettled = () => {
+            if (typed) return;
+            if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+            const r = entry.target.getBoundingClientRect();
+            if (r.bottom > 40 && r.top < window.innerHeight - 40){
+              startTyping();
+              observer.disconnect();
+            }
+          };
+          setTimeout(checkSettled, 110);
         }
       });
     }, { threshold: 0.15 });
@@ -12489,8 +12619,16 @@ let startHomeTyping = () => {};
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+          const checkSettled = () => {
+            if (typed) return;
+            if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+            const r = entry.target.getBoundingClientRect();
+            if (r.bottom > 40 && r.top < window.innerHeight - 40){
+              startTyping();
+              observer.disconnect();
+            }
+          };
+          setTimeout(checkSettled, 110);
         }
       });
     }, { threshold: 0.15 });
@@ -12552,8 +12690,16 @@ let startHomeTyping = () => {};
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+          const checkSettled = () => {
+            if (typed) return;
+            if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+            const r = entry.target.getBoundingClientRect();
+            if (r.bottom > 40 && r.top < window.innerHeight - 40){
+              startTyping();
+              observer.disconnect();
+            }
+          };
+          setTimeout(checkSettled, 110);
         }
       });
     }, { threshold: 0.15 });
@@ -12618,8 +12764,16 @@ let startHomeTyping = () => {};
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting){
-            startTyping();
-            observer.disconnect();
+            const checkSettled = () => {
+              if (typed) return;
+              if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+              const r = entry.target.getBoundingClientRect();
+              if (r.bottom > 40 && r.top < window.innerHeight - 40){
+                startTyping();
+                observer.disconnect();
+              }
+            };
+            setTimeout(checkSettled, 110);
           }
         });
       }, { threshold: 0.15 });
@@ -12686,8 +12840,16 @@ let startHomeTyping = () => {};
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting){
-          startTyping();
-          observer.disconnect();
+          const checkSettled = () => {
+            if (typed) return;
+            if (window.__isRailFastScrolling){ setTimeout(checkSettled, 80); return; }
+            const r = entry.target.getBoundingClientRect();
+            if (r.bottom > 40 && r.top < window.innerHeight - 40){
+              startTyping();
+              observer.disconnect();
+            }
+          };
+          setTimeout(checkSettled, 110);
         }
       });
     }, { threshold: 0.15 });
@@ -12957,7 +13119,7 @@ let startHomeTyping = () => {};
       }, rackSvg);
     }
 
-    // 9 Interactive Section Navigation Stations
+    // 8 Interactive Section Navigation Stations
     const stations = [
       { key: "home", label: "Home" },
       { key: "clock", label: "Clock" },
@@ -12966,8 +13128,7 @@ let startHomeTyping = () => {};
       { key: "drift", label: "Weekday Drift" },
       { key: "convert", label: "Converter" },
       { key: "terraform", label: "Terraforming" },
-      { key: "quiz", label: "Quiz" },
-      { key: "visa", label: "Mars Visa" }
+      { key: "quiz", label: "Quiz" }
     ];
 
     const stepSt = 292 / (stations.length - 1);
@@ -12982,45 +13143,112 @@ let startHomeTyping = () => {};
       spEl("circle", {cx: 42, cy: y.toFixed(1), r: 3.4, fill: "#102419", stroke: "#ffe3a8", "stroke-width": 1.1, class: "st-jewel"}, stG);
       spEl("circle", {cx: 42, cy: y.toFixed(1), r: 1.6, fill: "#e0b25a", class: "st-core"}, stG);
 
-      stG.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (typeof go === "function") go(st.key);
-        pulseGearTrain(24);
-      });
       stG.addEventListener("mouseenter", () => {
-        if (!flyoutTag) return;
+        if (!flyoutTag || isScrubbingRail) return;
         flyoutTag.textContent = st.label;
         flyoutTag.style.top = y.toFixed(1) + "px";
         flyoutTag.classList.add("show");
       });
       stG.addEventListener("mouseleave", () => {
-        if (flyoutTag) flyoutTag.classList.remove("show");
+        if (flyoutTag && !isScrubbingRail) flyoutTag.classList.remove("show");
       });
     });
 
-    // Rail scrub / drag listener
+    // Unified Rail Click & Drag-Scrub Controller (works seamlessly whether grabbing the gear carriage, a station, or bare rail)
     let isScrubbingRail = false;
+    let railPointerDown = false;
+    let railDownY = 0;
+    let railDownStation = null;
+
+    function updateRailCarriageImmediate(frac){
+      if (SP.rackGroup && SP.rackPinion){
+        const rackY = (24 + frac * 292).toFixed(1);
+        if (SP.lastRackYStr !== rackY){
+          SP.lastRackYStr = rackY;
+          SP.rackGroup.setAttribute("transform", `translate(28, ${rackY})`);
+        }
+        const rackRollDeg = ((frac * 292) / 10.0) * (180 / Math.PI) + SP.masterAngle * 0.45;
+        setGearRot(SP.rackPinion, rackRollDeg);
+        if (SP.rackIdler){
+          setGearRot(SP.rackIdler, SP.rackIdler.phase + rackRollDeg * SP.rackIdler.ratio);
+        }
+      }
+    }
+
     function scrubToY(clientY){
       if (!rackSvg) return;
+      if (typeof INTRO !== "undefined" && INTRO.active && typeof finishIntroImmediately === "function"){
+        finishIntroImmediately();
+      }
+      if (window.__cancelSmoothScroll) window.__cancelSmoothScroll();
       const rect = rackSvg.getBoundingClientRect();
       const relY = clientY - rect.top;
       const frac = Math.min(1, Math.max(0, (relY - 24) / 292));
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      window.scrollTo({ top: frac * maxScroll, behavior: "auto" });
+      const maxScroll = getCachedMaxScroll();
+      window.scrollTo(0, frac * maxScroll);
+      updateRailCarriageImmediate(frac);
+
+      if (flyoutTag){
+        const idx = Math.round(frac * (stations.length - 1));
+        const st = stations[Math.max(0, Math.min(stations.length - 1, idx))];
+        if (st){
+          flyoutTag.textContent = st.label;
+          flyoutTag.style.top = (24 + frac * 292).toFixed(1) + "px";
+          flyoutTag.classList.add("show");
+        }
+      }
     }
 
     rackSvg.addEventListener("pointerdown", (e) => {
-      if (e.target.closest(".rack-station")) return;
-      isScrubbingRail = true;
+      if (typeof INTRO !== "undefined" && INTRO.active && typeof finishIntroImmediately === "function"){
+        finishIntroImmediately();
+      }
+      if (window.__cancelSmoothScroll) window.__cancelSmoothScroll();
+      railPointerDown = true;
+      railDownY = e.clientY;
+      railDownStation = e.target.closest(".rack-station");
       try { rackSvg.setPointerCapture(e.pointerId); } catch(err){}
-      scrubToY(e.clientY);
-      pulseGearTrain(18);
+
+      if (!railDownStation){
+        isScrubbingRail = true;
+        scrubToY(e.clientY);
+        pulseGearTrain(18);
+      }
     });
+
     rackSvg.addEventListener("pointermove", (e) => {
-      if (isScrubbingRail) scrubToY(e.clientY);
+      if (!railPointerDown) return;
+      if (!isScrubbingRail && Math.abs(e.clientY - railDownY) > 3){
+        isScrubbingRail = true;
+        pulseGearTrain(14);
+      }
+      if (isScrubbingRail){
+        scrubToY(e.clientY);
+      }
     });
-    window.addEventListener("pointerup", () => { isScrubbingRail = false; });
-    window.addEventListener("pointercancel", () => { isScrubbingRail = false; });
+
+    function finishRailPointer(e){
+      if (!railPointerDown) return;
+      const wasScrubbing = isScrubbingRail;
+      const st = railDownStation;
+      railPointerDown = false;
+      isScrubbingRail = false;
+      railDownStation = null;
+      if (rackSvg && e && e.pointerId !== undefined){
+        try { rackSvg.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+      if (!wasScrubbing && st && st.dataset.sec){
+        if (typeof go === "function") go(st.dataset.sec);
+        pulseGearTrain(24);
+      } else if (wasScrubbing && flyoutTag){
+        flyoutTag.classList.remove("show");
+      }
+    }
+
+    rackSvg.addEventListener("pointerup", finishRailPointer);
+    rackSvg.addEventListener("pointercancel", finishRailPointer);
+    window.addEventListener("pointerup", finishRailPointer);
+    window.addEventListener("pointercancel", finishRailPointer);
 
     // Moving Dual-Gear Carriage (The Elevator)
     const rackTravelG = spEl("g", {class: "rack-carriage-group", transform: "translate(28, 24)"}, rackSvg);
@@ -13493,7 +13721,7 @@ let startHomeTyping = () => {};
 
     // 2. Update Right-Edge Scroll Navigation Rail & Dual-Gear Carriage
     if (SP.rackGroup && SP.rackPinion){
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const maxScroll = getCachedMaxScroll();
       const frac = Math.min(1, Math.max(0, (window.scrollY || 0) / maxScroll));
       const rackY = (24 + frac * 292).toFixed(1);
       if (SP.lastRackYStr !== rackY){
@@ -13508,7 +13736,8 @@ let startHomeTyping = () => {};
       }
     }
 
-    // 3. Update Section Header 3-Gear Meshing Trains
+    // 3. Update Section Header 3-Gear Meshing Trains (only active/nearby sections so offscreen tiles stay cached)
+    const curSecIdx = PAGES.indexOf(currentPage);
     for (let i = 0; i < SP.sectionGears.length; i++){
       const sg = SP.sectionGears[i];
       if (sg.localBoost > 0.1){
@@ -13516,6 +13745,7 @@ let startHomeTyping = () => {};
       } else {
         sg.localBoost = 0;
       }
+      if (Math.abs(i - curSecIdx) > 1 && sg.localBoost === 0) continue;
       const d = totalDrive * 0.78 + sg.localBoost * 4.5;
       setGearRot(sg.g1, sg.g1.phase + d * sg.g1.ratio);
       setGearRot(sg.g2, sg.g2.phase + d * sg.g2.ratio);
