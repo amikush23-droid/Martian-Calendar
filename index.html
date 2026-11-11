@@ -5424,7 +5424,7 @@ function updateFullscreenUI(){
 
 
 // ---------- Mars Cinematic Background Music & Video Ducking Controller ----------
-const SFX_MASTER_GAIN = 0.56; // Toned down so SFX sits cleanly underneath BGM without colliding
+const SFX_MASTER_GAIN = 0.92; // Original full-clarity SFX master gain
 let bgmAudio = null;
 let bgmStarted = false;
 let bgmGain = 0;
@@ -7452,7 +7452,7 @@ function decodeClockSamples(ctx){
   }
 }
 
-function makeReverbIR(ctx, seconds = 1.15, decay = 4.8){
+function makeReverbIR(ctx, seconds = 2.6, decay = 3.2){
   const rate = ctx.sampleRate, len = Math.floor(rate * seconds);
   const ir = ctx.createBuffer(2, len, rate);
   for (let ch = 0; ch < 2; ch++){
@@ -7474,66 +7474,31 @@ function initAudio(){
   audioCtx.onstatechange = () => { const b = $("soundBtn"); if (b) b.style.display = audioCtx.state === "running" ? "none" : ""; };
   const initialMaster = (isSiteAudioMuted || isVideoAudioDucked) ? 0.0001 : SFX_MASTER_GAIN;
   const master = audioCtx.createGain(); master.gain.value = initialMaster; master.connect(audioCtx.destination);
-  const dry = audioCtx.createGain(); dry.gain.value = 0.72; dry.connect(master);
-  const conv = audioCtx.createConvolver(); conv.buffer = makeReverbIR(audioCtx, 1.15, 4.8);
-  const wet = audioCtx.createGain(); wet.gain.value = 0.22; conv.connect(wet); wet.connect(master);
+  const dry = audioCtx.createGain(); dry.gain.value = 0.82; dry.connect(master);
+  const conv = audioCtx.createConvolver(); conv.buffer = makeReverbIR(audioCtx);
+  const wet = audioCtx.createGain(); wet.gain.value = 0.52; conv.connect(wet); wet.connect(master);
   tickBus = { dry, conv, master };
   decodeClockSamples(audioCtx);
 }
 
 
-// 1. Seconds hand tick (warm, dry-intimate pocket-watch escapement pulse crafted to blend with mars_bgm.mp3)
+// 1. Seconds hand tick (soft reverb noise transient)
 function playTick(){
   if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const t = audioCtx.currentTime;
-
-  // Layer A: Soft, warm damped wooden/brass escapement pallet click (no harsh high hiss, almost zero reverb)
-  const len = Math.floor(audioCtx.sampleRate * 0.014);
+  const len = Math.floor(audioCtx.sampleRate * 0.03);
   const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
   const d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 9.5);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
   const src = audioCtx.createBufferSource(); src.buffer = buf;
-
-  const bp = audioCtx.createBiquadFilter();
-  bp.type = "bandpass";
-  bp.frequency.setValueAtTime(1320, t);
-  bp.Q.setValueAtTime(1.85, t);
-
-  const lp = audioCtx.createBiquadFilter();
-  lp.type = "lowpass";
-  lp.frequency.setValueAtTime(1950, t);
-
-  const env = audioCtx.createGain();
-  env.gain.setValueAtTime(0.14, t);
-
-  // Tiny whisper of room air (0.020 vs previous 1.0 full convolver send — >98% reverb reduction)
-  const revSend = audioCtx.createGain();
-  revSend.gain.setValueAtTime(0.020, t);
-
-  src.connect(bp);
-  bp.connect(lp);
-  lp.connect(env);
-  env.connect(tickBus.dry);
-  lp.connect(revSend);
-  revSend.connect(tickBus.conv);
+  const bp = audioCtx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 3200; bp.Q.value = 1.2;
+  const env = audioCtx.createGain(); env.gain.value = 0.35;
+  src.connect(bp); bp.connect(env);
+  env.connect(tickBus.dry); env.connect(tickBus.conv);
   src.start(t);
-
-  // Layer B: Warm rosewood/cello-body micro-resonance tap (harmonizes with the warm strings of mars_bgm.mp3)
-  const bodyOsc = audioCtx.createOscillator();
-  bodyOsc.type = "sine";
-  bodyOsc.frequency.setValueAtTime(360, t);
-  bodyOsc.frequency.exponentialRampToValueAtTime(142, t + 0.015);
-  const bodyGain = audioCtx.createGain();
-  bodyGain.gain.setValueAtTime(0.0001, t);
-  bodyGain.gain.exponentialRampToValueAtTime(0.058, t + 0.0016);
-  bodyGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.018);
-  bodyOsc.connect(bodyGain);
-  bodyGain.connect(tickBus.dry);
-  bodyOsc.start(t);
-  bodyOsc.stop(t + 0.020);
 }
 
-// 2. Chrone hand tick (uploaded clock tick sample at natural pitch, gently toned down so it sits under BGM)
+// 2. Chrone hand tick (uploaded clock tick sample at natural pitch with a little reverb)
 function playChroneTick(){
   if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const nowMs = performance.now();
@@ -7547,11 +7512,11 @@ function playChroneTick(){
     src.playbackRate.setValueAtTime(1.0, t);
 
     const dryGain = audioCtx.createGain();
-    dryGain.gain.setValueAtTime(0.64, t);
+    dryGain.gain.setValueAtTime(0.88, t);
 
-    // Subtle reverb send
+    // Subtle reverb send ("a lil reverb")
     const revSend = audioCtx.createGain();
-    revSend.gain.setValueAtTime(0.12, t);
+    revSend.gain.setValueAtTime(0.22, t);
 
     src.connect(dryGain);
     dryGain.connect(tickBus.dry);
@@ -7563,7 +7528,7 @@ function playChroneTick(){
   }
 }
 
-// 3. Archon hand tick (deep, heavy version of the uploaded clock tick sample, balanced underneath BGM)
+// 3. Archon hand tick (deep, heavy version of the uploaded clock tick sample with a little reverb, lighter than Leap Chrone gear sound)
 function playArchonTick(){
   if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const nowMs = performance.now();
@@ -7577,18 +7542,18 @@ function playArchonTick(){
     // Pitched down to 0.62x for a deep, heavy horological hand step
     src.playbackRate.setValueAtTime(0.62, t);
 
-    // Warm low-shelf bass boost (+4 dB below 160 Hz)
+    // Warm low-shelf bass boost (+5 dB below 160 Hz, lighter than Leap Chrone's +7.5 dB)
     const lowShelf = audioCtx.createBiquadFilter();
     lowShelf.type = "lowshelf";
     lowShelf.frequency.setValueAtTime(160, t);
-    lowShelf.gain.setValueAtTime(4.0, t);
+    lowShelf.gain.setValueAtTime(5.0, t);
 
     const dryGain = audioCtx.createGain();
-    dryGain.gain.setValueAtTime(0.80, t);
+    dryGain.gain.setValueAtTime(1.12, t);
 
-    // Subtle reverb send
+    // Subtle reverb send ("a lil reverb", lighter than Leap Chrone's 0.65)
     const revSend = audioCtx.createGain();
-    revSend.gain.setValueAtTime(0.15, t);
+    revSend.gain.setValueAtTime(0.28, t);
 
     src.connect(lowShelf);
     lowShelf.connect(dryGain);
@@ -7598,17 +7563,17 @@ function playArchonTick(){
     src.start(t);
   }
 
-  // Moderate low-end wooden/brass body thud
+  // Moderate low-end wooden/brass body thud (0.42 gain vs Leap Chrone's 1.15 gain, so it stays lighter than the Leap Chrone gear sound)
   const osc = audioCtx.createOscillator();
   osc.type = "sine";
   osc.frequency.setValueAtTime(108, t);
   osc.frequency.exponentialRampToValueAtTime(44, t + 0.16);
   const og = audioCtx.createGain();
   og.gain.setValueAtTime(0.0001, t);
-  og.gain.exponentialRampToValueAtTime(0.28, t + 0.005);
+  og.gain.exponentialRampToValueAtTime(0.42, t + 0.005);
   og.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
   const revSub = audioCtx.createGain();
-  revSub.gain.setValueAtTime(0.09, t);
+  revSub.gain.setValueAtTime(0.18, t);
   osc.connect(og);
   og.connect(tickBus.dry);
   og.connect(revSub);
@@ -7617,7 +7582,7 @@ function playArchonTick(){
   osc.stop(t + 0.24);
 }
 
-// 4. Leap Chrone Activation / Deactivation Gear Sound (heaviest horological event, balanced to avoid clashing with BGM)
+// 4. Leap Chrone Activation / Deactivation Gear Sound (loudest & heaviest)
 let lastLeapState = null;
 function playGear(isActivating = true){
   if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
@@ -7631,19 +7596,19 @@ function playGear(isActivating = true){
     const lowBoost = audioCtx.createBiquadFilter();
     lowBoost.type = "lowshelf";
     lowBoost.frequency.setValueAtTime(150, t);
-    lowBoost.gain.setValueAtTime(5.5, t);
+    lowBoost.gain.setValueAtTime(7.5, t);
 
     const midPunch = audioCtx.createBiquadFilter();
     midPunch.type = "peaking";
     midPunch.frequency.setValueAtTime(680, t);
     midPunch.Q.setValueAtTime(1.2, t);
-    midPunch.gain.setValueAtTime(2.5, t);
+    midPunch.gain.setValueAtTime(3.5, t);
 
     const sfxGain = audioCtx.createGain();
-    sfxGain.gain.setValueAtTime(1.18, t);
+    sfxGain.gain.setValueAtTime(1.75, t);
 
     const sfxRevSend = audioCtx.createGain();
-    sfxRevSend.gain.setValueAtTime(0.32, t);
+    sfxRevSend.gain.setValueAtTime(0.65, t);
 
     sfxSrc.connect(lowBoost);
     lowBoost.connect(midPunch);
@@ -7659,11 +7624,9 @@ function playGear(isActivating = true){
   osc.frequency.exponentialRampToValueAtTime(36, t + 0.48);
   const og = audioCtx.createGain();
   og.gain.setValueAtTime(0.0001, t);
-  og.gain.exponentialRampToValueAtTime(0.72, t + 0.008);
+  og.gain.exponentialRampToValueAtTime(1.15, t + 0.008);
   og.gain.exponentialRampToValueAtTime(0.0001, t + 0.68);
-  const gearSubRev = audioCtx.createGain();
-  gearSubRev.gain.setValueAtTime(0.18, t);
-  osc.connect(og); og.connect(tickBus.dry); og.connect(gearSubRev); gearSubRev.connect(tickBus.conv);
+  osc.connect(og); og.connect(tickBus.dry); og.connect(tickBus.conv);
   osc.start(t); osc.stop(t + 0.72);
 }
 
