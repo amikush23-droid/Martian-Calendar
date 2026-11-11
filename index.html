@@ -5344,6 +5344,8 @@ const TITLES = {home:"Martian Calendar", clock:"The Martian clock", calendar:"Ca
 // S.inLeapChrone is true while the 4th outermost Leap Chrone ring is active (88,750..89,105 s).
 // Time ALWAYS advances honoring S.mult, ensuring smooth scaling mechanics in all phases.
 const S = { n: 1, secs: 0, playing: true, mult: 1, inLeapChrone: false, leapSecs: 0 };
+let mainClockStarted = false;
+let mainDialInView = false;
 
 // Sol-specific embedded clock state (strictly calculates time for CAL.sel only)
 const SOL_CLK = { secs: 0, playing: true, mult: 1, inLeapChrone: false, leapSecs: 0, dragging: false, scrubbing: false };
@@ -6871,6 +6873,7 @@ function angleFromEventOnSvg(e, targetSvg){
   return a;
 }
 function setFromPointer(e){
+  mainClockStarted = true;
   const ang = angleFromEventOnSvg(e, dial);
   if (S.inLeapChrone){
     S.leapSecs = Math.min(CHRONE - 0.001, Math.max(0, (ang / 360) * CHRONE));
@@ -7632,7 +7635,7 @@ function playGear(isActivating = true){
 
 // Called once per frame for the main clock
 function tickSecond(){
-  const isClockVisible = (currentPage === "clock" && !(typeof INTRO !== "undefined" && INTRO.active && !INTRO.uiRevealed));
+  const isClockVisible = (mainClockStarted && mainDialInView && !(typeof INTRO !== "undefined" && INTRO.active));
   const leapChanged = (lastLeapState !== null && S.inLeapChrone !== lastLeapState);
   if (leapChanged && isClockVisible){
     playGear(S.inLeapChrone);
@@ -7776,26 +7779,25 @@ function applyGearTrainAngle(refs, baseAngleDeg){
 function computeLeapSecGearAngle(curLeapSecs){
   const clamped = Math.max(0, Math.min(CHRONE, curLeapSecs || 0));
   const secFloor = Math.floor(clamped);
+  if (secFloor <= 0) return 0;
   const secFrac = clamped - secFloor;
-  // Smooth horological escapement impulse: 72% of the tooth advancement occurs in a 0.34s mechanical stroke,
-  // advancing the 14T Escape Wheel by 1 tooth per second without stroboscopic tooth aliasing
-  const pulse = secFrac < 0.34
-    ? Math.sin((secFrac / 0.34) * (Math.PI * 0.5)) * 0.72
-    : (0.72 + ((secFrac - 0.34) / 0.66) * 0.28);
-  const stepProgress = secFloor + pulse;
+  const pulse = secFrac < 0.22
+    ? Math.sin((secFrac / 0.22) * (Math.PI * 0.5))
+    : 1.0;
+  const stepProgress = (secFloor - 1) + pulse;
   return stepProgress * 12.0;
 }
 
 function computeNormalSecGearAngle(curSecs){
   const s = Math.max(0, curSecs || 0);
   const whole = Math.floor(s);
+  if (whole <= 0) return 0;
   const frac = s - whole;
-  // Gentle horological escapement tick for the minimal baseline gears during normal clock operation
-  const pulse = frac < 0.18
-    ? Math.sin((frac / 0.18) * (Math.PI * 0.5)) * 0.80
-    : (0.80 + ((frac - 0.18) / 0.82) * 0.20);
-  // 14 degrees of base carrier rotation per second (~4.9 deg/s on the 46T barrel wheel)
-  return ((whole + pulse) % 3600) * 14.0;
+  // Crisp horological escapement step that completes right on the integer second boundary
+  const pulse = frac < 0.16
+    ? Math.sin((frac / 0.16) * (Math.PI * 0.5))
+    : 1.0;
+  return (((whole - 1) + pulse) % 3600) * 14.0;
 }
 
 function triggerGearCogTransition(refs, isActivating){
@@ -7914,7 +7916,7 @@ function applyNormalGearTrainAngle(refs, baseAngleDeg){
   applyNormalGearTrainState(refs, baseAngleDeg, 1.0);
 }
 
-function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs){
+function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs, curMult = 1){
   refs.mainDialG.classList.toggle("shrunk", inLeap);
   const normalGearAngle = computeNormalSecGearAngle(curSecs);
   refs.lastNormalGearAngle = normalGearAngle;
@@ -7941,7 +7943,8 @@ function syncDialLeapState(refs, inLeap, curSolN, curSecs, curLeapSecs){
       applyGearTrainState(refs, (refs.gearAngleAccum || 0) + normalGearAngle + leapSecAngle, 1.0);
     }
 
-    const leapProg = Math.min(1, Math.max(0, curLeapSecs / CHRONE));
+    const effectiveLeapSecs = (curMult > 3) ? curLeapSecs : Math.min(CHRONE - 1, Math.floor(curLeapSecs));
+    const leapProg = Math.min(1, Math.max(0, effectiveLeapSecs / CHRONE));
     refs.lastLeapProg = leapProg;
     refs.lastSolN = curSolN;
     const orbAngle = leapProg * 360;
@@ -7995,22 +7998,20 @@ function updateClock(){
   const isLeapS = isLeapSol(d);
   const isBoth = isChrone && isLeapS;
 
-  syncDialLeapState(mainDialRefs, S.inLeapChrone, S.n, S.secs, S.leapSecs);
+  syncDialLeapState(mainDialRefs, S.inLeapChrone, S.n, S.secs, S.leapSecs, S.mult);
   digBig.classList.toggle("emberText", S.inLeapChrone);
 
   const mainWholeSecs = S.inLeapChrone ? (SOL_BASE - 1) : Math.floor(S.secs);
   const p = clockParts(mainWholeSecs);
-  const mainProg = S.inLeapChrone ? 1 : (S.secs / SOL_BASE);
+  const mainProg = S.inLeapChrone ? 1 : (mainWholeSecs / SOL_BASE);
 
-  const secFracMain = S.inLeapChrone ? 0 : Math.max(0, S.secs - mainWholeSecs);
-  // Crisp mechanical escapement impulse: 85% of the 1-second step completes in the first 0.16s, then settles smoothly
-  const escMain = S.inLeapChrone ? 0 : (secFracMain < 0.16 ? Math.sin((secFracMain / 0.16) * (Math.PI * 0.5)) * 0.85 : (0.85 + ((secFracMain - 0.16) / 0.84) * 0.15));
-  const smoothSecsMain = S.inLeapChrone ? 0 : (S.mult > 3 ? S.secs : (mainWholeSecs + escMain));
+  // Keep analog hands locked to the exact integer second (mainWholeSecs) at normal speed so analog hand and digital counter always match
+  const smoothSecsMain = S.inLeapChrone ? 0 : (S.mult > 3 ? S.secs : mainWholeSecs);
   const angleA = S.inLeapChrone ? 0 : (smoothSecsMain / SOL_BASE) * 360;
   const angleC = S.inLeapChrone ? 0 : ((smoothSecsMain % ARCHON) / ARCHON) * 360;
   const angleS = S.inLeapChrone ? 0 : ((smoothSecsMain % CHRONE) / CHRONE) * 360;
 
-  const aStr = angleA.toFixed(1), cStr = angleC.toFixed(1), sStr = angleS.toFixed(1);
+  const aStr = angleA.toFixed(2), cStr = angleC.toFixed(2), sStr = angleS.toFixed(2);
   if (mainDialRefs.__lastHA !== aStr){ mainDialRefs.__lastHA = aStr; mainDialRefs.hArch.setAttribute("transform", `rotate(${aStr})`); }
   if (mainDialRefs.__lastHC !== cStr){ mainDialRefs.__lastHC = cStr; mainDialRefs.hChr.setAttribute("transform", `rotate(${cStr})`); }
   if (mainDialRefs.__lastHS !== sStr){ mainDialRefs.__lastHS = sStr; mainDialRefs.hSec.setAttribute("transform", `rotate(${sStr})`); }
@@ -8103,21 +8104,20 @@ function updateSolClock(){
   const isLeapS = isLeapSol(d);
   const isBoth = isChrone && isLeapS;
 
-  syncDialLeapState(solDialRefs, SOL_CLK.inLeapChrone, n, SOL_CLK.secs, SOL_CLK.leapSecs);
+  syncDialLeapState(solDialRefs, SOL_CLK.inLeapChrone, n, SOL_CLK.secs, SOL_CLK.leapSecs, SOL_CLK.mult);
   solDigBig.classList.toggle("emberText", SOL_CLK.inLeapChrone);
 
   const mainWholeSecs = SOL_CLK.inLeapChrone ? (SOL_BASE - 1) : Math.floor(SOL_CLK.secs);
   const p = clockParts(mainWholeSecs);
-  const mainProg = SOL_CLK.inLeapChrone ? 1 : (SOL_CLK.secs / SOL_BASE);
+  const mainProg = SOL_CLK.inLeapChrone ? 1 : (mainWholeSecs / SOL_BASE);
 
-  const secFracSol = SOL_CLK.inLeapChrone ? 0 : Math.max(0, SOL_CLK.secs - mainWholeSecs);
-  const escSol = SOL_CLK.inLeapChrone ? 0 : (secFracSol < 0.16 ? Math.sin((secFracSol / 0.16) * (Math.PI * 0.5)) * 0.85 : (0.85 + ((secFracSol - 0.16) / 0.84) * 0.15));
-  const smoothSecsSol = SOL_CLK.inLeapChrone ? 0 : (SOL_CLK.mult > 3 ? SOL_CLK.secs : (mainWholeSecs + escSol));
+  // Keep analog hands locked to the exact integer second (mainWholeSecs) at normal speed so analog hand and digital counter always match
+  const smoothSecsSol = SOL_CLK.inLeapChrone ? 0 : (SOL_CLK.mult > 3 ? SOL_CLK.secs : mainWholeSecs);
   const angleA = SOL_CLK.inLeapChrone ? 0 : (smoothSecsSol / SOL_BASE) * 360;
   const angleC = SOL_CLK.inLeapChrone ? 0 : ((smoothSecsSol % ARCHON) / ARCHON) * 360;
   const angleS = SOL_CLK.inLeapChrone ? 0 : ((smoothSecsSol % CHRONE) / CHRONE) * 360;
 
-  const aStr = angleA.toFixed(1), cStr = angleC.toFixed(1), sStr = angleS.toFixed(1);
+  const aStr = angleA.toFixed(2), cStr = angleC.toFixed(2), sStr = angleS.toFixed(2);
   if (solDialRefs.__lastHA !== aStr){ solDialRefs.__lastHA = aStr; solDialRefs.hArch.setAttribute("transform", `rotate(${aStr})`); }
   if (solDialRefs.__lastHC !== cStr){ solDialRefs.__lastHC = cStr; solDialRefs.hChr.setAttribute("transform", `rotate(${cStr})`); }
   if (solDialRefs.__lastHS !== sStr){ solDialRefs.__lastHS = sStr; solDialRefs.hSec.setAttribute("transform", `rotate(${sStr})`); }
@@ -8193,9 +8193,9 @@ function updateSolClock(){
   tickSolSecond();
 }
 
-$("play").onclick = () => { S.playing = !S.playing; };
-$("reset").onclick = () => { S.secs = 0; S.inLeapChrone = false; S.leapSecs = 0; };
-$("scrub").oninput = e => { syncStateFromTotalSecs(Number(e.target.value)); };
+$("play").onclick = () => { mainClockStarted = true; S.playing = !S.playing; };
+$("reset").onclick = () => { mainClockStarted = true; S.secs = 0; S.inLeapChrone = false; S.leapSecs = 0; };
+$("scrub").oninput = e => { mainClockStarted = true; syncStateFromTotalSecs(Number(e.target.value)); };
 $("speed").oninput = e => { S.mult = Math.pow(10, Number(e.target.value)); };
 $("nextLeap").onclick = () => {
   S.inLeapChrone = false;
@@ -13734,9 +13734,24 @@ function frame(now){
   const dt = Math.min(0.25, (now - last) / 1000);
   last = now;
 
+  // Activate the main clock only once the intro has finished and the clock dial (#mainClockBox / #dial) is actually visible in the viewport
+  if (!(typeof INTRO !== "undefined" && INTRO.active)) {
+    const dialBoxEl = $("mainClockBox") || $("dial");
+    if (dialBoxEl) {
+      const r = dialBoxEl.getBoundingClientRect();
+      const visH = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+      mainDialInView = (visH >= Math.min(140, r.height * 0.28));
+      if (mainDialInView && !mainClockStarted && !window.__isRailFastScrolling) {
+        mainClockStarted = true;
+      }
+    }
+  } else {
+    mainDialInView = false;
+  }
+
   // Fully robust integration loop allowing the user to seamlessly skip through 
   // multiple standard sols and Leap Chrones in a single frame when the multiplier is high.
-  if (S.playing && !dragging && !mainScrubbing){
+  if (mainClockStarted && !(typeof INTRO !== "undefined" && INTRO.active) && S.playing && !dragging && !mainScrubbing){
     let ds = dt * effectiveClockMult(S.mult, S.inLeapChrone);
     while (ds > 0) {
       if (S.inLeapChrone) {
