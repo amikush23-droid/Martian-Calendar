@@ -4834,7 +4834,7 @@ body.intro-void .sp-scroll-rack-wrap {
               height="720"
               scrolling="no"
               frameborder="0"
-              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FBxs5BX9_iaU%3Ffeature%3Doembed%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBxs5BX9_iaU&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FBxs5BX9_iaU%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
+              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FBxs5BX9_iaU%3Ffeature%3Doembed%26enablejsapi%3D1%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBxs5BX9_iaU&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FBxs5BX9_iaU%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
               title="Could We Really Terraform Mars? (Koranos)"
               allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen="true"
@@ -4875,7 +4875,7 @@ body.intro-void .sp-scroll-rack-wrap {
               height="720"
               scrolling="no"
               frameborder="0"
-              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FHpcTJW4ur54%3Ffeature%3Doembed%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHpcTJW4ur54&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHpcTJW4ur54%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
+              src="https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FHpcTJW4ur54%3Ffeature%3Doembed%26enablejsapi%3D1%26rel%3D0%26playsinline%3D1%26fs%3D1&amp;display_name=YouTube&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHpcTJW4ur54&amp;image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHpcTJW4ur54%2Fmaxresdefault.jpg&amp;key=a19fcc184b9711e1b4764040d3dc5c07&amp;type=text%2Fhtml&amp;schema=youtube"
               title="How to Terraform Mars - WITH LASERS (Kurzgesagt – In a Nutshell)"
               allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen="true"
@@ -5423,12 +5423,15 @@ function updateFullscreenUI(){
 }
 
 
-// ---------- Mars Cinematic Background Music Controller ----------
+// ---------- Mars Cinematic Background Music & Video Ducking Controller ----------
+const SFX_MASTER_GAIN = 0.56; // Toned down so SFX sits cleanly underneath BGM without colliding
 let bgmAudio = null;
 let bgmStarted = false;
 let bgmGain = 0;
 let bgmTargetGain = 0.38;
 let bgmFadeRaf = null;
+let isVideoAudioDucked = false;
+window.isVideoAudioDucked = false;
 
 function initBgmTrack(){
   if (bgmAudio) return;
@@ -5444,8 +5447,103 @@ function initBgmTrack(){
   }
 }
 
+function rampBgmVolume(targetVol, durationMs, pauseOnZero = false){
+  if (!bgmAudio) return;
+  if (bgmFadeRaf) {
+    cancelAnimationFrame(bgmFadeRaf);
+    bgmFadeRaf = null;
+  }
+  const startVol = Math.max(0, Math.min(1, Number(bgmAudio.volume) || 0));
+  const clampedTarget = Math.max(0, Math.min(1, targetVol));
+  if (Math.abs(clampedTarget - startVol) < 0.002){
+    bgmAudio.volume = clampedTarget;
+    bgmGain = clampedTarget;
+    if (pauseOnZero && clampedTarget <= 0.001 && !bgmAudio.paused){
+      bgmAudio.pause();
+    }
+    return;
+  }
+  const t0 = performance.now();
+  function step(now){
+    const u = Math.min(1, Math.max(0, (now - t0) / Math.max(16, durationMs)));
+    const s = u * u * (3 - 2 * u); // smoothstep
+    const cur = startVol + (clampedTarget - startVol) * s;
+    bgmGain = Math.max(0, Math.min(1, cur));
+    bgmAudio.volume = bgmGain;
+    if (u < 1){
+      bgmFadeRaf = requestAnimationFrame(step);
+    } else {
+      bgmFadeRaf = null;
+      bgmAudio.volume = clampedTarget;
+      bgmGain = clampedTarget;
+      if (pauseOnZero && clampedTarget <= 0.001 && !bgmAudio.paused){
+        bgmAudio.pause();
+      }
+    }
+  }
+  bgmFadeRaf = requestAnimationFrame(step);
+}
+
+function rampSfxMasterGain(targetGain, durationSec){
+  try {
+    if (tickBus && tickBus.master && audioCtx){
+      const now = audioCtx.currentTime;
+      const curVal = Math.max(0.0001, tickBus.master.gain.value || SFX_MASTER_GAIN);
+      tickBus.master.gain.cancelScheduledValues(now);
+      tickBus.master.gain.setValueAtTime(curVal, now);
+      tickBus.master.gain.linearRampToValueAtTime(Math.max(0.0001, targetGain), now + Math.max(0.04, durationSec));
+    }
+  } catch (err) {}
+}
+
+function setVideoAudioDucking(ducked){
+  const nextDucked = !!ducked;
+  if (isVideoAudioDucked === nextDucked) return;
+  isVideoAudioDucked = nextDucked;
+  window.isVideoAudioDucked = isVideoAudioDucked;
+
+  if (isVideoAudioDucked){
+    // Immediately fade down BGM and SFX to a stop
+    rampSfxMasterGain(0.0001, 0.35);
+    if (bgmAudio){
+      rampBgmVolume(0, 380, true);
+    }
+  } else {
+    // Video paused or stopped: smoothly fade BGM and SFX back in (unless user manually muted site)
+    if (!isSiteAudioMuted){
+      try {
+        if (!audioCtx){
+          initAudio();
+        } else if (audioCtx.state === "suspended"){
+          audioCtx.resume().catch(() => {});
+        }
+      } catch (err) {}
+      rampSfxMasterGain(SFX_MASTER_GAIN, 1.15);
+      initBgmTrack();
+      if (bgmAudio){
+        if (bgmAudio.paused){
+          bgmAudio.volume = Math.max(0, Math.min(1, bgmAudio.volume || 0));
+          const p = bgmAudio.play();
+          if (p !== undefined){
+            p.then(() => {
+              bgmStarted = true;
+              window.bgmStarted = true;
+              rampBgmVolume(bgmTargetGain || 0.38, 1350, false);
+            }).catch(() => {});
+          }
+        } else {
+          bgmStarted = true;
+          window.bgmStarted = true;
+          rampBgmVolume(bgmTargetGain || 0.38, 1350, false);
+        }
+      }
+    }
+  }
+}
+window.setVideoAudioDucking = setVideoAudioDucking;
+
 function startBgmWithFadeIn(targetVol = 0.38, durationMs = 3000){
-  if (bgmStarted || isSiteAudioMuted) return;
+  if (bgmStarted || isSiteAudioMuted || isVideoAudioDucked) return;
   initBgmTrack();
   if (!bgmAudio) return;
 
@@ -5455,26 +5553,13 @@ function startBgmWithFadeIn(targetVol = 0.38, durationMs = 3000){
   const playPromise = bgmAudio.play();
   if (playPromise !== undefined){
     playPromise.then(() => {
-      bgmStarted = true; window.bgmStarted = true;
-      const t0 = performance.now();
-      if (bgmFadeRaf) cancelAnimationFrame(bgmFadeRaf);
-
-      function stepFade(now){
-        const u = Math.min(1, (now - t0) / durationMs);
-        if (isSiteAudioMuted){
-          bgmAudio.volume = 0;
-          return;
-        }
-        bgmGain = targetVol * (u * u * (3 - 2 * u)); // smoothstep fade in
-        bgmAudio.volume = bgmGain;
-        if (u < 1){
-          bgmFadeRaf = requestAnimationFrame(stepFade);
-        } else {
-          bgmFadeRaf = null;
-          bgmAudio.volume = targetVol;
-        }
+      if (isSiteAudioMuted || isVideoAudioDucked){
+        bgmAudio.volume = 0;
+        if (isVideoAudioDucked) bgmAudio.pause();
+        return;
       }
-      bgmFadeRaf = requestAnimationFrame(stepFade);
+      bgmStarted = true; window.bgmStarted = true;
+      rampBgmVolume(targetVol, durationMs, false);
     }).catch(() => {
       // Autoplay blocked prior to user gesture; will start on next click or keydown
     });
@@ -5491,34 +5576,37 @@ function toggleSiteAudioMute(){
   const btn = $("audioMuteBtn");
   const icon = $("muteBtnIcon");
 
-  if (!audioCtx){
-    initAudio();
-  } else if (audioCtx.state === "suspended"){
-    audioCtx.resume().catch(() => {});
-  }
+  try {
+    if (!audioCtx){
+      initAudio();
+    } else if (audioCtx.state === "suspended"){
+      audioCtx.resume().catch(() => {});
+    }
+  } catch (err) {}
 
-  if (tickBus && tickBus.master){
-    const targetGain = isSiteAudioMuted ? 0.0001 : 0.92;
-    tickBus.master.gain.setTargetAtTime(targetGain, audioCtx.currentTime, 0.04);
-  }
-
-  if (bgmAudio){
-    if (isSiteAudioMuted){
-      bgmAudio.volume = 0;
-    } else {
-      bgmAudio.volume = bgmTargetGain || 0.38;
+  if (isSiteAudioMuted){
+    rampSfxMasterGain(0.0001, 0.08);
+    if (bgmAudio){
+      rampBgmVolume(0, 120, false);
+    }
+  } else if (!isVideoAudioDucked){
+    rampSfxMasterGain(SFX_MASTER_GAIN, 0.18);
+    if (bgmAudio){
       if (bgmAudio.paused && bgmStarted){
-        bgmAudio.play().catch(() => {});
+        bgmAudio.play().then(() => {
+          rampBgmVolume(bgmTargetGain || 0.38, 350, false);
+        }).catch(() => {});
       } else if (!bgmStarted){
         startBgmWithFadeIn(0.38, 2000);
+      } else {
+        rampBgmVolume(bgmTargetGain || 0.38, 350, false);
       }
     }
   }
 
   if (btn){
     btn.classList.toggle("is-muted", isSiteAudioMuted);
-    
-    btn.setAttribute("aria-label", btn.title);
+    btn.setAttribute("aria-label", isSiteAudioMuted ? "Unmute Audio (Press M)" : "Mute Audio (Press M)");
   }
 
   if (icon){
@@ -5534,19 +5622,22 @@ window.toggleSiteAudioMute = toggleSiteAudioMute;
 const muteBtnEl = $("audioMuteBtn");
 if (muteBtnEl){
   muteBtnEl.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
     toggleSiteAudioMute();
   });
 }
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "m" || e.key === "M"){
-    const tag = (document.activeElement && document.activeElement.tagName) || "";
-    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT"){
-      toggleSiteAudioMute();
-    }
+  if (e.key === "m" || e.key === "M" || e.code === "KeyM"){
+    const target = e.target || document.activeElement;
+    const tag = (target && target.tagName) || "";
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || (target && target.isContentEditable)) return;
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    e.preventDefault();
+    toggleSiteAudioMute();
   }
-});
+}, { capture: true });
 async function lockSystemKeysInFullscreen(){
   try {
     if (navigator.keyboard && typeof navigator.keyboard.lock === "function"){
@@ -5565,34 +5656,23 @@ function unlockSystemKeys(){
 
 async function enterFullscreen(forQuiz = false){
   const docEl = document.documentElement;
-  let success = false;
+  fsVirtualActive = true;
+  updateFullscreenUI();
   try {
     if (!getNativeFullscreenElement()){
       if (docEl.requestFullscreen){
         await docEl.requestFullscreen({ navigationUI: "hide" });
-        success = true;
       } else if (docEl.webkitRequestFullscreen){
         docEl.webkitRequestFullscreen();
-        success = true;
       } else if (docEl.msRequestFullscreen){
         docEl.msRequestFullscreen();
-        success = true;
       }
-    } else {
-      success = true;
     }
     await lockSystemKeysInFullscreen();
   } catch (err) {
-    // Browser rejected requestFullscreen (e.g. requires user gesture on startup, or restricted iframe)
-    if (forQuiz){
-      fsVirtualActive = true;
-      success = true;
-    }
+    // Native requestFullscreen rejected (e.g. headless, iframe, or gesture policy); virtual fullscreen remains active!
   }
 
-  if (success || getNativeFullscreenElement()){
-    fsVirtualActive = true;
-  }
   const guard = $("quizFsGuard");
   if (guard) guard.classList.remove("active");
   if (quiz) quiz.fsGuardPaused = false;
@@ -5678,6 +5758,7 @@ function setQuizLock(locked, stayOnQuiz = false){
   const fsBtn = $("fullscreenBtn");
   if (fsBtn){
     fsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
       hideFsHint();
       if (isQuizLocked()){
@@ -5721,13 +5802,12 @@ function setQuizLock(locked, stayOnQuiz = false){
       lockSystemKeysInFullscreen();
     } else {
       if (isQuizLocked()){
-        // User forced native fullscreen exit (e.g. hardware Esc hold) while quiz is still active!
-        // Keep fullscreen layout active and display the Quiz Fullscreen Lock Guard until they resume.
         fsVirtualActive = true;
         if (quiz) quiz.fsGuardPaused = true;
         if (guardEl) guardEl.classList.add("active");
         showFsLockToast("Quiz active: Fullscreen cannot be exited until all 20 questions are done.");
-      } else {
+      } else if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement){
+        // Only set fsVirtualActive false if user manually exited native browser fullscreen (e.g. browser Esc key)
         fsVirtualActive = false;
         unlockSystemKeys();
       }
@@ -5741,10 +5821,10 @@ function setQuizLock(locked, stayOnQuiz = false){
   // Toggle fullscreen with the 'F' key, and intercept Escape/F11/tab-switching while in Fullscreen or Quiz-Locked mode
   window.addEventListener("keydown", (e) => {
     // 1. Activation and deactivation of fullscreen with 'F' or 'f' key
-    if (e.key === "f" || e.key === "F"){
-      const tag = e.target && e.target.tagName;
-      if (tag === "INPUT" && ["text", "number", "search", "password", "email"].includes(e.target.type)) return;
-      if (tag === "TEXTAREA" || (e.target && e.target.isContentEditable)) return;
+    if (e.key === "f" || e.key === "F" || e.code === "KeyF"){
+      const target = e.target || document.activeElement;
+      const tag = (target && target.tagName) || "";
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || (target && target.isContentEditable)) return;
       if (e.ctrlKey || e.altKey || e.metaKey) return; // preserve browser Ctrl+F find shortcut
 
       e.preventDefault();
@@ -7372,7 +7452,7 @@ function decodeClockSamples(ctx){
   }
 }
 
-function makeReverbIR(ctx, seconds = 2.6, decay = 3.2){
+function makeReverbIR(ctx, seconds = 1.15, decay = 4.8){
   const rate = ctx.sampleRate, len = Math.floor(rate * seconds);
   const ir = ctx.createBuffer(2, len, rate);
   for (let ch = 0; ch < 2; ch++){
@@ -7392,34 +7472,70 @@ function initAudio(){
   if (!AC) return;
   audioCtx = new AC();
   audioCtx.onstatechange = () => { const b = $("soundBtn"); if (b) b.style.display = audioCtx.state === "running" ? "none" : ""; };
-  const master = audioCtx.createGain(); master.gain.value = 0.92; master.connect(audioCtx.destination);
-  const dry = audioCtx.createGain(); dry.gain.value = 0.82; dry.connect(master);
-  const conv = audioCtx.createConvolver(); conv.buffer = makeReverbIR(audioCtx);
-  const wet = audioCtx.createGain(); wet.gain.value = 0.52; conv.connect(wet); wet.connect(master);
+  const initialMaster = (isSiteAudioMuted || isVideoAudioDucked) ? 0.0001 : SFX_MASTER_GAIN;
+  const master = audioCtx.createGain(); master.gain.value = initialMaster; master.connect(audioCtx.destination);
+  const dry = audioCtx.createGain(); dry.gain.value = 0.72; dry.connect(master);
+  const conv = audioCtx.createConvolver(); conv.buffer = makeReverbIR(audioCtx, 1.15, 4.8);
+  const wet = audioCtx.createGain(); wet.gain.value = 0.22; conv.connect(wet); wet.connect(master);
   tickBus = { dry, conv, master };
   decodeClockSamples(audioCtx);
 }
 
 
-// 1. Seconds hand tick (soft reverb noise transient)
+// 1. Seconds hand tick (warm, dry-intimate pocket-watch escapement pulse crafted to blend with mars_bgm.mp3)
 function playTick(){
-  if (!audioCtx || !tickBus || audioCtx.state !== "running") return;
+  if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const t = audioCtx.currentTime;
-  const len = Math.floor(audioCtx.sampleRate * 0.03);
+
+  // Layer A: Soft, warm damped wooden/brass escapement pallet click (no harsh high hiss, almost zero reverb)
+  const len = Math.floor(audioCtx.sampleRate * 0.014);
   const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
   const d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 9.5);
   const src = audioCtx.createBufferSource(); src.buffer = buf;
-  const bp = audioCtx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 3200; bp.Q.value = 1.2;
-  const env = audioCtx.createGain(); env.gain.value = 0.35;
-  src.connect(bp); bp.connect(env);
-  env.connect(tickBus.dry); env.connect(tickBus.conv);
+
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.setValueAtTime(1320, t);
+  bp.Q.setValueAtTime(1.85, t);
+
+  const lp = audioCtx.createBiquadFilter();
+  lp.type = "lowpass";
+  lp.frequency.setValueAtTime(1950, t);
+
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0.14, t);
+
+  // Tiny whisper of room air (0.020 vs previous 1.0 full convolver send — >98% reverb reduction)
+  const revSend = audioCtx.createGain();
+  revSend.gain.setValueAtTime(0.020, t);
+
+  src.connect(bp);
+  bp.connect(lp);
+  lp.connect(env);
+  env.connect(tickBus.dry);
+  lp.connect(revSend);
+  revSend.connect(tickBus.conv);
   src.start(t);
+
+  // Layer B: Warm rosewood/cello-body micro-resonance tap (harmonizes with the warm strings of mars_bgm.mp3)
+  const bodyOsc = audioCtx.createOscillator();
+  bodyOsc.type = "sine";
+  bodyOsc.frequency.setValueAtTime(360, t);
+  bodyOsc.frequency.exponentialRampToValueAtTime(142, t + 0.015);
+  const bodyGain = audioCtx.createGain();
+  bodyGain.gain.setValueAtTime(0.0001, t);
+  bodyGain.gain.exponentialRampToValueAtTime(0.058, t + 0.0016);
+  bodyGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.018);
+  bodyOsc.connect(bodyGain);
+  bodyGain.connect(tickBus.dry);
+  bodyOsc.start(t);
+  bodyOsc.stop(t + 0.020);
 }
 
-// 2. Chrone hand tick (uploaded clock tick sample at natural pitch with a little reverb)
+// 2. Chrone hand tick (uploaded clock tick sample at natural pitch, gently toned down so it sits under BGM)
 function playChroneTick(){
-  if (!audioCtx || !tickBus || audioCtx.state !== "running") return;
+  if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const nowMs = performance.now();
   if (nowMs - lastChroneMs < 60) return;
   lastChroneMs = nowMs;
@@ -7431,11 +7547,11 @@ function playChroneTick(){
     src.playbackRate.setValueAtTime(1.0, t);
 
     const dryGain = audioCtx.createGain();
-    dryGain.gain.setValueAtTime(0.88, t);
+    dryGain.gain.setValueAtTime(0.64, t);
 
-    // Subtle reverb send ("a lil reverb")
+    // Subtle reverb send
     const revSend = audioCtx.createGain();
-    revSend.gain.setValueAtTime(0.22, t);
+    revSend.gain.setValueAtTime(0.12, t);
 
     src.connect(dryGain);
     dryGain.connect(tickBus.dry);
@@ -7447,9 +7563,9 @@ function playChroneTick(){
   }
 }
 
-// 3. Archon hand tick (deep, heavy version of the uploaded clock tick sample with a little reverb, lighter than Leap Chrone gear sound)
+// 3. Archon hand tick (deep, heavy version of the uploaded clock tick sample, balanced underneath BGM)
 function playArchonTick(){
-  if (!audioCtx || !tickBus || audioCtx.state !== "running") return;
+  if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const nowMs = performance.now();
   if (nowMs - lastArchonMs < 90) return;
   lastArchonMs = nowMs;
@@ -7461,18 +7577,18 @@ function playArchonTick(){
     // Pitched down to 0.62x for a deep, heavy horological hand step
     src.playbackRate.setValueAtTime(0.62, t);
 
-    // Warm low-shelf bass boost (+5 dB below 160 Hz, lighter than Leap Chrone's +7.5 dB)
+    // Warm low-shelf bass boost (+4 dB below 160 Hz)
     const lowShelf = audioCtx.createBiquadFilter();
     lowShelf.type = "lowshelf";
     lowShelf.frequency.setValueAtTime(160, t);
-    lowShelf.gain.setValueAtTime(5.0, t);
+    lowShelf.gain.setValueAtTime(4.0, t);
 
     const dryGain = audioCtx.createGain();
-    dryGain.gain.setValueAtTime(1.12, t);
+    dryGain.gain.setValueAtTime(0.80, t);
 
-    // Subtle reverb send ("a lil reverb", lighter than Leap Chrone's 0.65)
+    // Subtle reverb send
     const revSend = audioCtx.createGain();
-    revSend.gain.setValueAtTime(0.28, t);
+    revSend.gain.setValueAtTime(0.15, t);
 
     src.connect(lowShelf);
     lowShelf.connect(dryGain);
@@ -7482,17 +7598,17 @@ function playArchonTick(){
     src.start(t);
   }
 
-  // Moderate low-end wooden/brass body thud (0.42 gain vs Leap Chrone's 1.15 gain, so it stays lighter than the Leap Chrone gear sound)
+  // Moderate low-end wooden/brass body thud
   const osc = audioCtx.createOscillator();
   osc.type = "sine";
   osc.frequency.setValueAtTime(108, t);
   osc.frequency.exponentialRampToValueAtTime(44, t + 0.16);
   const og = audioCtx.createGain();
   og.gain.setValueAtTime(0.0001, t);
-  og.gain.exponentialRampToValueAtTime(0.42, t + 0.005);
+  og.gain.exponentialRampToValueAtTime(0.28, t + 0.005);
   og.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
   const revSub = audioCtx.createGain();
-  revSub.gain.setValueAtTime(0.18, t);
+  revSub.gain.setValueAtTime(0.09, t);
   osc.connect(og);
   og.connect(tickBus.dry);
   og.connect(revSub);
@@ -7501,10 +7617,10 @@ function playArchonTick(){
   osc.stop(t + 0.24);
 }
 
-// 4. Leap Chrone Activation / Deactivation Gear Sound (loudest & heaviest)
+// 4. Leap Chrone Activation / Deactivation Gear Sound (heaviest horological event, balanced to avoid clashing with BGM)
 let lastLeapState = null;
 function playGear(isActivating = true){
-  if (!audioCtx || !tickBus || audioCtx.state !== "running") return;
+  if (!audioCtx || !tickBus || audioCtx.state !== "running" || isSiteAudioMuted || isVideoAudioDucked) return;
   const t = audioCtx.currentTime;
 
   if (gearBuffer){
@@ -7515,19 +7631,19 @@ function playGear(isActivating = true){
     const lowBoost = audioCtx.createBiquadFilter();
     lowBoost.type = "lowshelf";
     lowBoost.frequency.setValueAtTime(150, t);
-    lowBoost.gain.setValueAtTime(7.5, t);
+    lowBoost.gain.setValueAtTime(5.5, t);
 
     const midPunch = audioCtx.createBiquadFilter();
     midPunch.type = "peaking";
     midPunch.frequency.setValueAtTime(680, t);
     midPunch.Q.setValueAtTime(1.2, t);
-    midPunch.gain.setValueAtTime(3.5, t);
+    midPunch.gain.setValueAtTime(2.5, t);
 
     const sfxGain = audioCtx.createGain();
-    sfxGain.gain.setValueAtTime(1.75, t);
+    sfxGain.gain.setValueAtTime(1.18, t);
 
     const sfxRevSend = audioCtx.createGain();
-    sfxRevSend.gain.setValueAtTime(0.65, t);
+    sfxRevSend.gain.setValueAtTime(0.32, t);
 
     sfxSrc.connect(lowBoost);
     lowBoost.connect(midPunch);
@@ -7543,9 +7659,11 @@ function playGear(isActivating = true){
   osc.frequency.exponentialRampToValueAtTime(36, t + 0.48);
   const og = audioCtx.createGain();
   og.gain.setValueAtTime(0.0001, t);
-  og.gain.exponentialRampToValueAtTime(1.15, t + 0.008);
+  og.gain.exponentialRampToValueAtTime(0.72, t + 0.008);
   og.gain.exponentialRampToValueAtTime(0.0001, t + 0.68);
-  osc.connect(og); og.connect(tickBus.dry); og.connect(tickBus.conv);
+  const gearSubRev = audioCtx.createGain();
+  gearSubRev.gain.setValueAtTime(0.18, t);
+  osc.connect(og); og.connect(tickBus.dry); og.connect(gearSubRev); gearSubRev.connect(tickBus.conv);
   osc.start(t); osc.stop(t + 0.72);
 }
 
@@ -8531,6 +8649,11 @@ document.addEventListener("keydown", e => {
     const n0 = CAL.sel - 1 + map[e.key];
     if (n0 < 0) return;
     selectSol(n0 + 1);
+  }
+  if (INTRO.active && (e.key === " " || e.code === "Space" || e.keyCode === 32)){
+    e.preventDefault();
+    finishIntroImmediately();
+    return;
   }
   if (e.key === " " && t === "BUTTON") return;
   if (e.key === " " && isPage("clock")){ e.preventDefault(); S.playing = !S.playing; }
@@ -13076,9 +13199,10 @@ function finishIntroImmediately(){
   }
   // Allow skipping the intro animation with the Space bar
   window.addEventListener("keydown", (e) => {
-    if (INTRO.active && (e.code === "Space" || e.key === " " || e.key === "Spacebar")){
-      const tag = e.target && e.target.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable)) return;
+    if (INTRO.active && (e.code === "Space" || e.key === " " || e.key === "Spacebar" || e.keyCode === 32)){
+      const target = e.target || document.activeElement;
+      const tag = (target && target.tagName) || "";
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || (target && target.isContentEditable)) return;
       e.preventDefault();
       e.stopPropagation();
       finishIntroImmediately();
@@ -15533,17 +15657,92 @@ last = performance.now();
 requestAnimationFrame(frame);
 })();
 
+const __tfActivePlayingVideos = new Set();
+const __tfVideoBootGraceUntil = {};
+const __tfVideoConfirmedPlay = {};
+let __tfLastActivatedIframeId = null;
+let __tfExtYoutubeLinkActive = false;
+
+function __syncTfVideoAudioDucking() {
+  const anyPlaying = (__tfActivePlayingVideos.size > 0) || __tfExtYoutubeLinkActive;
+  if (typeof window.setVideoAudioDucking === "function") {
+    window.setVideoAudioDucking(anyPlaying);
+  }
+}
+
+function __setTfVideoPlayingState(iframeId, isPlaying) {
+  if (!iframeId) return;
+  if (isPlaying) {
+    __tfActivePlayingVideos.add(iframeId);
+  } else {
+    __tfActivePlayingVideos.delete(iframeId);
+  }
+  __syncTfVideoAudioDucking();
+}
+window.__setTfVideoPlayingState = __setTfVideoPlayingState;
+
+function __subscribeTfIframeEvents(iframe, iframeId) {
+  if (!iframe || !iframe.contentWindow) return;
+  const cw = iframe.contentWindow;
+  const msgs = [
+    // Embedly Player.js event subscriptions
+    { context: "player.js", method: "addEventListener", value: "play" },
+    { context: "player.js", method: "addEventListener", value: "pause" },
+    { context: "player.js", method: "addEventListener", value: "ended" },
+    // Native YouTube IFrame API event subscriptions
+    { event: "listening", id: iframeId, channel: "widget" },
+    { event: "command", func: "addEventListener", args: ["onStateChange"], id: iframeId, channel: "widget" }
+  ];
+  for (let i = 0; i < msgs.length; i++) {
+    try {
+      cw.postMessage(JSON.stringify(msgs[i]), "*");
+    } catch (e) {}
+  }
+}
+
+function __pauseOtherTfVideo(activeIframeId) {
+  const allIds = ["tfIframeKoranos", "tfIframeKurzgesagt"];
+  for (let i = 0; i < allIds.length; i++) {
+    const otherId = allIds[i];
+    if (otherId === activeIframeId) continue;
+    __tfActivePlayingVideos.delete(otherId);
+    const otherIframe = document.getElementById(otherId);
+    if (otherIframe && otherIframe.contentWindow) {
+      try {
+        otherIframe.contentWindow.postMessage(JSON.stringify({ context: "player.js", method: "pause" }), "*");
+        otherIframe.contentWindow.postMessage(JSON.stringify({ event: "command", func: "pauseVideo", args: "" }), "*");
+      } catch (e) {}
+    }
+  }
+}
+
 function playTfVideo(wrapId, iframeId, videoId) {
-  var wrap = document.getElementById(wrapId);
-  var iframe = document.getElementById(iframeId);
+  const wrap = document.getElementById(wrapId);
+  const iframe = document.getElementById(iframeId);
   if (wrap) {
-    var poster = wrap.querySelector(".tf-video-poster");
+    const poster = wrap.querySelector(".tf-video-poster");
     if (poster) poster.style.display = "none";
   }
+  __tfLastActivatedIframeId = iframeId;
+  __tfVideoBootGraceUntil[iframeId] = performance.now() + 2200;
+  __tfVideoConfirmedPlay[iframeId] = false;
+
+  // Pause the other video if it was playing, and immediately fade down BGM & SFX
+  __pauseOtherTfVideo(iframeId);
+  __setTfVideoPlayingState(iframeId, true);
+
   if (iframe) {
     iframe.allowFullscreen = true;
+    const onIframeLoad = function() {
+      __subscribeTfIframeEvents(iframe, iframeId);
+      setTimeout(() => __subscribeTfIframeEvents(iframe, iframeId), 250);
+      setTimeout(() => __subscribeTfIframeEvents(iframe, iframeId), 800);
+      setTimeout(() => __subscribeTfIframeEvents(iframe, iframeId), 1600);
+    };
+    iframe.addEventListener("load", onIframeLoad, { once: true });
+
     iframe.src = "https://cdn.embedly.com/widgets/media.html?a=1&src=" +
-      encodeURIComponent("https://www.youtube.com/embed/" + videoId + "?feature=oembed&autoplay=1&rel=0&playsinline=1&fs=1") +
+      encodeURIComponent("https://www.youtube.com/embed/" + videoId + "?feature=oembed&autoplay=1&enablejsapi=1&rel=0&playsinline=1&fs=1") +
       "&display_name=YouTube&url=" +
       encodeURIComponent("https://www.youtube.com/watch?v=" + videoId) +
       "&image=" +
@@ -15551,6 +15750,122 @@ function playTfVideo(wrapId, iframeId, videoId) {
       "&key=a19fcc184b9711e1b4764040d3dc5c07&type=text%2Fhtml&schema=youtube";
   }
 }
+
+// Listen for play / pause / ended messages from both Embedly (Player.js) and YouTube IFrame API
+window.addEventListener("message", (e) => {
+  if (!e || !e.data) return;
+  let data = e.data;
+  if (typeof data === "string") {
+    const trimmed = data.trim();
+    if (!trimmed.startsWith("{")) return;
+    try {
+      data = JSON.parse(trimmed);
+    } catch (err) {
+      return;
+    }
+  }
+  if (!data || typeof data !== "object") return;
+
+  // Identify which video iframe sent this message
+  let senderId = null;
+  const fKoranos = document.getElementById("tfIframeKoranos");
+  const fKurz = document.getElementById("tfIframeKurzgesagt");
+  if (fKoranos && e.source === fKoranos.contentWindow) {
+    senderId = "tfIframeKoranos";
+  } else if (fKurz && e.source === fKurz.contentWindow) {
+    senderId = "tfIframeKurzgesagt";
+  } else if (typeof data.id === "string" && (data.id === "tfIframeKoranos" || data.id === "tfIframeKurzgesagt")) {
+    senderId = data.id;
+  } else if (__tfLastActivatedIframeId) {
+    senderId = __tfLastActivatedIframeId;
+  }
+  if (!senderId) return;
+
+  const senderIframe = document.getElementById(senderId);
+
+  // 1. Handle Embedly Player.js events (including getPaused state responses)
+  if (data.context === "player.js") {
+    if (data.event === "ready") {
+      __subscribeTfIframeEvents(senderIframe, senderId);
+    } else if (data.event === "play" || (data.event === "getPaused" && data.value === false)) {
+      __tfVideoConfirmedPlay[senderId] = true;
+      __tfVideoBootGraceUntil[senderId] = 0;
+      __pauseOtherTfVideo(senderId);
+      __setTfVideoPlayingState(senderId, true);
+    } else if (data.event === "pause" || data.event === "ended" || (data.event === "getPaused" && data.value === true)) {
+      const inBootGrace = !__tfVideoConfirmedPlay[senderId] && (__tfVideoBootGraceUntil[senderId] || 0) > performance.now();
+      if (!inBootGrace) {
+        __setTfVideoPlayingState(senderId, false);
+      }
+    }
+    return;
+  }
+
+  // 2. Handle native YouTube IFrame Player API events (onStateChange / infoDelivery)
+  let ytState = null;
+  if (data.event === "onStateChange" && typeof data.info === "number") {
+    ytState = data.info;
+  } else if (data.event === "infoDelivery" && data.info && typeof data.info.playerState === "number") {
+    ytState = data.info.playerState;
+  } else if (data.event === "initialDelivery") {
+    __subscribeTfIframeEvents(senderIframe, senderId);
+  }
+
+  if (ytState !== null) {
+    if (ytState === 1 || ytState === 3) { // 1 = playing, 3 = buffering
+      if (ytState === 1) {
+        __tfVideoConfirmedPlay[senderId] = true;
+        __tfVideoBootGraceUntil[senderId] = 0;
+      }
+      __pauseOtherTfVideo(senderId);
+      __setTfVideoPlayingState(senderId, true);
+    } else if (ytState === 2 || ytState === 0) { // 2 = paused, 0 = ended
+      const inBootGrace = !__tfVideoConfirmedPlay[senderId] && (__tfVideoBootGraceUntil[senderId] || 0) > performance.now();
+      if (!inBootGrace) {
+        __setTfVideoPlayingState(senderId, false);
+      }
+    }
+  }
+});
+
+// Poll getPaused on any activated video iframe as a fail-safe alongside event listeners
+const __tfOpenedIframes = new Set();
+const __origPlayTfVideo = playTfVideo;
+window.playTfVideo = function(wrapId, iframeId, videoId) {
+  __tfOpenedIframes.add(iframeId);
+  return __origPlayTfVideo(wrapId, iframeId, videoId);
+};
+setInterval(() => {
+  if (__tfOpenedIframes.size === 0) return;
+  __tfOpenedIframes.forEach((id) => {
+    const ifr = document.getElementById(id);
+    if (ifr && ifr.contentWindow) {
+      try {
+        ifr.contentWindow.postMessage(JSON.stringify({ context: "player.js", method: "getPaused" }), "*");
+      } catch (e) {}
+    }
+  });
+}, 450);
+
+// Also handle external "Watch on YouTube" links so BGM/SFX fades out when opening YouTube and fades back in on return
+document.querySelectorAll(".tf-video-ext-link").forEach((link) => {
+  link.addEventListener("click", () => {
+    __tfExtYoutubeLinkActive = true;
+    __syncTfVideoAudioDucking();
+  });
+});
+window.addEventListener("focus", () => {
+  if (__tfExtYoutubeLinkActive) {
+    __tfExtYoutubeLinkActive = false;
+    __syncTfVideoAudioDucking();
+  }
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && __tfExtYoutubeLinkActive) {
+    __tfExtYoutubeLinkActive = false;
+    __syncTfVideoAudioDucking();
+  }
+});
 </script>
 
 </body>
